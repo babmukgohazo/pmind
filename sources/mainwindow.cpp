@@ -1,6 +1,7 @@
 #include "headers/mainwindow.h"
 #include "ui_mainwindow.h"
 #include "headers/editscreen.h"
+#include "headers/firstscreen.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -24,10 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(actionNew, SIGNAL(triggered()), this, SLOT(newFile()));
 
-
     showStartscreen();
-
-
 }
 
 MainWindow::~MainWindow()
@@ -41,7 +39,7 @@ void MainWindow::showEditscreen(){
 }
 
 void MainWindow::showStartscreen(){
-    QLabel *center = new QLabel("Start");
+    FirstScreen *center = new FirstScreen();
     this->setCentralWidget(center);
 }
 

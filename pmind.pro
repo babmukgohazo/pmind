@@ -14,13 +14,15 @@ TEMPLATE = app
 
 SOURCES += \
     sources/main.cpp \
-    sources/mainwindow.cpp
+    sources/mainwindow.cpp \
+    sources/editscreen.cpp
 
 HEADERS  += \
     headers/arrangement.h \
     headers/mainwindow.h \
     headers/node.h \
-    headers/tree.h
+    headers/tree.h \
+    headers/editscreen.h
 
 FORMS    += \
     forms/mainwindow.ui

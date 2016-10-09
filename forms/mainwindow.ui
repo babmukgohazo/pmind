@@ -40,6 +40,11 @@
     <bool>false</bool>
    </attribute>
   </widget>
+  <action name="actionAsdfa">
+   <property name="text">
+    <string>asdfa</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

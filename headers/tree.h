@@ -137,6 +137,7 @@ TreeNode* TreeNode::addLowNode() {
 	addNode->high = this;	//위로도 연결
 	addNode->index = lowCount - 1;	//index를 갱신
 	addNode->connectLevelLink();
+	addNode->setParent(this);
 	return addNode;
 }
 void TreeNode::addLowNode(TreeNode* addNode) {		//트리의 특정 노드(currentNode)에 주어진 하위노드 추가
@@ -150,11 +151,9 @@ void TreeNode::addLowNode(TreeNode* addNode) {		//트리의 특정 노드(currentNode)�
 	}
 	low[lowCount - 1] = addNode;	//아레로 연결
 	addNode->high = this;	//위로도 연결
-	if (lowCount >= 2) {		//두번째 노드부터 노드간 연결이 필요.
-		addNode->left = low[lowCount - 2];
-		low[lowCount - 2]->right = addNode;	//하위 노드 간에 양 옆으로 연결
-	}
 	addNode->index = lowCount - 1;	//index를 갱신
+	addNode->connectLevelLink();
+	addNode->setParent(this);
 }
 void TreeNode::addLowNode(const int num) {
 	TreeNode** addTemp;
@@ -172,6 +171,7 @@ void TreeNode::addLowNode(const int num) {
 		low[lowCount] = addNode;
 		lowCount++;
 		addNode->connectLevelLink();
+		addNode->setParent(this);
 	}
 }
 void TreeNode::disconnectUpperLink() {
@@ -245,6 +245,7 @@ void TreeNode::clear() {
 		for (int i = 0; i < removeTemp->lowCount; i++) {
 			queue.enqueue(removeTemp->low[i]);
 		}
+		removeTemp->setParent('\0');
 		delete removeTemp;
 	} while (1);
 	lowCount = 0;

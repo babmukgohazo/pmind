@@ -5,7 +5,6 @@
 #include <QPoint>
 #include <QList>
 #include <QQueue>
-using namespace std;
 
 class TreeNode : public QWidget {
 public:
@@ -22,8 +21,12 @@ public:
 	void addLowNode(int num);//Æ¯Á¤ °³¼ö¸¸Å­ low node¸¦ »ı¼º
 	void disconnectUpperLink();//»óÀ§, level³ëµå¿ÍÀÇ ¿¬°áÀ» ²÷À½
 	int getDepth();//topÀÇ depth´Â 0, NodeÀÇ ±íÀÌ¸¦ ¹İÈ¯
+	static int getDepth(TreeNode* node);//ÁÖ¾îÁø nodeÀÇ ±íÀÌ¸¦ ¹İÈ¯
+	TreeNode* getRoot();//Root node (top node)¸¦ ¹İÈ¯
 	void remove();//this¸¦ Æ÷ÇÔÇØ sub tree¸¦ Á¦°Å
 	void clear();//this¸¦ Á¦¿ÜÇÏ°í sub tree¸¦ Á¦°Å
+	void search(const int data);//Æ¯Á¤ data¸¦ °¡Áö´Â ³ëµå¸¦ Ã£À½. ´Ü, ÀÌ node¸¦ Æ÷ÇÔÇÑ ÇÏÀ§³ëµå¿¡¼­¸¸ Ã£´Â´Ù.
+	void searchAll(const int data);//¿¬°áµÇ¾îÀÖ´Â ¸ğµç ³ëµå¿¡¼­ Ã£´Â´Ù.
 
 	int data;//test¸¦ À§ÇØ »ç¿ë
 	int lowCount;//low¹è¿­ÀÇ Å©±â
@@ -32,27 +35,11 @@ public:
 	TreeNode* high;//»óÀ§ node¸¦ Áö¸ñ
 	TreeNode* right;//°°Àº levelÀÇ ³ëµå Áß ¿ìÃø³ëµå Áö¸ñ
 	TreeNode* left;//°°Àº levelÀÇ ³ëµå Áß ÁÂÃø³ëµå Áö¸ñ
-
-protected:
-	void connectLevelLink();//»óÀ§³ëµå¿Í ¿¬°áµÈ »óÅÂ¿¡¼­ level³ëµå¿Í ¿¬°á
-};
-
-class Tree : public TreeNode {
-public:
-
-	TreeNode& operator=(const TreeNode& node);
-	TreeNode& operator+=(TreeNode& node);
-
-	void search(const int data);//Æ¯Á¤ data¸¦ °¡Áö´Â ³ëµå¸¦ Ã£À½
-	static int getDepth(TreeNode* node);//ÁÖ¾îÁø nodeÀÇ ±íÀÌ¸¦ ¹İÈ¯
-	int getCount();//tree¿¡ ´Ş¸° ³ëµåÀÇ °³¼ö¸¦ ¹İÈ¯
-
 	QList<TreeNode*> searchedNodeList;	//search¿¡¼­ Ã£Àº ³ëµåµéÀ» ÀúÀåÇÒ ¸®½ºÆ®
 
 private:
-	using TreeNode::remove;
+	void connectLevelLink();//»óÀ§³ëµå¿Í ¿¬°áµÈ »óÅÂ¿¡¼­ level³ëµå¿Í ¿¬°á
 };
-
 
 TreeNode::TreeNode() :QWidget() {
 	lowCount = 0;
@@ -72,6 +59,7 @@ TreeNode::TreeNode(const TreeNode& copy) : QWidget() {//QWidget¿¡ TreeNode¿¡ ´ëÇ
 		low[i] = copy.low[i];
 	high = copy.high;
 	left = copy.left;
+	right = copy.right;
 }
 
 TreeNode& TreeNode::operator=(const TreeNode& node) {
@@ -226,6 +214,23 @@ int TreeNode::getDepth() {
 	}
 	return depth;
 }
+int TreeNode::getDepth(TreeNode* node) {
+	int depth = 0;
+	TreeNode* temp;
+	temp = node;
+	while (temp->high != '\0') {
+		temp = temp->high;
+		depth++;
+	}
+	return depth;
+}
+TreeNode* TreeNode::getRoot() {
+	TreeNode* temp;
+	temp = this;
+	while (temp->high != '\0')
+		temp = temp->high;
+	return temp;
+}
 void TreeNode::remove() {
 	disconnectUpperLink();
 	clear();
@@ -251,34 +256,11 @@ void TreeNode::clear() {
 	lowCount = 0;
 	low = '\0';
 }
-
-TreeNode& Tree::operator=(const TreeNode& node) {
-	if (&node == this)
-		return *this;
-	if (this->low != '\0')
-		clear();
-	data = node.data;
-	lowCount = node.lowCount;
-	index = node.index;
-	low = new TreeNode*[node.lowCount];
-	for (int i = 0;i < node.lowCount;i++)
-		low[i] = node.low[i];
-	high = node.high;
-	left = node.left;
-	return *this;
-}
-TreeNode& Tree::operator+=(TreeNode& node) {
-	if (&node == this)
-		return *this;
-	node.disconnectUpperLink();
-	addLowNode(&node);
-	return *this;
-}
-
-void Tree::search(const int data) {		//Æ®¸®¸¦ Å¥·Î Ç®¸é¼­ Å½»ö. BFS±¸Çö. È¸·Î°¡ ¾øÀ¸¹Ç·Î BFS ±¸ÇöÀÌ ±ò²ûÇÏ´Ù.
+void TreeNode::search(const int data) {
 	QQueue<TreeNode*> queue;
 	TreeNode* searchTemp;
-	queue.enqueue(this);		//topºÎÅÍ ½ÃÀÛÇÑ´Ù.
+	queue.enqueue(this);
+	searchedNodeList.clear();
 	do {
 		if (queue.isEmpty() == true)
 			break;
@@ -290,31 +272,10 @@ void Tree::search(const int data) {		//Æ®¸®¸¦ Å¥·Î Ç®¸é¼­ Å½»ö. BFS±¸Çö. È¸·Î°¡ 
 			searchedNodeList.append(searchTemp);
 	} while (1);
 }
-int Tree::getDepth(TreeNode* node) {
-	int depth = 0;
-	TreeNode* temp;
-	temp = node;
-	while (temp->high != '\0') {
-		temp = temp->high;
-		depth++;
-	}
-	return depth;
-}
-int Tree::getCount() {
-	QQueue<TreeNode*> queue;
-	TreeNode* temp;
-	int count = 0;
-	queue.enqueue(this);		//topºÎÅÍ ½ÃÀÛÇÑ´Ù.
-	do {
-		if (queue.isEmpty() == true)
-			break;
-		temp = queue.dequeue();
-		count++;
-		for (int i = 0; i < temp->lowCount; i++) {
-			queue.enqueue(temp->low[i]);
-		}
-	} while (1);
-	return count;
+void TreeNode::searchAll(const int data) {
+	TreeNode* rootNode;
+	rootNode = getRoot();
+	rootNode->search(data);
 }
 
 #endif // TREE_H

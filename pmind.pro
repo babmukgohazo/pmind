@@ -16,8 +16,7 @@ SOURCES += \
     sources/main.cpp \
     sources/mainwindow.cpp \
     sources/editscreen.cpp \
-    sources/firstscreen.cpp \
-    sources/parsing.cpp
+    sources/firstscreen.cpp
 
 HEADERS  += \
     headers/arrangement.h \

@@ -20,7 +20,7 @@ public:
 public slots:
     // filemenu actions
     void newFile();
-    void openFile();
+    void openFile(const QString &fileName = "");
   //  void saveFile(const bool &checkIfReadonly = true);
   //  bool saveFileAs();
   //  bool closeFile();

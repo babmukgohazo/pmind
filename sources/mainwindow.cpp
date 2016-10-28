@@ -14,6 +14,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     showStartscreen();
+
+
+
 }
 
 MainWindow::~MainWindow()
@@ -35,7 +38,7 @@ void MainWindow::newFile(){
     showEditscreen();
 }
 
-void MainWindow::openFile(){
+void MainWindow::openFile(const QString &fileName){
 
     QFileDialog dialog(this,
                        tr("Open MindMap"),

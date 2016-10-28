@@ -9,7 +9,7 @@ class MdString{
 public:
     int getDepth();
     void setDepth(int);
-    int getText();
+    QString getText();
     void setText(QString);
 
 private:
@@ -18,6 +18,6 @@ private:
 
 };
 
-int getQqueue(QString&,QQueue&);
+int getQqueue(QString &inText,QQueue<MdString> &mdQueue);
 
 #endif // PARSING_H

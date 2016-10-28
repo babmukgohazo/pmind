@@ -1,5 +1,4 @@
 #include "headers/parsing.h"
-#include <QDebug>
 
 int getQqueue(QString &inText, QQueue<MdString> &mdQueue)
 {

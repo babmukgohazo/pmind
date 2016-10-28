@@ -3,29 +3,20 @@
 #include "headers/editscreen.h"
 #include "headers/firstscreen.h"
 
+#include <QFileDialog>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setFileMenuToolbar();
 
-    actionNew = new QAction("New");
-    actionLoad = new QAction("Load");
-    actionSave = new QAction("Save");
-    actionSaveAs = new QAction("Save as");
-    actionQuit = new QAction("Quit");
-    menuFile = new QMenu("Menu");
-    menuFile->addAction(actionNew);
-    menuFile->addAction(actionLoad);
-    menuFile->addAction(actionSave);
-    menuFile->addAction(actionSaveAs);
-    menuFile->addSeparator();
-    menuFile->addAction(actionQuit);
-    this->menuBar()->addMenu(menuFile);
-
-    connect(actionNew, SIGNAL(triggered()), this, SLOT(newFile()));
 
     showStartscreen();
+
+
+
 }
 
 MainWindow::~MainWindow()
@@ -45,4 +36,39 @@ void MainWindow::showStartscreen(){
 
 void MainWindow::newFile(){
     showEditscreen();
+}
+
+void MainWindow::openFile(const QString &fileName){
+
+    QFileDialog dialog(this,
+                       tr("Open MindMap"),
+                       QDir::homePath(),
+                       QString("QtMindMap (*.qmm)"));
+    dialog.setAcceptMode(QFileDialog::AcceptOpen);
+    dialog.setDefaultSuffix("qmm");
+
+    if (!dialog.exec())
+        return;
+
+    m_fileName = dialog.selectedFiles().first();
+
+}
+
+void MainWindow::setFileMenuToolbar() {
+    actionNew = new QAction("New");
+    actionLoad = new QAction("Load");
+    actionSave = new QAction("Save");
+    actionSaveAs = new QAction("Save as");
+    actionQuit = new QAction("Quit");
+    menuFile = new QMenu("Menu");
+    menuFile->addAction(actionNew);
+    menuFile->addAction(actionLoad);
+    menuFile->addAction(actionSave);
+    menuFile->addAction(actionSaveAs);
+    menuFile->addSeparator();
+    menuFile->addAction(actionQuit);
+    this->menuBar()->addMenu(menuFile);
+
+    connect(actionNew, SIGNAL(triggered()), this, SLOT(newFile()));
+    connect(actionLoad, SIGNAL(triggered()), this, SLOT(openFile()));
 }

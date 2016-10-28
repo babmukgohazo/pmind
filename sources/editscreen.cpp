@@ -20,6 +20,6 @@ EditScreen::~EditScreen(){
     delete mapScreen;
     delete edit;
     delete redrawButton;
-    delete layout;
     delete right;
+    delete layout;
 }

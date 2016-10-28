@@ -20,7 +20,7 @@ public:
 public slots:
     // filemenu actions
     void newFile();
-  // void openFile(const QString &fileName = "");
+    void openFile(const QString &fileName = "");
   //  void saveFile(const bool &checkIfReadonly = true);
   //  bool saveFileAs();
   //  bool closeFile();
@@ -29,8 +29,13 @@ public slots:
    // void quit();
 
 private:
+    void setFileMenuToolbar();
+
     Ui::MainWindow *ui;
     QMenu *menuFile;
+    QString m_fileName;
+
+    // FileMenu Toolbar actions
     QAction *actionNew;
     QAction *actionLoad;
     QAction *actionSave;

@@ -16,9 +16,7 @@ SOURCES += \
     sources/main.cpp \
     sources/mainwindow.cpp \
     sources/editscreen.cpp \
-    sources/firstscreen.cpp \
-    forms/filemanage.cpp \
-    forms/namecheck.cpp
+    sources/firstscreen.cpp
 
 HEADERS  += \
     headers/arrangement.h \
@@ -26,14 +24,10 @@ HEADERS  += \
     headers/node.h \
     headers/tree.h \
     headers/editscreen.h \
-    headers/firstscreen.h \
-    forms/filemanage.h \
-    forms/namecheck.h
+    headers/firstscreen.h
 
 FORMS    += \
-    forms/mainwindow.ui \
-    forms/filemanage.ui \
-    forms/namecheck.ui
+    forms/mainwindow.ui
 
 RESOURCES += \
     resources/image.qrc

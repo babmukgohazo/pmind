@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 #include "headers/editscreen.h"
 #include "headers/firstscreen.h"
-#include "forms/filemanage.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -40,10 +39,8 @@ void MainWindow::showEditscreen(){
 }
 
 void MainWindow::showStartscreen(){
-    fileManage *center = new fileManage();
+    FirstScreen *center = new FirstScreen();
     this->setCentralWidget(center);
-   // FirstScreen *center = new FirstScreen();
-   // this->setCentralWidget(center);
 }
 
 void MainWindow::newFile(){

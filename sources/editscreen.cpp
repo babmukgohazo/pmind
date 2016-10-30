@@ -1,25 +1,30 @@
 #include "headers/editscreen.h"
 
 EditScreen::EditScreen(){
-    mapScreen = new QWidget();
+    mapScreen = new MindmapView();
     edit = new QTextEdit();
     redrawButton = new QPushButton("Redraw");
     layout = new QHBoxLayout();
-    right = new QVBoxLayout();
+    rightLayout = new QVBoxLayout();
+    map = new NodeWidget();
 
-    right->addWidget(edit);
-    right->addWidget(redrawButton);
+    rightLayout->addWidget(edit);
+    rightLayout->addWidget(redrawButton);
     layout->addWidget(mapScreen);
-    layout->addLayout(right);
+    layout->addLayout(rightLayout);
     layout->setStretchFactor(mapScreen,7);
-    layout->setStretchFactor(right,3);
+    layout->setStretchFactor(rightLayout,3);
 
+    mapScreen->setObjectName("mapscreen");
+    mapScreen->setStyleSheet("#mapscreen {border: 1px solid gray; background: white;}");
     this->setLayout(layout);
+
+    QObject::connect(redrawButton, SIGNAL(clicked()),this,SLOT(reload()));
 }
 EditScreen::~EditScreen(){
-    delete mapScreen;
-    delete edit;
     delete redrawButton;
-    delete right;
+    delete rightLayout;
+    delete edit;
     delete layout;
+    delete mapScreen;
 }

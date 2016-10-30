@@ -17,7 +17,8 @@ SOURCES += \
     sources/mainwindow.cpp \
     sources/editscreen.cpp \
     sources/firstscreen.cpp \
-    sources/parsing.cpp
+    sources/parsing.cpp \
+    sources/nodewidget.cpp
 
 HEADERS  += \
     headers/arrangement.h \
@@ -26,7 +27,9 @@ HEADERS  += \
     headers/tree.h \
     headers/editscreen.h \
     headers/firstscreen.h \
-    headers/parsing.h
+    headers/parsing.h \
+    headers/mindmapview.h \
+    headers/nodewidget.h
 
 FORMS    += \
     forms/mainwindow.ui

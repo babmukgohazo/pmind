@@ -5,6 +5,7 @@
 #include <QPoint>
 #include <QList>
 #include <QQueue>
+#include <QString>
 
 class TreeNode : public QWidget {
 public:
@@ -24,10 +25,10 @@ public:
 	TreeNode* getRoot();//Root node (top node)를 반환
 	void remove();//노드와 그의 하위노드들까지 모두 제거
 	void clear();//노드의 하위 노드들만 제거. remove는 노드까지 포함하는 반면에 clear는 하위노드만 제거한다.
-	void search(const int data);//특정 data를 가지는 노드를 찾음. 단, 이 node를 포함한 하위노드에서만 찾는다.
-	void searchAll(const int data);//연결되어있는 모든 노드에서 찾는다.
+	void search(const QString data);//특정 data를 가지는 노드를 찾음. 단, 이 node를 포함한 하위노드에서만 찾는다.
+	void searchAll(const QString data);//연결되어있는 모든 노드에서 찾는다.
 
-	int data;//test를 위해 사용
+	QString data;//string data
 	int lowCount;//low배열의 크기
 	int index;//같은 level의 노드 중 몇 번째에 위치하는지 기록
 	TreeNode** low;//하위 node배열을 지목
@@ -43,11 +44,11 @@ private:
 TreeNode::TreeNode() :QWidget() {
 	lowCount = 0;
 	index = 0;
-	low = '\0';
-	high = '\0';
-	right = '\0';
-	left = '\0';
-	data = 0;
+	low = nullptr;
+	high = nullptr;
+	right = nullptr;
+	left = nullptr;
+	data = "";
 }
 TreeNode::TreeNode(const TreeNode& copy) : QWidget() {//QWidget에 TreeNode에 대한 convert constructor 필요
 	data = copy.data;
@@ -245,7 +246,7 @@ void TreeNode::clear() {
 	lowCount = 0;
 	low = '\0';
 }
-void TreeNode::search(const int data) {
+void TreeNode::search(const QString data) {
 	QQueue<TreeNode*> queue;
 	TreeNode* searchTemp;
 	queue.enqueue(this);
@@ -261,7 +262,7 @@ void TreeNode::search(const int data) {
 			searchedNodeList.append(searchTemp);
 	} while (1);
 }
-void TreeNode::searchAll(const int data) {
+void TreeNode::searchAll(const QString data) {
 	TreeNode* rootNode;
 	rootNode = getRoot();
 	rootNode->search(data);

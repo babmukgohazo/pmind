@@ -41,4 +41,4 @@ private:
 	void connectLevelLink();//상위노드와 연결된 상태에서 level노드와 연결
 };
 
-#endif TREE_H
+#endif // TREE_H

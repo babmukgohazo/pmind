@@ -24,7 +24,7 @@ TreeNode::TreeNode(const TreeNode& copy) : QWidget() {//QWidget¿¡ TreeNode¿¡ ´ëÇ
 TreeNode& TreeNode::operator=(const TreeNode& node) {
 	if (&node == this)
 		return *this;
-	if (this->low != '\0')
+    if (this->low != nullptr)
 		clear();
 	data = node.data;
 	lowCount = node.lowCount;
@@ -52,7 +52,7 @@ TreeNode& TreeNode::operator+=(TreeNode& node) {
 
 void TreeNode::arrCopy(TreeNode** to, TreeNode** from, int toSize, int index) {	//¹è¿­ÀÇ ´Ü¼ø º¹»ç¿Í »èÁ¦ º¹»ç¸¦ ³ª´«´Ù. index°¡ -1ÀÌ¸é ´Ü¼øº¹»ç, ¾Æ´Ï¸é index¿¡ ÇØ´çÇÏ´Â ¿ø¼Ò »èÁ¦ º¹»ç
 	int i, j;												//index´Â from¿¡¼­ »ç¶óÁú ¿ø¼ÒÀÌ´Ù.
-	if (to == '\0' || from == '\0');	//¹è¿­ Æ÷ÀÎÅÍ°¡ NULLÀÎ »óÅÂ¿¡¼­ Á¢±ÙÇÏ¸é ¾ÈµÈ´Ù.
+    if (to == nullptr || from == nullptr);	//¹è¿­ Æ÷ÀÎÅÍ°¡ NULLÀÎ »óÅÂ¿¡¼­ Á¢±ÙÇÏ¸é ¾ÈµÈ´Ù.
 										//¿¹¿ÜÃ³¸®
 	if (index == -1) {
 		for (i = 0;i < toSize - 1;i++)	//ÇöÀç toº¸´Ù fromÀÌ ¿ø¼Ò ÇÑ°³°¡ Àû´Ù. ¶§¹®¿¡ -1ÇØÁÜ.
@@ -76,7 +76,7 @@ TreeNode* TreeNode::addLowNode() {
 	lowCount++;
 	addTemp = low;
 	low = new TreeNode*[lowCount];	//ÇÑ Ä­ ´õ Å« ¹è¿­ »ý¼º
-	if (addTemp != '\0') {
+    if (addTemp != nullptr) {
 		TreeNode::arrCopy(low, addTemp, lowCount, -1);
 		delete[] addTemp;
 	}
@@ -92,7 +92,7 @@ void TreeNode::addLowNode(TreeNode* addNode) {		//Æ®¸®ÀÇ Æ¯Á¤ ³ëµå(currentNode)¿
 	lowCount++;
 	addTemp = low;
 	low = new TreeNode*[lowCount];	//ÇÑ Ä­ ´õ Å« ¹è¿­ »ý¼º
-	if (addTemp != '\0') {
+    if (addTemp != nullptr) {
 		TreeNode::arrCopy(low, addTemp, lowCount, -1);
 		delete[] addTemp;
 	}
@@ -107,7 +107,7 @@ void TreeNode::addLowNode(const int num) {
 	TreeNode* addNode;
 	addTemp = low;
 	low = new TreeNode*[lowCount + num];
-	if (addTemp != '\0') {
+    if (addTemp != nullptr) {
 		TreeNode::arrCopy(low, addTemp, lowCount + num, -1);
 		delete[] addTemp;
 	}
@@ -123,37 +123,37 @@ void TreeNode::addLowNode(const int num) {
 }
 void TreeNode::disconnectUpperLink() {
 	TreeNode** temp;
-	if (high != '\0') {
-		high->low[index] = '\0';
+    if (high != nullptr) {
+        high->low[index] = nullptr;
 		high->lowCount--;
-		if (left != '\0')
+        if (left != nullptr)
 			left->right = right;
-		if (right != '\0')
+        if (right != nullptr)
 			right->left = left;
-		left = '\0';
-		right = '\0';
+        left = nullptr;
+        right = nullptr;
 		temp = new TreeNode*[high->lowCount];
 		TreeNode::arrCopy(temp, high->low, lowCount, index);
 		delete[] high->low;
 		high->low = temp;
-		high = '\0';
+        high = nullptr;
 	}
 }
 void TreeNode::connectLevelLink() {
-	if (high != '\0') {
+    if (high != nullptr) {
 		if (high->lowCount == 1) {
-			left = '\0';
-			right = '\0';
+            left = nullptr;
+            right = nullptr;
 		}
 		else if (index == 0) {
-			left = '\0';
+            left = nullptr;
 			right = high->low[index + 1];
 			right->left = this;
 		}
 		else if (index == high->lowCount - 1) {
 			left = high->low[index - 1];
 			left->right = this;
-			right = '\0';
+            right = nullptr;
 		}
 		else {
 			left = high->low[index - 1];
@@ -167,7 +167,7 @@ int TreeNode::getDepth() {
 	int depth = 0;
 	TreeNode* temp;
 	temp = this;
-	while (temp->high != '\0') {
+    while (temp->high != nullptr) {
 		temp = temp->high;
 		depth++;
 	}
@@ -176,7 +176,7 @@ int TreeNode::getDepth() {
 TreeNode* TreeNode::getRoot() {
 	TreeNode* temp;
 	temp = this;
-	while (temp->high != '\0')
+    while (temp->high != nullptr)
 		temp = temp->high;
 	return temp;
 }
@@ -199,11 +199,11 @@ void TreeNode::clear() {
 		for (int i = 0; i < removeTemp->lowCount; i++) {
 			queue.enqueue(removeTemp->low[i]);
 		}
-		removeTemp->setParent('\0');
+        removeTemp->setParent(nullptr);
 		delete removeTemp;
 	} while (1);
 	lowCount = 0;
-	low = '\0';
+    low = nullptr;
 }
 void TreeNode::search(const QString data) {
 	QQueue<TreeNode*> queue;
@@ -227,4 +227,4 @@ void TreeNode::searchAll(const QString data) {
 	rootNode->search(data);
 }
 
-#endif // TREE_H
+

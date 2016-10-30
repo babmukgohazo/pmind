@@ -1,5 +1,5 @@
-#ifndef ARRANGEMENT_H
-#define ARRANGEMENT_H
+#ifndef NODEWIDGET_H
+#define NODEWIDGET_H
 #include <QVector>
 #include <QPaintEvent>
 #include <QPainter>
@@ -30,4 +30,4 @@ protected:
 };
 
 
-#endif // ARRANGEMENT_H
+#endif // NODEWIDGET_H

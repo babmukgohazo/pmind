@@ -1,6 +1,4 @@
 #include "headers/nodewidget.h"
-#include <QPainter>
-#include <QQueue>
 
 
 NodeWidget::NodeWidget(QString name){

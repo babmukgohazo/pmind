@@ -21,10 +21,9 @@ public:
 	void addLowNode(int num);//특정 개수만큼 low node를 생성
 	void disconnectUpperLink();//상위, level노드와의 연결을 끊음
 	int getDepth();//top의 depth는 0, Node의 깊이를 반환
-	static int getDepth(TreeNode* node);//주어진 node의 깊이를 반환
 	TreeNode* getRoot();//Root node (top node)를 반환
-	void remove();//this를 포함해 sub tree를 제거
-	void clear();//this를 제외하고 sub tree를 제거
+	void remove();//노드와 그의 하위노드들까지 모두 제거
+	void clear();//노드의 하위 노드들만 제거. remove는 노드까지 포함하는 반면에 clear는 하위노드만 제거한다.
 	void search(const int data);//특정 data를 가지는 노드를 찾음. 단, 이 node를 포함한 하위노드에서만 찾는다.
 	void searchAll(const int data);//연결되어있는 모든 노드에서 찾는다.
 
@@ -208,16 +207,6 @@ int TreeNode::getDepth() {
 	int depth = 0;
 	TreeNode* temp;
 	temp = this;
-	while (temp->high != '\0') {
-		temp = temp->high;
-		depth++;
-	}
-	return depth;
-}
-int TreeNode::getDepth(TreeNode* node) {
-	int depth = 0;
-	TreeNode* temp;
-	temp = node;
 	while (temp->high != '\0') {
 		temp = temp->high;
 		depth++;

@@ -9,11 +9,11 @@
 #include <QQueue>
 #include "headers/parsing.h"
 
-//트리 배치에 관련된 노드 구조
+
 class NodeWidget : public QWidget{
 public:
     NodeWidget(QString name = "Default");
-    NodeWidget(QQueue<MdString> list);       //parsing된 mdstring 리스트를 이용해서 노드 생성 가능하도록 구현함.
+    NodeWidget(QQueue<MdString> list);  //MdString list -> tree structure
     QVector<NodeWidget*>& getChild(){ return child; }
     NodeWidget* getParent(){return parent_;}
     //int getChildNum(childNum)

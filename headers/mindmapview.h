@@ -3,7 +3,6 @@
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
-#include <QKeyEvent>
 #include <QGraphicsSceneMouseEvent>
 #include "headers/nodewidget.h"
 

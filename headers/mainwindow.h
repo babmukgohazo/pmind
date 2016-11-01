@@ -21,12 +21,12 @@ public slots:
     // filemenu actions
     void newFile();
     void openFile(const QString &fileName = "");
-  //  void saveFile(const bool &checkIfReadonly = true);
-  //  bool saveFileAs();
-  //  bool closeFile();
+//    void saveFile(const bool &checkIfReadonly = true);
+//    bool saveFileAs();
+//    bool closeFile();
 
-   //  handle changed content at quit
-   // void quit();
+//    //handle changed content at quit
+//    void quit();
 
 private:
     void setFileMenuToolbar();

@@ -1,4 +1,4 @@
-#include "tree.h"
+#include "headers/tree.h"
 
 TreeNode::TreeNode() :QWidget() {
     lowCount = 0;

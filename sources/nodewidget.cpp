@@ -16,11 +16,7 @@ NodeWidget::NodeWidget(QString name){
 }
 
 NodeWidget::NodeWidget(QQueue<MdString> list){
-    if(list.isEmpty())
-        return;
-
     this->setStyleSheet("background-color: white");
-    selfWidget.setText(list.dequeue().getText());
     selfWidget.setStyleSheet("border: 2px solid gray;");
     selfWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
     layout.addWidget(&selfWidget);
@@ -30,6 +26,15 @@ NodeWidget::NodeWidget(QQueue<MdString> list){
     childWidget.setLayout(&childLayout);
     layout.setContentsMargins(0,0,0,0);
     childLayout.setMargin(0);
+
+    if(list.isEmpty()){
+        selfWidget.setText("ERROR: not valid .md file");
+        return;
+    }
+    else{
+        selfWidget.setText(list.dequeue().getText());
+    }
+
 
     NodeWidget* ptr = this;
     int currentDepth = 0;

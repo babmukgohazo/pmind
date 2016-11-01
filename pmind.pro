@@ -21,11 +21,7 @@ SOURCES += \
     sources/nodewidget.cpp
 
 HEADERS  += \
-    headers/arrangement.h \
     headers/mainwindow.h \
-    headers/node.h \
-    headers/tree.h \
-    headers/editscreen.h \
     headers/firstscreen.h \
     headers/parsing.h \
     headers/mindmapview.h \

@@ -15,7 +15,6 @@ TEMPLATE = app
 SOURCES += \
     sources/main.cpp \
     sources/mainwindow.cpp \
-    sources/editscreen.cpp \
     sources/firstscreen.cpp \
     sources/parsing.cpp \
     sources/nodewidget.cpp

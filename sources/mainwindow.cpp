@@ -1,7 +1,6 @@
 #include "headers/mainwindow.h"
 #include "ui_mainwindow.h"
-
-#include <QFileDialog>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -9,14 +8,15 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     setFileMenuToolbar();
+    setWindowTitle("P-mind");
 
-
+    // construct & set UI component
     mapScreen = new MindmapView();
     edit = new QTextEdit();
     redrawButton = new QPushButton("Redraw");
     layout = new QHBoxLayout();
     rightLayout = new QVBoxLayout();
-    map = new NodeWidget();
+    map = nullptr;
 
     rightLayout->addWidget(edit);
     rightLayout->addWidget(redrawButton);
@@ -25,12 +25,10 @@ MainWindow::MainWindow(QWidget *parent) :
     layout->setStretchFactor(mapScreen,7);
     layout->setStretchFactor(rightLayout,3);
 
-    mapScreen->setObjectName("mapscreen");
-    mapScreen->setStyleSheet("#mapscreen {border: 1px solid gray; background: white;}");
+    mapScreen->setStyleSheet("MindmapView {border: 1px solid gray; background: white;}");
     this->centralWidget()->setLayout(layout);
 
     QObject::connect(redrawButton, SIGNAL(clicked()),this,SLOT(reload()));
-
 }
 
 MainWindow::~MainWindow()
@@ -39,35 +37,99 @@ MainWindow::~MainWindow()
     delete redrawButton;
     delete rightLayout;
     delete edit;
-    delete layout;
+    if (map!=nullptr){
+        delete map;
+        map = nullptr;
+    }
     delete mapScreen;
+    delete layout;
 }
 
-void MainWindow::newFile(){/*
-    m_fileName = "newfile.qmm";
-    mapFile = new QFile(m_fileName);
-    mapFile->open(QIODevice::ReadWrite);
-    //mapFile->read(5);
-    mapFile->write("msg", qstrlen("msg"));        // write to stderr
-    mapFile->close();*/
+//re-allocate & re-draw mindmap
+void MainWindow::reload(){
+    if (map!=nullptr){
+        delete map;
+        map = nullptr;
+    }
+    QString str = edit->toPlainText();
+    QQueue<MdString> q;
+    getQqueue(str,q);
+    map = new NodeWidget(q);
+    mapScreen->mindmapScene->addWidget(map);
 }
 
-void MainWindow::openFile(const QString &fileName){
+
+void MainWindow::newFile(){
+    m_fileName = "NewFile"; //use default file name
+    edit->setText("");      //clear text editor
+    if (map!=nullptr){      //delete mindmap
+        delete map;
+        map = nullptr;
+    }
+}
+
+void MainWindow::openFile(){
+
+    //file explorer. file extension is *.pmind (really same with *.txt)
     QFileDialog dialog(this,
-                       tr("Open MindMap"),
+                       tr("Open Mindmap"),
                        QDir::homePath(),
-                       QString("QtMindMap (*.qmm)"));
+                       QString("P-mind (*.pmind)"));
     dialog.setAcceptMode(QFileDialog::AcceptOpen);
-    dialog.setDefaultSuffix("qmm");
-
+    dialog.setDefaultSuffix("pmind");
     if (!dialog.exec())
         return;
 
+    m_fileName = dialog.selectedFiles().first();    //get path & filename (ex: C:/Users/KIMJEONGHUN/test.pmind )
+
+    //open file
+    QFile file(m_fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
+    //copy to text edit
+    edit->setText("");
+    while (!file.atEnd()) {
+        QByteArray line = file.readLine();
+        edit->setText(edit->toPlainText().append(line));
+    }
+    file.close();
+
+    //draw mindmap
+    reload();
+}
+void MainWindow::saveFile(){
+
+    //wow very simple :)
+    QFile file(m_fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+
+    QTextStream out(&file);
+    out << edit->toPlainText();
+    file.close();
+}
+
+bool MainWindow::saveFileAs(){
+
+    //simillar to openFile()
+    QFileDialog dialog(this,
+                       tr("Save Mindmap as"),
+                       QDir::homePath(),
+                       QString("P-mind (*.pmind)"));
+    dialog.setAcceptMode(QFileDialog::AcceptSave);
+    dialog.setDefaultSuffix("pmind");
+
+    if (!dialog.exec())
+        return false;
+
     m_fileName = dialog.selectedFiles().first();
+    saveFile();
+    return true;
+}
 
-//    QFile file(m_fileName);
-//    //file.open();
-
+void MainWindow::quit(){
+    //just quit :)
+    QApplication::instance()->quit();
 }
 
 void MainWindow::setFileMenuToolbar() {
@@ -87,4 +149,7 @@ void MainWindow::setFileMenuToolbar() {
 
     connect(actionNew, SIGNAL(triggered()), this, SLOT(newFile()));
     connect(actionLoad, SIGNAL(triggered()), this, SLOT(openFile()));
+    connect(actionSave, SIGNAL(triggered()), this, SLOT(saveFile()));
+    connect(actionSaveAs, SIGNAL(triggered()), this, SLOT(saveFileAs()));
+    connect(actionQuit, SIGNAL(triggered()), this, SLOT(quit()));
 }

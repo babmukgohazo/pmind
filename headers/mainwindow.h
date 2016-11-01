@@ -8,6 +8,8 @@
 #include <QPushButton>
 #include <QGraphicsView>
 #include <QFile>
+#include <QFileDialog>
+#include <QTextStream>
 #include "headers/mindmapview.h"
 #include "headers/nodewidget.h"
 #include "headers/parsing.h"
@@ -24,34 +26,26 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void showStartscreen();
-    void showEditscreen();
 
 public slots:
-    void reload(){
-        if (map!=nullptr)
-            delete map;
-        QString str = edit->toPlainText();
-        QQueue<MdString> q;
-        getQqueue(str,q);
-        map = new NodeWidget(q);
-        mapScreen->mindmapScene->addWidget(map);
-    }
+    //slots for graphic & drawing
+    void reload();
+
     // filemenu actions
     void newFile();
-    void openFile(const QString &fileName = "");
-//    void saveFile(const bool &checkIfReadonly = true);
-//    bool saveFileAs();
-//    bool closeFile();
+    void openFile();
+    void saveFile();
+    bool saveFileAs();
 
-//    //handle changed content at quit
-//    void quit();
+    //handle changed content at quit
+    void quit();
 
 private:
     void setFileMenuToolbar();
 
+    //system & data component
     Ui::MainWindow *ui;
     QString m_fileName;
-    QFile* mapFile;
 
     //widget & graphic component
     MindmapView* mapScreen;

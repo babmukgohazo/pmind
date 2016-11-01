@@ -14,11 +14,8 @@ public:
     MindmapView(){
         mindmapScene = new QGraphicsScene();
         this->setScene(mindmapScene);
-        map = new NodeWidget();
-        mindmapScene->addWidget(map);
     }
     QGraphicsScene* mindmapScene;
-    NodeWidget* map;
 public slots:
 
     void zoomIn(){

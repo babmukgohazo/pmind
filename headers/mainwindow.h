@@ -13,6 +13,7 @@
 #include "headers/mindmapview.h"
 #include "headers/nodewidget.h"
 #include "headers/parsing.h"
+#include "forms/filemanage.h"
 
 namespace Ui {
 class MainWindow;
@@ -35,10 +36,15 @@ public slots:
     void newFile();
     void openFile();
     void saveFile();
-    bool saveFileAs();
+    void saveFileAs();
 
     //handle changed content at quit
     void quit();
+
+private slots:
+    void on_textEdit_textChanged(){
+        contentChanged = true;
+    }
 
 private:
     void setFileMenuToolbar();
@@ -46,6 +52,9 @@ private:
     //system & data component
     Ui::MainWindow *ui;
     QString m_fileName;
+    QString contents;
+    bool contentChanged;  //textEdit 창이 바뀌었는지 확인
+    FileManage* filemanage;
 
     //widget & graphic component
     MindmapView* mapScreen;

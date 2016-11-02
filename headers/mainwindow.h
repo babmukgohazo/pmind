@@ -44,14 +44,23 @@ public slots:
 private slots:
     void on_textEdit_textChanged(){
         contentChanged = true;
+        changeWindowTitle();
     }
 
 private:
     void setFileMenuToolbar();
+    void changeWindowTitle(){
+        QString title;
+        title = "P-mind     " + m_fileName;
+        if(contentChanged)
+            title += '*';
+        setWindowTitle(title);
+    }
 
     //system & data component
     Ui::MainWindow *ui;
     QString m_fileName;
+    QString m_windowTitle;
     QString contents;
     bool contentChanged;  //textEdit 창이 바뀌었는지 확인
     FileManage* filemanage;

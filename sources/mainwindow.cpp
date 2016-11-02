@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
     filemanage->show();
 
     QObject::connect(filemanage, SIGNAL(signal_open()),this,SLOT(openFile()));
-    QObject::connect(filemanage, SIGNAL(signal_new()),this,SLOT(openNew()));
+    QObject::connect(filemanage, SIGNAL(signal_new()),this,SLOT(newFile()));
 }
 
 MainWindow::~MainWindow()
@@ -71,12 +71,14 @@ void MainWindow::reload(){
 
 
 void MainWindow::newFile(){
-    m_fileName = "NewFile"; //use default file name
+    m_fileName = QDir::homePath() + "/untitled.pmind"; //use default file name
     edit->setText("");      //clear text editor
+    contentChanged = false;
     if (map!=nullptr){      //delete mindmap
         delete map;
         map = nullptr;
     }
+    changeWindowTitle();
 }
 
 void MainWindow::openFile(){
@@ -130,9 +132,11 @@ void MainWindow::openFile(){
         edit->setText(edit->toPlainText().append(line));
     }
     file.close();
+    contentChanged = false;
 
     //draw mindmap
     reload();
+    changeWindowTitle();
 }
 void MainWindow::saveFile(){
     QFile file(m_fileName);
@@ -146,6 +150,7 @@ void MainWindow::saveFile(){
     out << edit->toPlainText();
     file.close();
     contentChanged = false;
+    changeWindowTitle();
 }
 
 void MainWindow::saveFileAs(){

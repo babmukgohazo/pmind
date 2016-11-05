@@ -1,5 +1,6 @@
 #include "headers/mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -28,6 +29,17 @@ MainWindow::MainWindow(QWidget *parent) :
     this->centralWidget()->setLayout(layout);
 
     QObject::connect(redrawButton, SIGNAL(clicked()),this,SLOT(reload()));
+
+    contentChanged = false;
+
+    QObject::connect(edit, SIGNAL(textChanged()),this,SLOT(on_textEdit_textChanged()));
+
+    filemanage = new FileManage();
+    filemanage->setModal(true);
+    filemanage->show();
+
+    QObject::connect(filemanage, SIGNAL(signal_open()),this,SLOT(openFile()));
+    QObject::connect(filemanage, SIGNAL(signal_new()),this,SLOT(newFile()));
 }
 
 MainWindow::~MainWindow()
@@ -59,15 +71,42 @@ void MainWindow::reload(){
 
 
 void MainWindow::newFile(){
-    m_fileName = "NewFile"; //use default file name
+    m_fileName = QDir::homePath() + "/untitled.pmind"; //use default file name
     edit->setText("");      //clear text editor
+    contentChanged = false;
     if (map!=nullptr){      //delete mindmap
         delete map;
         map = nullptr;
     }
+    changeWindowTitle();
 }
 
 void MainWindow::openFile(){
+    if(contentChanged){//내용이 바뀌었다면
+        QMessageBox msgBox(this); //메시지 박스를 띄워서 물어보고
+        msgBox.setWindowTitle(tr("pMindMap"));
+        msgBox.setText(tr("file is changed"));
+        msgBox.setInformativeText(tr("save?"));
+        msgBox.setStandardButtons(QMessageBox::Save |
+                                 QMessageBox::Discard |
+                                  QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Save);
+        int ret = msgBox.exec();
+
+        switch (ret) {
+        case QMessageBox::Save:
+        {
+           saveFile();
+            break;
+        }
+        case QMessageBox::Discard:
+            break;
+        case QMessageBox::Cancel:
+            return;
+        default:
+            break;
+        }
+    }
 
     //file explorer. file extension is *.pmind (really same with *.txt)
     QFileDialog dialog(this,
@@ -85,6 +124,7 @@ void MainWindow::openFile(){
     QFile file(m_fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
+
     //copy to text edit
     edit->setText("");
     while (!file.atEnd()) {
@@ -92,23 +132,28 @@ void MainWindow::openFile(){
         edit->setText(edit->toPlainText().append(line));
     }
     file.close();
+    contentChanged = false;
 
     //draw mindmap
     reload();
+    changeWindowTitle();
 }
 void MainWindow::saveFile(){
-
-    //wow very simple :)
     QFile file(m_fileName);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        QMessageBox messageBox;
+        messageBox.critical(0,"Error","파일을 저장하다가 오류가 났습니다.");
         return;
+    }
 
     QTextStream out(&file);
     out << edit->toPlainText();
     file.close();
+    contentChanged = false;
+    changeWindowTitle();
 }
 
-bool MainWindow::saveFileAs(){
+void MainWindow::saveFileAs(){
 
     //simillar to openFile()
     QFileDialog dialog(this,
@@ -117,13 +162,11 @@ bool MainWindow::saveFileAs(){
                        QString("P-mind (*.pmind)"));
     dialog.setAcceptMode(QFileDialog::AcceptSave);
     dialog.setDefaultSuffix("pmind");
-
     if (!dialog.exec())
-        return false;
+        return;
 
     m_fileName = dialog.selectedFiles().first();
     saveFile();
-    return true;
 }
 
 void MainWindow::quit(){

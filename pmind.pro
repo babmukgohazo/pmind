@@ -26,7 +26,8 @@ HEADERS  += \
     headers/mindmapview.h \
     headers/nodewidget.h \
     forms/filemanage.h \
-    forms/namecheckdialog.h
+    forms/namecheckdialog.h \
+    headers/mindmapview_test.h
 
 FORMS    += \
     forms/mainwindow.ui \

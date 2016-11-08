@@ -11,21 +11,22 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowTitle("P-mind");
 
     // construct & set UI component
-    mapScreen = new MindmapView();
-    edit = new QTextEdit();
-    redrawButton = new QPushButton("Redraw");
+    mapScreen = ui->graphicsView;
+    edit = ui->textEdit;
+    styleTabWidget=  ui->tabWidget;
+    redrawButton = ui->reDraw;
     layout = new QHBoxLayout();
     rightLayout = new QVBoxLayout();
     map = nullptr;
 
-    rightLayout->addWidget(edit);
+    rightLayout->addWidget(styleTabWidget);
     rightLayout->addWidget(redrawButton);
     layout->addWidget(mapScreen);
     layout->addLayout(rightLayout);
     layout->setStretchFactor(mapScreen,7);
     layout->setStretchFactor(rightLayout,3);
 
-    mapScreen->setStyleSheet("MindmapView {border: 1px solid gray; background: white;}");
+    //mapScreen->setStyleSheet("MindmapView {border: 1px solid gray; background: white;}");
     this->centralWidget()->setLayout(layout);
 
     QObject::connect(redrawButton, SIGNAL(clicked()),this,SLOT(reload()));
@@ -34,12 +35,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect(edit, SIGNAL(textChanged()),this,SLOT(on_textEdit_textChanged()));
 
-    filemanage = new FileManage();
-    filemanage->setModal(true);
-    filemanage->show();
+    //filemanage = new FileManage();
+   // filemanage->setModal(true);
+    //filemanage->show();
 
-    QObject::connect(filemanage, SIGNAL(signal_open()),this,SLOT(openFile()));
-    QObject::connect(filemanage, SIGNAL(signal_new()),this,SLOT(newFile()));
+    //QObject::connect(filemanage, SIGNAL(signal_open()),this,SLOT(openFile()));
+    QObject::connect(this, SIGNAL(signal_new()),this,SLOT(newFile()));
+
 }
 
 MainWindow::~MainWindow()
@@ -194,4 +196,15 @@ void MainWindow::setFileMenuToolbar() {
     connect(actionSave, SIGNAL(triggered()), this, SLOT(saveFile()));
     connect(actionSaveAs, SIGNAL(triggered()), this, SLOT(saveFileAs()));
     connect(actionQuit, SIGNAL(triggered()), this, SLOT(quit()));
+}
+
+void MainWindow::on_pushButton_11_clicked()
+{
+   // QPropertyAnimation *animation = new QPropertyAnimation(ui->label, "geometry");
+    ui->widget->setVisible(false);
+   // animation->setDuration(100);
+    //animation->setStartValue(QRect(-400, 0, 100, 300));
+    //animation->setEndValue(QRect(100, 0, 100, 300));
+    //animation->start();
+    emit signal_new();
 }

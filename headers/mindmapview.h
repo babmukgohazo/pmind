@@ -6,11 +6,13 @@
 #include <QGraphicsSceneMouseEvent>
 #include "headers/nodewidget.h"
 
+
 class MindmapView : public QGraphicsView{
     Q_OBJECT
 
 public:
-    MindmapView(){
+    MindmapView(QWidget* centralWidget): QGraphicsView(centralWidget){
+
         mindmapScene = new QGraphicsScene();
         this->setScene(mindmapScene);
     }

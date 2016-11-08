@@ -41,11 +41,18 @@ public slots:
     //handle changed content at quit
     void quit();
 
+
+
+signals:
+    void signal_new();
+
 private slots:
     void on_textEdit_textChanged(){
         contentChanged = true;
         changeWindowTitle();
     }
+
+    void on_pushButton_11_clicked();
 
 private:
     void setFileMenuToolbar();
@@ -69,6 +76,7 @@ private:
     MindmapView* mapScreen;
     NodeWidget* map;
     QTextEdit* edit;
+    QTabWidget* styleTabWidget;
     QPushButton* redrawButton;
     QHBoxLayout* layout;
     QVBoxLayout* rightLayout;

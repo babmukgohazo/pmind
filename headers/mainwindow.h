@@ -10,6 +10,8 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QTextStream>
+#include <QKeyEvent>
+#include <QDebug>
 #include "headers/mindmapview.h"
 #include "headers/nodewidget.h"
 #include "headers/parsing.h"
@@ -23,13 +25,15 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void showStartscreen();
+    MindmapView* getMapScreen(){return mapScreen;}
 
 public slots:
     //slots for graphic & drawing
     void reload();
+    void renewTextEdit();
 
     // filemenu actions
     void newFile();

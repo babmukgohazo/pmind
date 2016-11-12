@@ -10,7 +10,6 @@ void NodeLabel::mousePressEvent(QMouseEvent *e){
         emit doubleClicked();
     }
     else{
-        qDebug()<<"setFocus";
         this->focusIn();
     }
 }
@@ -50,7 +49,6 @@ void NodeLabel::keyPressEvent(QKeyEvent *e){
 
 void NodeLabel::focusOutEvent(QFocusEvent *e){
     this->focusOut();
-    qDebug()<<isFocus<<text();
 }
 
 void NodeLabel::focusIn(){
@@ -70,15 +68,12 @@ void NodeTextEdit::keyPressEvent(QKeyEvent *e){
     if(e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return){
         if(e->modifiers().testFlag(Qt::ShiftModifier)){
             QTextEdit::keyPressEvent(e);
-            qDebug() << "shift!!";
         }
         else{
             emit enterPressed();
-            qDebug() << "enter!";
         }
     }
-    else if(e->key() == Qt::Key_Tab)
-        qDebug() << text_;
+    else if(e->key() == Qt::Key_Tab);
     else{
         QTextEdit::keyPressEvent(e);
     }

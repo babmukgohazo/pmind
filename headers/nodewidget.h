@@ -106,8 +106,8 @@ private:
         childLayout.setMargin(0);
         edit.verticalScrollBar()->close();
         QObject::connect(&edit,SIGNAL(enterPressed()),this,SLOT(textEditToLabel()));
+        QObject::connect(&edit,SIGNAL(enterPressed()),&selfWidget,SLOT(focusIn()));
         QObject::connect(&edit,SIGNAL(focusOut()),this,SLOT(textEditToLabel()));
-        QObject::connect(&edit,SIGNAL(focusOut()),&selfWidget,SLOT(focusOut()));
         QObject::connect(&selfWidget,SIGNAL(doubleClicked()),this,SLOT(labelToTextEdit()));
         QObject::connect(&edit,SIGNAL(textChanged()),this,SLOT(textEditSizeRenew()));
         QObject::connect(&selfWidget,SIGNAL(tabPressed()),this,SLOT(makeDefaultChildNode()));

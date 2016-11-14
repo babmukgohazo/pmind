@@ -178,13 +178,13 @@ void NodeWidget::labelToTextEdit(){
     delete layout.takeAt(0);
     layout.insertWidget(0,&edit);
     edit.show();
+    edit.setFocus();
 }
 
 void NodeWidget::textEditToLabel(){
     if(editMode){
       editMode = false;
       selfWidget.show();
-      selfWidget.focusIn();
       selfWidget.setText(edit.labelText());
       delete layout.takeAt(0);
       layout.insertWidget(0,&selfWidget);

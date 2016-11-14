@@ -23,7 +23,6 @@ class MainWindow;
 class NodeLabel : public QLabel{
     Q_OBJECT
 public:
-    void mouseDoubleClickEvent(QMouseEvent *e);
     void mousePressEvent(QMouseEvent *e);
     void keyPressEvent(QKeyEvent *e);
     void focusOutEvent(QFocusEvent *e);
@@ -84,7 +83,7 @@ public:
 
 public slots:
     void labelToTextEdit();
-    void textEditToLabal();
+    void textEditToLabel();
     void textEditSizeRenew();
     void makeDefaultChildNode();
     void makeDefaultSiblingNode();
@@ -106,8 +105,9 @@ private:
         layout.setContentsMargins(0,0,0,0);
         childLayout.setMargin(0);
         edit.verticalScrollBar()->close();
-        QObject::connect(&edit,SIGNAL(enterPressed()),this,SLOT(textEditToLabal()));
-        QObject::connect(&edit,SIGNAL(focusOut()),this,SLOT(textEditToLabal()));
+        QObject::connect(&edit,SIGNAL(enterPressed()),this,SLOT(textEditToLabel()));
+        QObject::connect(&edit,SIGNAL(focusOut()),this,SLOT(textEditToLabel()));
+        QObject::connect(&edit,SIGNAL(focusOut()),&selfWidget,SLOT(focusOut()));
         QObject::connect(&selfWidget,SIGNAL(doubleClicked()),this,SLOT(labelToTextEdit()));
         QObject::connect(&edit,SIGNAL(textChanged()),this,SLOT(textEditSizeRenew()));
         QObject::connect(&selfWidget,SIGNAL(tabPressed()),this,SLOT(makeDefaultChildNode()));

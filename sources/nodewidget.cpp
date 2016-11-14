@@ -1,10 +1,6 @@
 #include "headers/nodewidget.h"
 #include "headers/mainwindow.h"
 
-void NodeLabel::mouseDoubleClickEvent(QMouseEvent *e){
-    emit doubleClicked();
-}
-
 void NodeLabel::mousePressEvent(QMouseEvent *e){
     if(isFocus){
         emit doubleClicked();
@@ -182,10 +178,9 @@ void NodeWidget::labelToTextEdit(){
     delete layout.takeAt(0);
     layout.insertWidget(0,&edit);
     edit.show();
-    edit.setFocus();
 }
 
-void NodeWidget::textEditToLabal(){
+void NodeWidget::textEditToLabel(){
     if(editMode){
       editMode = false;
       selfWidget.show();

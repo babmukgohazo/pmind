@@ -2,7 +2,7 @@
 #include "headers/mainwindow.h"
 
 void NodeLabel::mousePressEvent(QMouseEvent *e){
-    if(isFocus){
+    if(focus){
         emit doubleClicked();
     }
     else{
@@ -49,13 +49,13 @@ void NodeLabel::focusOutEvent(QFocusEvent *e){
 
 void NodeLabel::focusIn(){
     this->setFocus();
-    isFocus = true;
+    focus = true;
     this->setStyleSheet("border: 4px solid gray;");
     emit redraw();
 }
 
 void NodeLabel::focusOut(){
-    isFocus = false;
+    focus = false;
     this->setStyleSheet("border: 2px solid gray;");
     emit redraw();
 }
@@ -168,6 +168,31 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
     subNode->index = index;
 }
 
+NodeWidget* NodeWidget::searchFocusInNode(NodeWidget* root){
+    QQueue<NodeWidget*> queue;
+    NodeWidget* temp;
+    int i;
+
+    if(root == nullptr)
+        return nullptr;
+    queue.push_back(root);
+
+    while(!queue.empty()){
+        temp = queue.front();
+        queue.pop_front();
+        if(temp->editMode){
+            return temp;
+        }
+        else{
+            if(temp->selfWidget.isFocus())
+                return temp;
+        }
+        for(i = 0; i<temp->child.count();i++)
+            queue.push_back(temp->child[i]);
+    }
+    return nullptr;
+}
+
 void NodeWidget::labelToTextEdit(){
     editMode = true;
     edit.setReadOnly(false);
@@ -183,14 +208,14 @@ void NodeWidget::labelToTextEdit(){
 
 void NodeWidget::textEditToLabel(){
     if(editMode){
-      editMode = false;
-      selfWidget.show();
-      selfWidget.setText(edit.labelText());
-      delete layout.takeAt(0);
-      layout.insertWidget(0,&selfWidget);
-      edit.setText("");
-      edit.setReadOnly(true);
-      edit.hide();
+        editMode = false;
+        selfWidget.show();
+        selfWidget.setText(edit.labelText());
+        delete layout.takeAt(0);
+        layout.insertWidget(0,&selfWidget);
+        edit.setText("");
+        edit.setReadOnly(true);
+        edit.hide();
     }
 }
 

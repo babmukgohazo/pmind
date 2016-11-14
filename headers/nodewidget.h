@@ -26,6 +26,7 @@ public:
     void mousePressEvent(QMouseEvent *e);
     void keyPressEvent(QKeyEvent *e);
     void focusOutEvent(QFocusEvent *e);
+    bool isFocus(){return focus;}
 
 signals:
     void doubleClicked();
@@ -41,7 +42,7 @@ public slots:
     void focusOut();
 
 private:
-    bool isFocus = false;
+    bool focus = false;
 };
 
 class NodeTextEdit : public QTextEdit{
@@ -80,6 +81,8 @@ public:
     void paintEvent(QPaintEvent *e);
     NodeTextEdit& getEdit(){return edit;}
     NodeLabel& label(){return selfWidget;}
+
+    static NodeWidget* searchFocusInNode(NodeWidget* root);
 
 public slots:
     void labelToTextEdit();

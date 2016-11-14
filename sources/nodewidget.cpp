@@ -60,6 +60,62 @@ void NodeLabel::focusOut(){
     emit redraw();
 }
 
+
+
+
+
+void NodeLabel::mouseMoveEvent(QMouseEvent *event){
+    QDrag *drag = new QDrag(this);
+    QMimeData *mime = new QMimeData;
+    drag->setMimeData(mime);
+    mime->setColorData(qVariantFromValue((void*)parent()));
+
+    drag->setPixmap(((QWidget*)parent())->grab());
+    drag->setHotSpot(QPoint(0,0));
+    drag->exec();
+    focusOut();
+    setCursor(Qt::OpenHandCursor);
+}
+
+
+void NodeLabel::dragEnterEvent(QDragEnterEvent *event){
+    event->accept();
+    event->setAccepted(true);
+    dragOver = true;
+    update();
+}
+
+void NodeLabel::dragMoveEvent(QDragMoveEvent *event){
+    event->accept();
+}
+
+void NodeLabel::dragLeaveEvent(QDragLeaveEvent *event){
+
+    Q_UNUSED(event);
+    dragOver = false;
+    update();
+}
+void NodeLabel::dropEvent(QDropEvent *event){
+    //resize(size() * 1.1);
+    dragOver = false;
+    if (event->mimeData()->hasColor()){
+        NodeWidget* temp1 = ((NodeWidget*)parent());
+        void* temp = qvariant_cast<void*>(event->mimeData()->colorData());
+        NodeWidget* temp2 = (NodeWidget*)temp;
+
+        if(!(temp1->isChildOf(temp2))){
+            temp2 = temp2->takeNode();
+            temp1->insert(temp1->getChild().size(),temp2);
+        }
+
+    }
+    update();
+}
+
+
+
+
+
 void NodeTextEdit::keyPressEvent(QKeyEvent *e){
     if(e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return){
         if(e->modifiers().testFlag(Qt::ShiftModifier)){
@@ -296,6 +352,15 @@ void NodeWidget::deleteThisNode(){
     }
     getRoot()->update();
 }
+NodeWidget* NodeWidget::takeNode(){
+    if(parent_ != nullptr){
+        parent_->child.removeAt(index);
+        for(int i=index;i<parent_->child.count();i++)
+            parent_->child[i]->index--;
+    }
+    getRoot()->update();
+    return this;
+}
 
 void NodeWidget::focusMoveByArrow(int key){
     switch(key){
@@ -348,4 +413,13 @@ void NodeWidget::paintEvent(QPaintEvent *e){
         path.cubicTo(pos1+QPoint(10,0),pos2+QPoint(-10,0),pos2);
         painter.drawPath(path);
     }
+}
+
+bool NodeWidget::isChildOf(NodeWidget* ptr){
+    if(parent_== nullptr)
+        return false;
+    else if(parent_ == ptr)
+        return true;
+    else
+        return parent_->isChildOf(ptr);
 }

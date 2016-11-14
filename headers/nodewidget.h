@@ -18,6 +18,11 @@
 #include <QDebug>
 #include "headers/parsing.h"
 
+
+#include <QDrag>
+#include <QMimeData>
+#include <QDropEvent>
+
 class MainWindow;
 
 class NodeLabel : public QLabel{
@@ -43,6 +48,22 @@ public slots:
 
 private:
     bool focus = false;
+
+
+public:
+    NodeLabel(QWidget* p = 0):QLabel(p){
+        setAcceptDrops(true);
+    }
+
+protected:
+    void mouseMoveEvent(QMouseEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dragLeaveEvent(QDragLeaveEvent *event);
+    void dragMoveEvent(QDragMoveEvent *event);
+    void dropEvent(QDropEvent *event);
+
+    QColor color;
+    bool dragOver;
 };
 
 class NodeTextEdit : public QTextEdit{
@@ -134,6 +155,11 @@ private:
     bool clicked = false;
     int index = 0;
     MainWindow* mainWindow;
+
+
+public:
+    NodeWidget* takeNode();
+    bool isChildOf(NodeWidget* ptr);
 };
 
 

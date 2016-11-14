@@ -9,7 +9,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setFileMenuToolbar();
     setWindowTitle("P-mind");
-
     // construct & set UI component
     mapScreen = new MindmapView();
     edit = new QTextEdit();
@@ -58,17 +57,22 @@ MainWindow::~MainWindow()
 
 //re-allocate & re-draw mindmap
 void MainWindow::reload(){
-    if (map!=nullptr){
+   if (map!=nullptr){
+        QObject::disconnect(mapScreen,SIGNAL(viewClicked()),map,SLOT(update()));
         delete map;
         map = nullptr;
     }
     QString str = edit->toPlainText();
     QQueue<MdString> q;
     getQqueue(str,q);
-    map = new NodeWidget(q);
+    map = new NodeWidget(q, this);
     mapScreen->mindmapScene->addWidget(map);
+    QObject::connect(mapScreen,SIGNAL(viewClicked()),map,SLOT(update()));
 }
 
+void MainWindow::renewTextEdit(){
+
+}
 
 void MainWindow::newFile(){
     m_fileName = QDir::homePath() + "/untitled.pmind"; //use default file name

@@ -10,13 +10,14 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowTitle("P-mind");
     // construct & set UI component
     mapScreen = new MindmapView();
+    dockWidget = new PropertyTab(this);
     edit = new QTextEdit();
     redrawButton = new QPushButton("Redraw");
     layout = new QHBoxLayout();
     rightLayout = new QVBoxLayout();
     map = nullptr;
 
-    rightLayout->addWidget(edit);
+    rightLayout->addWidget(dockWidget);
     rightLayout->addWidget(redrawButton);
     layout->addWidget(mapScreen);
     layout->addLayout(rightLayout);
@@ -56,6 +57,7 @@ void MainWindow::reload(){
     map = new NodeWidget(q, this);
     mapScreen->mindmapScene->addWidget(map);
     QObject::connect(mapScreen,SIGNAL(viewClicked()),map,SLOT(update()));
+    dockWidget->setNodeWidget(map);
 }
 
 void MainWindow::renewTextEdit(){

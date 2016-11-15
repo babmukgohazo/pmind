@@ -16,16 +16,19 @@ SOURCES += \
     sources/main.cpp \
     sources/mainwindow.cpp \
     sources/parsing.cpp \
-    sources/nodewidget.cpp
+    sources/nodewidget.cpp \
+    forms/propertytab.cpp
 
 HEADERS  += \
     headers/mainwindow.h \
     headers/parsing.h \
     headers/mindmapview.h \
-    headers/nodewidget.h
+    headers/nodewidget.h \
+    forms/propertytab.h
 
 FORMS    += \
-    forms/mainwindow.ui
+    forms/mainwindow.ui \
+    forms/propertytab.ui
 
 RESOURCES += \
     resources/image.qrc

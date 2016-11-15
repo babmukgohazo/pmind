@@ -168,7 +168,7 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
     subNode->index = index;
 }
 
-NodeWidget* NodeWidget::searchFocusInNode(NodeWidget* root){
+NodeLabel* NodeWidget::searchFocusInNode(NodeWidget* root){
     QQueue<NodeWidget*> queue;
     NodeWidget* temp;
     int i;
@@ -181,11 +181,11 @@ NodeWidget* NodeWidget::searchFocusInNode(NodeWidget* root){
         temp = queue.front();
         queue.pop_front();
         if(temp->editMode){
-            return temp;
+            return &(temp->selfWidget);
         }
         else{
             if(temp->selfWidget.isFocus())
-                return temp;
+                return &(temp->selfWidget);
         }
         for(i = 0; i<temp->child.count();i++)
             queue.push_back(temp->child[i]);

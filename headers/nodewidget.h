@@ -27,6 +27,12 @@ public:
     void keyPressEvent(QKeyEvent *e);
     void focusOutEvent(QFocusEvent *e);
     bool isFocus(){return focus;}
+    void setNodeShape(int shape){
+        nodeShape = shape;
+    }
+    int getNodeShape(){
+        return nodeShape;
+    }
 
 signals:
     void doubleClicked();
@@ -43,6 +49,7 @@ public slots:
 
 private:
     bool focus = false;
+    int nodeShape;
 };
 
 class NodeTextEdit : public QTextEdit{
@@ -82,7 +89,9 @@ public:
     NodeTextEdit& getEdit(){return edit;}
     NodeLabel& label(){return selfWidget;}
 
-    static NodeWidget* searchFocusInNode(NodeWidget* root);
+    static NodeLabel* searchFocusInNode(NodeWidget* root);
+    //2016/11/14일 추가한 함수
+
 
 public slots:
     void labelToTextEdit();
@@ -99,7 +108,7 @@ private:
         this->setStyleSheet("background-color: transparent");
         //selfWidget.setStyleSheet("background-color: transparent ; border-bottom: 1px solid black;");
         selfWidget.setStyleSheet("border: 2px solid gray;");
-        selfWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+        //selfWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
         layout.addWidget(&selfWidget);
         layout.addWidget(&childWidget);
         layout.setSpacing(30);

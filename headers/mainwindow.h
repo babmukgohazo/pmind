@@ -15,6 +15,7 @@
 #include "headers/mindmapview.h"
 #include "headers/nodewidget.h"
 #include "headers/parsing.h"
+#include "forms/propertytab.h"
 
 namespace Ui {
 class MainWindow;
@@ -54,6 +55,7 @@ private:
     //widget & graphic component
     MindmapView* mapScreen;
     NodeWidget* map;
+    PropertyTab * dockWidget;
     QTextEdit* edit;
     QPushButton* redrawButton;
     QHBoxLayout* layout;

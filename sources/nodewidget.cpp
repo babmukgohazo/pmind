@@ -2,6 +2,7 @@
 #include "headers/mainwindow.h"
 
 void NodeLabel::mousePressEvent(QMouseEvent *e){
+    qDebug() << focus;
     if(focus){
         emit doubleClicked();
     }
@@ -44,10 +45,14 @@ void NodeLabel::keyPressEvent(QKeyEvent *e){
 }
 
 void NodeLabel::focusOutEvent(QFocusEvent *e){
-    this->focusOut();
+    //this->focusOut();
 }
 
 void NodeLabel::focusIn(){
+    NodeWidget* temp;
+    temp = NodeWidget::searchFocusInNode(container_->getRoot());
+    if(temp != nullptr)
+        temp->label().focusOut();
     this->setFocus();
     focus = true;
     this->setStyleSheet("border: 4px solid gray;");
@@ -168,7 +173,7 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
     subNode->index = index;
 }
 
-NodeLabel* NodeWidget::searchFocusInNode(NodeWidget* root){
+NodeWidget* NodeWidget::searchFocusInNode(NodeWidget* root){
     QQueue<NodeWidget*> queue;
     NodeWidget* temp;
     int i;
@@ -181,11 +186,11 @@ NodeLabel* NodeWidget::searchFocusInNode(NodeWidget* root){
         temp = queue.front();
         queue.pop_front();
         if(temp->editMode){
-            return &(temp->selfWidget);
+            return temp;
         }
         else{
             if(temp->selfWidget.isFocus())
-                return &(temp->selfWidget);
+                return temp;
         }
         for(i = 0; i<temp->child.count();i++)
             queue.push_back(temp->child[i]);

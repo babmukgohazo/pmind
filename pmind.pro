@@ -17,7 +17,8 @@ SOURCES += \
     sources/mainwindow.cpp \
     sources/parsing.cpp \
     sources/nodewidget.cpp \
-    forms/propertytab.cpp
+    forms/propertytab.cpp \
+    sources/mindmapview.cpp
 
 HEADERS  += \
     headers/mainwindow.h \

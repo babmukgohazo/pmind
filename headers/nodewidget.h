@@ -19,6 +19,7 @@
 #include "headers/parsing.h"
 
 class MainWindow;
+class NodeWidget;
 
 class NodeLabel : public QLabel{
     Q_OBJECT
@@ -33,6 +34,8 @@ public:
     int getNodeShape(){
         return nodeShape;
     }
+    NodeWidget* container(){return container_;}
+    void setContainer(NodeWidget* container_){this->container_=container_;}
 
 signals:
     void doubleClicked();
@@ -50,6 +53,7 @@ public slots:
 private:
     bool focus = false;
     int nodeShape;
+    NodeWidget* container_;
 };
 
 class NodeTextEdit : public QTextEdit{
@@ -89,7 +93,7 @@ public:
     NodeTextEdit& getEdit(){return edit;}
     NodeLabel& label(){return selfWidget;}
 
-    static NodeLabel* searchFocusInNode(NodeWidget* root);
+    static NodeWidget* searchFocusInNode(NodeWidget* root);
     //2016/11/14일 추가한 함수
 
 
@@ -105,6 +109,7 @@ public slots:
 private:
     void init(){
         fm = new QFontMetrics(edit.currentFont());
+        selfWidget.setContainer(this);
         this->setStyleSheet("background-color: transparent");
         //selfWidget.setStyleSheet("background-color: transparent ; border-bottom: 1px solid black;");
         selfWidget.setStyleSheet("border: 2px solid gray;");

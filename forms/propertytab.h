@@ -20,7 +20,7 @@ public:
     void setNodeWidget(NodeWidget * map){this->map = map;}
 
 private slots:
-    void on_fontComboBox_activated(const QString &arg1);
+    //void on_fontComboBox_activated(const QString &arg1);
 
     void on_fontComboBox_currentFontChanged(const QFont &f);
 
@@ -28,7 +28,7 @@ private slots:
 
     void on_buttonItalic_clicked();
 
-    void on_spinBox_valueChanged(int arg1);
+    //void on_spinBox_valueChanged(int arg1);
 
     void on_contentSizeBox_valueChanged(int arg1);
 

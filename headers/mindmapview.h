@@ -6,16 +6,16 @@
 #include <QGraphicsSceneMouseEvent>
 #include "headers/nodewidget.h"
 
+class MainWindow;
+
 class MindmapView : public QGraphicsView{
     Q_OBJECT
 
 public:
-    MindmapView(){
-        mindmapScene = new QGraphicsScene();
-        this->setScene(mindmapScene);
-        setDragMode(QGraphicsView::ScrollHandDrag);
-    }
+    MindmapView();
     QGraphicsScene* mindmapScene;
+    MainWindow* mainWindow;
+
 public slots:
 
     void zoomIn(){
@@ -32,13 +32,7 @@ protected:
     void wheelEvent(QWheelEvent *event){
         event->delta() > 0 ? zoomIn() : zoomOut();
     }
-    void mousePressEvent(QMouseEvent *e){
-        if(e->button() == Qt::RightButton){
-            this->setFocus();
-            emit viewClicked();
-        }
-        QGraphicsView::mousePressEvent(e);
-    }
+    void mousePressEvent(QMouseEvent *e);
 };
 
 #endif

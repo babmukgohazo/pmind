@@ -27,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent) :
     mapScreen->setStyleSheet("MindmapView {border: 1px solid gray; background: white;}");
     this->centralWidget()->setLayout(layout);
 
+    mapScreen->mainWindow = this;
+
     QObject::connect(redrawButton, SIGNAL(clicked()),this,SLOT(reload()));
 }
 

@@ -30,6 +30,7 @@ public:
     ~MainWindow();
     void showStartscreen();
     MindmapView* getMapScreen(){return mapScreen;}
+    NodeWidget* getMap(){return map;}
 
 public slots:
     //slots for graphic & drawing

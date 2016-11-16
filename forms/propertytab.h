@@ -11,7 +11,7 @@ class PropertyTab;
 class PropertyTab : public QDockWidget
 {
     Q_OBJECT
-enum nodeShape{rec,oval,underline,roundRec};
+enum nodeShape{nothing,rec,underline,roundRec};
 public:
     explicit PropertyTab(QWidget *parent = 0);
     ~PropertyTab();
@@ -20,23 +20,19 @@ public:
     void setNodeWidget(NodeWidget * map){this->map = map;}
 
 private slots:
-    //void on_fontComboBox_activated(const QString &arg1);
+   // void on_fontComboBox_activated(const QString &arg1);
 
-    void on_fontComboBox_currentFontChanged(const QFont &f);
+    void on_fontBox_currentFontChanged(const QFont &f);
 
     void on_buttonBold_clicked();
 
     void on_buttonItalic_clicked();
-
-    //void on_spinBox_valueChanged(int arg1);
 
     void on_contentSizeBox_valueChanged(int arg1);
 
     void on_rectangleButton_clicked();
 
     void on_roundRecButton_clicked();
-
-    void on_ovalButton_clicked();
 
     void on_underlineButton_clicked();
 

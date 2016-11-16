@@ -92,6 +92,7 @@ public:
     void paintEvent(QPaintEvent *e);
     NodeTextEdit& getEdit(){return edit;}
     NodeLabel& label(){return selfWidget;}
+    NodeLabel* labelPointer(){return &selfWidget;}
 
     static NodeWidget* searchFocusInNode(NodeWidget* root);
     //2016/11/14일 추가한 함수

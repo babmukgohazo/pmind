@@ -214,13 +214,6 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="ovalButton">
-              <property name="text">
-               <string>타원</string>
-              </property>
-             </widget>
-            </item>
-            <item>
              <widget class="QPushButton" name="underlineButton">
               <property name="text">
                <string>밑줄</string>

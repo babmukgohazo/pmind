@@ -2,7 +2,6 @@
 #include "headers/mainwindow.h"
 
 void NodeLabel::mousePressEvent(QMouseEvent *e){
-    qDebug() << focus;
     if(focus){
         emit doubleClicked();
     }

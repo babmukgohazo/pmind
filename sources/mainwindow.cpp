@@ -1,6 +1,7 @@
 #include "headers/mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QMessageBox>
+//#include "forms/propertytab.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -12,14 +13,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // construct & set UI component
     mapScreen = ui->graphicsView;
-    edit = ui->textEdit;
-    styleTabWidget=  ui->tabWidget;
+    //styleTabWidget=  ui->tabWidget;
+    dockWidget = new PropertyTab(this);
+    edit = dockWidget->getTextEdit();
     redrawButton = ui->reDraw;
     layout = new QHBoxLayout();
     rightLayout = new QVBoxLayout();
     map = nullptr;
 
-    rightLayout->addWidget(styleTabWidget);
+    //rightLayout->addWidget(styleTabWidget);
+    rightLayout->addWidget(dockWidget);
     rightLayout->addWidget(redrawButton);
     layout->addWidget(mapScreen);
     layout->addLayout(rightLayout);
@@ -69,6 +72,7 @@ void MainWindow::reload(){
     getQqueue(str,q);
     map = new NodeWidget(q);
     mapScreen->mindmapScene->addWidget(map);
+    //dockWidget->setNodeWidget(map);
 }
 
 

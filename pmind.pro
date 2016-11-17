@@ -18,7 +18,8 @@ SOURCES += \
     sources/parsing.cpp \
     sources/nodewidget.cpp \
     forms/filemanage.cpp \
-    forms/namecheckdialog.cpp
+    forms/namecheckdialog.cpp \
+    forms/propertytab.cpp
 
 HEADERS  += \
     headers/mainwindow.h \
@@ -27,12 +28,13 @@ HEADERS  += \
     headers/nodewidget.h \
     forms/filemanage.h \
     forms/namecheckdialog.h \
-    headers/mindmapview_test.h
+    forms/propertytab.h
 
 FORMS    += \
     forms/mainwindow.ui \
     forms/filemanage.ui \
-    forms/namecheckdialog.ui
+    forms/namecheckdialog.ui \
+    forms/propertytab.ui
 
 RESOURCES += \
     resources/image.qrc

@@ -28,12 +28,10 @@ public:
     void keyPressEvent(QKeyEvent *e);
     void focusOutEvent(QFocusEvent *e);
     bool isFocus(){return focus;}
-    void setNodeShape(int shape){
-        nodeShape = shape;
-    }
-    int getNodeShape(){
-        return nodeShape;
-    }
+    void setNodeShape(int shape){nodeShape = shape;}
+    int getNodeShape(){return nodeShape;}
+    void setNodeTextColor(QColor col){nodeTextColor=col.name();}
+    QString getNodeTextColor(){return nodeTextColor;}
     NodeWidget* container(){return container_;}
     void setContainer(NodeWidget* container_){this->container_=container_;}
 
@@ -53,6 +51,7 @@ public slots:
 private:
     bool focus = false;
     int nodeShape;
+    QString nodeTextColor;
     NodeWidget* container_;
 };
 

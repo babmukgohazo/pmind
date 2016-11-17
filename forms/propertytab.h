@@ -2,6 +2,8 @@
 #define PROPERTYTAB_H
 
 #include <QDockWidget>
+#include <QColorDialog>
+#include <QString>
 #include "headers/nodewidget.h"
 
 namespace Ui {
@@ -19,9 +21,9 @@ public:
     void setDockWedigetDefault(); //dockWidget의 값을 초기화 한다.
     void setNodeWidget(NodeWidget * map){this->map = map;}
 
-private slots:
-   // void on_fontComboBox_activated(const QString &arg1);
 
+private slots:
+ //ui에 있는 속성들이 각각 눌렸을 때
     void on_fontBox_currentFontChanged(const QFont &f);
 
     void on_buttonBold_clicked();
@@ -36,10 +38,19 @@ private slots:
 
     void on_underlineButton_clicked();
 
+    void on_buttonColor_clicked();
+
+    void changeTextOfColor();
+
 private:
     Ui::PropertyTab *ui;
     NodeWidget * map;
     NodeLabel* focusedNode;
+    QColorDialog *colorDial;
+    QString underlineCSS =  "border-top-style: none; border-right-style: none; border-bottom-style: solid; border-left-style: none; border-width: 2px;border-color: black;";
+    QString recCSS = "border-width: 2px;border-style : solid;border-color: black;";
+    QString roundRecCSS = "border-width: 2px; border-style : solid; border-radius: 4px; border-color: black;";
+    QString nothingCSS = "border: 2px solid gray;";
 };
 
 #endif // PROPERTYTAB_H

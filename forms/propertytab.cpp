@@ -2,12 +2,16 @@
 #include "ui_propertytab.h"
 #include "headers/nodewidget.h"
 #include <QDebug>
+#include <QColorDialog>
 
 PropertyTab::PropertyTab(QWidget *parent) :
     QDockWidget(parent),
     ui(new Ui::PropertyTab)
 {
+
+    //QObject::connect(colorDial,SIGNAL(colorSelected(QColor)),this,SLOT(changeTextOfColor()));
     ui->setupUi(this);
+
 }
 
 PropertyTab::~PropertyTab()
@@ -71,14 +75,15 @@ void PropertyTab::on_rectangleButton_clicked()//노드 모양 네모
 {
     NodeWidget* root= map->searchFocusInNode(map->getRoot());
     focusedNode = root->labelPointer();
+    QString textColor = "color :" +focusedNode->getNodeTextColor();
     if(focusedNode->getNodeShape()==rec){
-        focusedNode->setStyleSheet("border-width: none");
+        focusedNode->setStyleSheet(nothingCSS+textColor);
         focusedNode->setNodeShape(nothing);
     }
-    else{focusedNode->setStyleSheet("border-width: 2px;"
-                               "border-style : solid;"
-                               "border-color: black;");
-        focusedNode->setNodeShape(rec);}
+    else{
+        focusedNode->setStyleSheet(recCSS+textColor);
+        focusedNode->setNodeShape(rec);
+    }
     showAllProperty();
 }
 
@@ -86,36 +91,62 @@ void PropertyTab::on_roundRecButton_clicked()//노드 모양 둥근 네모
 {
     NodeWidget* root= map->searchFocusInNode(map->getRoot());
     focusedNode = root->labelPointer();
+    QString textColor = "color :" +focusedNode->getNodeTextColor();
     if(focusedNode->getNodeShape()==roundRec){
-        focusedNode->setStyleSheet("border-width: none;");
+        focusedNode->setStyleSheet(nothingCSS+textColor);
         focusedNode->setNodeShape(nothing);
-    }else{focusedNode->setStyleSheet("border-width: 2px;"
-                               "border-style : solid;"
-                               "border-radius: 4px;"
-                               "border-color: black;");
-    focusedNode->setNodeShape(roundRec);}
+    }else{
+        focusedNode->setStyleSheet(roundRecCSS+textColor);
+        focusedNode->setNodeShape(roundRec);
+    }
      showAllProperty();
 }
 
 
 void PropertyTab::on_underlineButton_clicked()//노드 모양 밑줄
 {
-    qDebug()<<"눌림";
     NodeWidget* root= map->searchFocusInNode(map->getRoot());
     focusedNode = root->labelPointer();
+    QString textColor = "color :" + focusedNode->getNodeTextColor();
     if(focusedNode->getNodeShape()==underline){
-        focusedNode->setStyleSheet("border-width: none;");
+        focusedNode->setStyleSheet(nothingCSS+textColor);
         focusedNode->setNodeShape(nothing);
-    }else{focusedNode->setStyleSheet("border-top-style: none;"
-                               "border-right-style: none;"
-                               "border-bottom-style: solid;"
-                               "border-left-style: none;"
-                               "border-width: 2px;border-color: black;");
-    focusedNode->setNodeShape(underline);}
+    }else{
+        focusedNode->setStyleSheet(underlineCSS+textColor);
+        focusedNode->setNodeShape(underline);
+    }
     showAllProperty();
 }
 
-void PropertyTab::showAllProperty(){
+void PropertyTab::on_buttonColor_clicked(){//글자색 입력받는 슬롯
+    colorDial = new QColorDialog();
+    colorDial->show();
+    QObject::connect(colorDial,SIGNAL(colorSelected(QColor)),this,SLOT(changeTextOfColor()));
+}
+
+void PropertyTab::changeTextOfColor(){//글자 색 바꾸는 슬롯
+    NodeWidget* root= map->searchFocusInNode(map->getRoot());
+    focusedNode = root->labelPointer();
+    focusedNode->setNodeTextColor(colorDial->selectedColor());
+    QString textColor = "color :"+focusedNode->getNodeTextColor();
+    QString shape;
+    int sh=-1;
+    sh = focusedNode->getNodeShape();
+    switch(sh){
+    case rec:
+        shape = recCSS; break;
+    case roundRec:
+        shape = roundRecCSS; break;
+    case underline:
+        shape = underlineCSS; break;
+    default:
+        shape = nothingCSS; break;
+    }
+    focusedNode->setStyleSheet(shape + textColor);
+    showAllProperty();
+}
+
+void PropertyTab::showAllProperty(){//node의 속성 dockWidget에 보여주기
     NodeWidget* root= map->searchFocusInNode(map->getRoot());
     focusedNode = root->labelPointer();
     QFont font = focusedNode->font();
@@ -142,7 +173,7 @@ void PropertyTab::showAllProperty(){
         break;
     }
 }
-void PropertyTab::setDockWedigetDefault(){
+void PropertyTab::setDockWedigetDefault(){//dockWidget속성 초기화
     QFont notBoldFont;
     notBoldFont.setBold(false);
     ui->buttonBold->setFont(notBoldFont);

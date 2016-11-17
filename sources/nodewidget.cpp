@@ -54,13 +54,13 @@ void NodeLabel::focusIn(){
         temp->label().focusOut();
     this->setFocus();
     focus = true;
-    this->setStyleSheet("border: 4px solid gray;");
+    //this->setStyleSheet("border: 4px solid gray;");
     emit redraw();
 }
 
 void NodeLabel::focusOut(){
     focus = false;
-    this->setStyleSheet("border: 2px solid gray;");
+    //this->setStyleSheet("border: 2px solid gray;");
     emit redraw();
 }
 

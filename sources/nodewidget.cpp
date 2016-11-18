@@ -74,6 +74,9 @@ void NodeTextEdit::keyPressEvent(QKeyEvent *e){
         }
     }
     else if(e->key() == Qt::Key_Tab);
+    else if(e->key() == Qt::Key_Escape){
+        emit escPressed();
+    }
     else{
         QTextEdit::keyPressEvent(e);
     }
@@ -87,6 +90,13 @@ QString NodeTextEdit::text(){
     QString temp = "";
     for(int i=0;i<textVector_.count();i++)
         temp += textVector_[i];
+    return temp;
+}
+
+QString NodeTextEdit::lastText(){
+    QString temp = "";
+    for(int i=0;i<lastTextVector_.count();i++)
+        temp += lastTextVector_[i];
     return temp;
 }
 
@@ -201,6 +211,7 @@ void NodeWidget::labelToTextEdit(){
     editMode = true;
     edit.setReadOnly(false);
     edit.setText(edit.getSavedText());
+    edit.setLastTextVector();
     textEditSizeRenew();
     edit.selectAll();
     selfWidget.hide();
@@ -215,6 +226,19 @@ void NodeWidget::textEditToLabel(){
         editMode = false;
         selfWidget.show();
         selfWidget.setText(edit.labelText());
+        delete layout.takeAt(0);
+        layout.insertWidget(0,&selfWidget);
+        edit.setText("");
+        edit.setReadOnly(true);
+        edit.hide();
+    }
+}
+
+void NodeWidget::closeTextEdit(){
+    if(editMode){
+        editMode = false;
+        selfWidget.show();
+        edit.saveText(edit.lastText());
         delete layout.takeAt(0);
         layout.insertWidget(0,&selfWidget);
         edit.setText("");
@@ -273,6 +297,7 @@ void NodeWidget::textEditSizeRenew(){
             edit.setFixedSize(110, (fm->height()+2)*y + 10);
         }
     }
+    this->update();
 }
 
 void NodeWidget::makeDefaultChildNode(){
@@ -337,19 +362,46 @@ void NodeWidget::paintEvent(QPaintEvent *e){
     painter.setPen(myPen);
     painter.setRenderHint(QPainter::HighQualityAntialiasing);
 
+    QPoint pos1, pos2;
+
     //painter.drawLine();
     //painter.drawLine(selfWidget.mapToParent(selfWidget.rect().bottomLeft()),selfWidget.mapToParent(selfWidget.rect().bottomRight()));
-    for(int i = 0 ; i<child.count() ; i++){
-        QPoint temp;
-        temp = selfWidget.mapToGlobal(selfWidget.rect().bottomRight());
-        QPoint pos1 = this->mapFromGlobal(temp);
-        temp = child[i]->selfWidget.mapToGlobal(child[i]->selfWidget.rect().bottomLeft());
-        QPoint pos2 = this->mapFromGlobal(temp);
+
+    if(editMode){
+        for(int i = 0; i<child.count(); i++){
+            QPoint temp;
+            temp = edit.mapToGlobal(edit.rect().bottomRight());
+            pos1 = this->mapFromGlobal(temp);
+            temp = child[i]->selfWidget.mapToGlobal(child[i]->selfWidget.rect().bottomLeft());
+            pos2 = this->mapFromGlobal(temp);
 
 
-        QPainterPath path;
-        path.moveTo(pos1);
-        path.cubicTo(pos1+QPoint(10,0),pos2+QPoint(-10,0),pos2);
-        painter.drawPath(path);
+            QPainterPath path;
+            path.moveTo(pos1);
+            path.cubicTo(pos1+QPoint(10,0),pos2+QPoint(-10,0),pos2);
+            painter.drawPath(path);
+        }
+    }
+    else{
+        for(int i = 0 ; i<child.count() ; i++){
+            QPoint temp;
+            if(child[i]->editMode){
+                temp = selfWidget.mapToGlobal(selfWidget.rect().bottomRight());
+                pos1 = this->mapFromGlobal(temp);
+                temp = child[i]->edit.mapToGlobal(child[i]->edit.rect().bottomLeft());
+                pos2 = this->mapFromGlobal(temp);
+            }
+            else{
+                temp = selfWidget.mapToGlobal(selfWidget.rect().bottomRight());
+                pos1 = this->mapFromGlobal(temp);
+                temp = child[i]->selfWidget.mapToGlobal(child[i]->selfWidget.rect().bottomLeft());
+                pos2 = this->mapFromGlobal(temp);
+            }
+
+            QPainterPath path;
+            path.moveTo(pos1);
+            path.cubicTo(pos1+QPoint(10,0),pos2+QPoint(-10,0),pos2);
+            painter.drawPath(path);
+        }
     }
 }

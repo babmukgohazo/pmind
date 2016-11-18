@@ -61,17 +61,22 @@ public:
     void keyPressEvent(QKeyEvent *e);
     void focusOutEvent(QFocusEvent *e);
     QString text();
+    QString lastText();
     QVector<QString>& textVector(){return textVector_;}
     QString labelText();
     void saveText(QString text_){this->text_ = text_;}
     QString getSavedText(){return text_;}
+    void setLastTextVector(){lastTextVector_ = textVector_;}
+
 
 signals:
     void enterPressed();
     void focusOut();
+    void escPressed();
 
 private:
     QVector<QString> textVector_;
+    QVector<QString> lastTextVector_;
     QString text_;
 };
 
@@ -105,6 +110,7 @@ public slots:
     void makeDefaultSiblingNode();
     void deleteThisNode();
     void focusMoveByArrow(int key);
+    void closeTextEdit();
 
 private:
     void init(){
@@ -113,7 +119,7 @@ private:
         this->setStyleSheet("background-color: transparent");
         //selfWidget.setStyleSheet("background-color: transparent ; border-bottom: 1px solid black;");
         selfWidget.setStyleSheet("border: 2px solid gray;");
-        //selfWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+        selfWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
         layout.addWidget(&selfWidget);
         layout.addWidget(&childWidget);
         layout.setSpacing(30);
@@ -133,6 +139,8 @@ private:
         QObject::connect(&selfWidget,SIGNAL(keyPressed()),this,SLOT(labelToTextEdit()));
         QObject::connect(&selfWidget,SIGNAL(arrowPressed(int)),this,SLOT(focusMoveByArrow(int)));
         QObject::connect(&selfWidget,SIGNAL(redraw()),getRoot(),SLOT(update()));
+        QObject::connect(&edit,SIGNAL(escPressed()),this,SLOT(closeTextEdit()));
+        QObject::connect(&edit,SIGNAL(escPressed()),&selfWidget,SLOT(focusIn()));
     }
 
     QFont font;

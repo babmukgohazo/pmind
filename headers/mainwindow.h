@@ -13,8 +13,6 @@
 #include <QKeyEvent>
 #include <QDebug>
 #include "headers/mindmapview.h"
-#include "headers/nodewidget.h"
-#include "headers/parsing.h"
 #include "forms/propertytab.h"
 
 namespace Ui {
@@ -31,6 +29,7 @@ public:
     void showStartscreen();
     MindmapView* getMapScreen(){return mapScreen;}
     NodeWidget* getMap(){return map;}
+    Process* getProcess(){return process;}
 
 public slots:
     //slots for graphic & drawing
@@ -45,6 +44,8 @@ public slots:
 
     //handle changed content at quit
     void quit();
+
+    void addProcess(NodeWidget*, CommandType);
 
 private:
     void setFileMenuToolbar();
@@ -69,6 +70,8 @@ private:
     QAction *actionSave;
     QAction *actionSaveAs;
     QAction *actionQuit;
+
+    Process* process;
 };
 
 #endif // MAINWINDOW_H

@@ -18,14 +18,16 @@ SOURCES += \
     sources/parsing.cpp \
     sources/nodewidget.cpp \
     forms/propertytab.cpp \
-    sources/mindmapview.cpp
+    sources/mindmapview.cpp \
+    sources/process.cpp
 
 HEADERS  += \
     headers/mainwindow.h \
     headers/parsing.h \
     headers/mindmapview.h \
     headers/nodewidget.h \
-    forms/propertytab.h
+    forms/propertytab.h \
+    headers/process.h
 
 FORMS    += \
     forms/mainwindow.ui \

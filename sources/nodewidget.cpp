@@ -1,4 +1,3 @@
-#include "headers/nodewidget.h"
 #include "headers/mainwindow.h"
 
 void NodeLabel::mousePressEvent(QMouseEvent *e){
@@ -11,6 +10,8 @@ void NodeLabel::mousePressEvent(QMouseEvent *e){
 }
 
 void NodeLabel::keyPressEvent(QKeyEvent *e){
+    if(!focus)
+        return;
     switch(e->key()){
     case Qt::Key_Tab:
         emit tabPressed();
@@ -36,8 +37,45 @@ void NodeLabel::keyPressEvent(QKeyEvent *e){
     case Qt::Key_Down:
         emit arrowPressed(Qt::Key_Down);
         break;
-    default:
+    case Qt::Key_Z:
+    case Qt::Key_Y:
+    case Qt::Key_Q:
+    case Qt::Key_W:
+    case Qt::Key_E:
+    case Qt::Key_R:
+    case Qt::Key_T:
+    case Qt::Key_U:
+    case Qt::Key_I:
+    case Qt::Key_O:
+    case Qt::Key_P:
+    case Qt::Key_A:
+    case Qt::Key_S:
+    case Qt::Key_D:
+    case Qt::Key_F:
+    case Qt::Key_G:
+    case Qt::Key_H:
+    case Qt::Key_J:
+    case Qt::Key_K:
+    case Qt::Key_L:
+    case Qt::Key_X:
+    case Qt::Key_C:
+    case Qt::Key_V:
+    case Qt::Key_B:
+    case Qt::Key_N:
+    case Qt::Key_M:
+    case Qt::Key_0:
+    case Qt::Key_1:
+    case Qt::Key_2:
+    case Qt::Key_3:
+    case Qt::Key_4:
+    case Qt::Key_5:
+    case Qt::Key_6:
+    case Qt::Key_7:
+    case Qt::Key_8:
+    case Qt::Key_9:
         emit keyPressed();
+        break;
+    default:
         QLabel::keyPressEvent(e);
         break;
     }
@@ -86,20 +124,6 @@ void NodeTextEdit::focusOutEvent(QFocusEvent *e){
     emit focusOut();
 }
 
-QString NodeTextEdit::text(){
-    QString temp = "";
-    for(int i=0;i<textVector_.count();i++)
-        temp += textVector_[i];
-    return temp;
-}
-
-QString NodeTextEdit::lastText(){
-    QString temp = "";
-    for(int i=0;i<lastTextVector_.count();i++)
-        temp += lastTextVector_[i];
-    return temp;
-}
-
 QString NodeTextEdit::labelText(){
     QString temp = "";
     for(int i=0;i<textVector_.count()-1;i++){
@@ -109,6 +133,8 @@ QString NodeTextEdit::labelText(){
     return temp;
 }
 
+MainWindow* NodeWidget::mainWindow = nullptr;
+
 NodeWidget::NodeWidget(QString name){
     init();
     selfWidget.setText(name);
@@ -116,8 +142,8 @@ NodeWidget::NodeWidget(QString name){
 }
 
 NodeWidget::NodeWidget(QQueue<MdString> list, MainWindow* mainWindow){
+    NodeWidget::mainWindow = mainWindow;
     init();
-    this->mainWindow = mainWindow;
     QObject::connect(&edit,SIGNAL(enterPressed()),mainWindow,SLOT(renewTextEdit()));
     if(list.isEmpty()){
         selfWidget.setText("ERROR: not valid .md file");
@@ -135,7 +161,6 @@ NodeWidget::NodeWidget(QQueue<MdString> list, MainWindow* mainWindow){
                 MdString tempMdString = list.dequeue();
                 temp = tempMdString.getDepth();
                 NodeWidget* tempnode = new NodeWidget(tempMdString.getText());
-                QObject::connect(&tempnode->getEdit(),SIGNAL(enterPressed()),mainWindow,SLOT(renewTextEdit()));
                 ptr->add(tempnode);
                 ptr = tempnode;
                 currentDepth++;
@@ -156,6 +181,38 @@ NodeWidget* NodeWidget::getRoot(){
     return temp;
 }
 
+void NodeWidget::init(){
+    fm = new QFontMetrics(edit.currentFont());
+    selfWidget.setContainer(this);
+    this->setStyleSheet("background-color: transparent");
+    //selfWidget.setStyleSheet("background-color: transparent ; border-bottom: 1px solid black;");
+    selfWidget.setStyleSheet("border: 2px solid gray;");
+    selfWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+    layout.addWidget(&selfWidget);
+    layout.addWidget(&childWidget);
+    layout.setSpacing(30);
+    this->setLayout(&layout);
+    childWidget.setLayout(&childLayout);
+    layout.setContentsMargins(0,0,0,0);
+    childLayout.setMargin(0);
+    edit.verticalScrollBar()->close();
+    QObject::connect(&edit,SIGNAL(enterPressed()),NodeWidget::mainWindow,SLOT(renewTextEdit()));
+    QObject::connect(&edit,SIGNAL(enterPressed()),this,SLOT(textEditToLabel()));
+    QObject::connect(&edit,SIGNAL(enterPressed()),&selfWidget,SLOT(focusIn()));
+    QObject::connect(&edit,SIGNAL(focusOut()),this,SLOT(textEditToLabel()));
+    QObject::connect(&selfWidget,SIGNAL(doubleClicked()),this,SLOT(labelToTextEdit()));
+    QObject::connect(&edit,SIGNAL(textChanged()),this,SLOT(textEditSizeRenew()));
+    QObject::connect(&selfWidget,SIGNAL(tabPressed()),this,SLOT(makeDefaultChildNode()));
+    QObject::connect(&selfWidget,SIGNAL(enterPressed()),this,SLOT(makeDefaultSiblingNode()));
+    QObject::connect(&selfWidget,SIGNAL(deletePressed()),this,SLOT(deleteFromMap()));
+    QObject::connect(&selfWidget,SIGNAL(keyPressed()),this,SLOT(labelToTextEdit()));
+    QObject::connect(&selfWidget,SIGNAL(arrowPressed(int)),this,SLOT(focusMoveByArrow(int)));
+    QObject::connect(&selfWidget,SIGNAL(redraw()),getRoot(),SLOT(update()));
+    QObject::connect(&edit,SIGNAL(escPressed()),this,SLOT(closeTextEdit()));
+    QObject::connect(&edit,SIGNAL(escPressed()),&selfWidget,SLOT(focusIn()));
+    QObject::connect(this,SIGNAL(commanded(NodeWidget*,CommandType)),NodeWidget::mainWindow,SLOT(addProcess(NodeWidget*,CommandType)));
+}
+
 NodeWidget::~NodeWidget(){
     int num = child.count();
     delete fm;
@@ -168,7 +225,6 @@ void NodeWidget::add(NodeWidget *subNodeWidget){
     child.push_back(subNodeWidget);
     childLayout.addWidget(subNodeWidget);
     subNodeWidget->parent_ = this;
-    subNodeWidget->mainWindow = mainWindow;
     subNodeWidget->index = child.count()-1;
 }
 
@@ -178,7 +234,6 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
     for(int i=index+1;i<child.count();i++)
         child[i]->index++;
     subNode->parent_ = this;
-    subNode->mainWindow = mainWindow;
     subNode->index = index;
 }
 
@@ -211,10 +266,9 @@ void NodeWidget::labelToTextEdit(){
     editMode = true;
     edit.setReadOnly(false);
     edit.setText(edit.getSavedText());
-    edit.setLastTextVector();
     textEditSizeRenew();
     edit.selectAll();
-    selfWidget.hide();
+    selfWidget.close();
     delete layout.takeAt(0);
     layout.insertWidget(0,&edit);
     edit.show();
@@ -223,14 +277,17 @@ void NodeWidget::labelToTextEdit(){
 
 void NodeWidget::textEditToLabel(){
     if(editMode){
+        if(edit.getSavedText()!=edit.toPlainText()){
+            emit commanded(this, CommandType::Text);
+            edit.saveText(edit.toPlainText());
+        }
+
         editMode = false;
         selfWidget.show();
         selfWidget.setText(edit.labelText());
         delete layout.takeAt(0);
         layout.insertWidget(0,&selfWidget);
-        edit.setText("");
-        edit.setReadOnly(true);
-        edit.hide();
+        edit.close();
     }
 }
 
@@ -238,12 +295,9 @@ void NodeWidget::closeTextEdit(){
     if(editMode){
         editMode = false;
         selfWidget.show();
-        edit.saveText(edit.lastText());
         delete layout.takeAt(0);
         layout.insertWidget(0,&selfWidget);
-        edit.setText("");
-        edit.setReadOnly(true);
-        edit.hide();
+        edit.close();
     }
 }
 
@@ -256,7 +310,6 @@ void NodeWidget::textEditSizeRenew(){
     if(editMode){
         edit.textVector().clear();
         text = edit.toPlainText();
-        edit.saveText(text);
         charCount = text.count();
         for(int i=0;i<charCount;i++){
             temp += text[i];
@@ -300,9 +353,52 @@ void NodeWidget::textEditSizeRenew(){
     this->update();
 }
 
+void NodeWidget::labelSizeRenew(){
+    editMode = true;
+    int charCount;
+    QString temp = "";
+    QString text;
+    QStringList spaceSplit;
+    if(editMode){
+        edit.textVector().clear();
+        text = edit.getSavedText();
+        charCount = text.count();
+        for(int i=0;i<charCount;i++){
+            temp += text[i];
+            if(text[i] == '\n'){
+                edit.textVector().append("");
+                for(int i=0;i<temp.count()-1;i++)
+                    edit.textVector()[edit.textVector().count()-1]+=temp[i];
+                temp = "";
+                continue;
+            }
+            if(fm->width(temp) > 100){
+                spaceSplit = temp.split(' ');
+                if(spaceSplit.count() == 1){
+                    edit.textVector().append("");
+                    for(int i=0;i<temp.count()-1;i++)
+                        edit.textVector()[edit.textVector().count()-1]+=temp[i];
+                    temp = temp[temp.count()-1];
+                }
+                else{
+                    edit.textVector().append("");
+                    for(int i=0;i<spaceSplit.count()-2;i++)
+                        edit.textVector()[edit.textVector().count()-1]+=spaceSplit[i] + " ";
+                    edit.textVector()[edit.textVector().count()-1]+=spaceSplit[spaceSplit.count()-2];
+                    temp = spaceSplit.last();
+                }
+            }
+        }
+        edit.textVector().append(temp);
+    }
+    selfWidget.setText(edit.labelText());
+    editMode = false;
+}
+
 void NodeWidget::makeDefaultChildNode(){
     NodeWidget* child = new NodeWidget("default");
     add(child);
+    emit commanded(child, CommandType::Add);
     child->label().focusIn();
     selfWidget.focusOut();
 }
@@ -311,17 +407,25 @@ void NodeWidget::makeDefaultSiblingNode(){
     if(parent_!=nullptr){
         NodeWidget* child = new NodeWidget("default");
         parent_->insert(index + 1, child);
+        emit commanded(child, CommandType::Add);
         child->label().focusIn();
         selfWidget.focusOut();
     }
 }
 
-void NodeWidget::deleteThisNode(){
-    this->~NodeWidget();
+void NodeWidget::deleteFromMap(){
+    emit commanded(this, CommandType::Delete);
+    disconnectUpperNode();
+    this->close();
+    selfWidget.focusOut();
+}
+
+void NodeWidget::disconnectUpperNode(){
     if(parent_ != nullptr){
         parent_->child.removeAt(index);
         for(int i=index;i<parent_->child.count();i++)
             parent_->child[i]->index--;
+        parent_=nullptr;
     }
     getRoot()->update();
 }

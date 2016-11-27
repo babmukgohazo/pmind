@@ -17,6 +17,7 @@
 #include <QFocusEvent>
 #include <QDebug>
 #include "headers/parsing.h"
+#include "headers/process.h"
 
 class MainWindow;
 class NodeWidget;
@@ -60,14 +61,10 @@ class NodeTextEdit : public QTextEdit{
 public:
     void keyPressEvent(QKeyEvent *e);
     void focusOutEvent(QFocusEvent *e);
-    QString text();
-    QString lastText();
     QVector<QString>& textVector(){return textVector_;}
     QString labelText();
     void saveText(QString text_){this->text_ = text_;}
     QString getSavedText(){return text_;}
-    void setLastTextVector(){lastTextVector_ = textVector_;}
-
 
 signals:
     void enterPressed();
@@ -76,7 +73,6 @@ signals:
 
 private:
     QVector<QString> textVector_;
-    QVector<QString> lastTextVector_;
     QString text_;
 };
 
@@ -97,51 +93,28 @@ public:
     NodeTextEdit& getEdit(){return edit;}
     NodeLabel& label(){return selfWidget;}
     NodeLabel* labelPointer(){return &selfWidget;}
+    int getIndex(){return index;}
 
     static NodeWidget* searchFocusInNode(NodeWidget* root);
     //2016/11/14일 추가한 함수
-
 
 public slots:
     void labelToTextEdit();
     void textEditToLabel();
     void textEditSizeRenew();
+    void labelSizeRenew();
     void makeDefaultChildNode();
     void makeDefaultSiblingNode();
-    void deleteThisNode();
+    void deleteFromMap();
+    void disconnectUpperNode();
     void focusMoveByArrow(int key);
     void closeTextEdit();
 
+signals:
+    void commanded(NodeWidget*, CommandType);
+
 private:
-    void init(){
-        fm = new QFontMetrics(edit.currentFont());
-        selfWidget.setContainer(this);
-        this->setStyleSheet("background-color: transparent");
-        //selfWidget.setStyleSheet("background-color: transparent ; border-bottom: 1px solid black;");
-        selfWidget.setStyleSheet("border: 2px solid gray;");
-        selfWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-        layout.addWidget(&selfWidget);
-        layout.addWidget(&childWidget);
-        layout.setSpacing(30);
-        this->setLayout(&layout);
-        childWidget.setLayout(&childLayout);
-        layout.setContentsMargins(0,0,0,0);
-        childLayout.setMargin(0);
-        edit.verticalScrollBar()->close();
-        QObject::connect(&edit,SIGNAL(enterPressed()),this,SLOT(textEditToLabel()));
-        QObject::connect(&edit,SIGNAL(enterPressed()),&selfWidget,SLOT(focusIn()));
-        QObject::connect(&edit,SIGNAL(focusOut()),this,SLOT(textEditToLabel()));
-        QObject::connect(&selfWidget,SIGNAL(doubleClicked()),this,SLOT(labelToTextEdit()));
-        QObject::connect(&edit,SIGNAL(textChanged()),this,SLOT(textEditSizeRenew()));
-        QObject::connect(&selfWidget,SIGNAL(tabPressed()),this,SLOT(makeDefaultChildNode()));
-        QObject::connect(&selfWidget,SIGNAL(enterPressed()),this,SLOT(makeDefaultSiblingNode()));
-        QObject::connect(&selfWidget,SIGNAL(deletePressed()),this,SLOT(deleteThisNode()));
-        QObject::connect(&selfWidget,SIGNAL(keyPressed()),this,SLOT(labelToTextEdit()));
-        QObject::connect(&selfWidget,SIGNAL(arrowPressed(int)),this,SLOT(focusMoveByArrow(int)));
-        QObject::connect(&selfWidget,SIGNAL(redraw()),getRoot(),SLOT(update()));
-        QObject::connect(&edit,SIGNAL(escPressed()),this,SLOT(closeTextEdit()));
-        QObject::connect(&edit,SIGNAL(escPressed()),&selfWidget,SLOT(focusIn()));
-    }
+    void init();
 
     QFont font;
     QFontMetrics* fm;
@@ -155,7 +128,8 @@ private:
     bool editMode = false;
     bool clicked = false;
     int index = 0;
-    MainWindow* mainWindow;
+
+    static MainWindow* mainWindow;
 };
 
 

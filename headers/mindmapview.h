@@ -25,14 +25,19 @@ public slots:
         scale(0.8,0.8);
     }
 
+    void focusIn();
+
 signals:
     void viewClicked();
+    void undid();
+    void redid();
 
 protected:
     void wheelEvent(QWheelEvent *event){
         event->delta() > 0 ? zoomIn() : zoomOut();
     }
     void mousePressEvent(QMouseEvent *e);
+    void keyPressEvent(QKeyEvent *e);
 };
 
 #endif

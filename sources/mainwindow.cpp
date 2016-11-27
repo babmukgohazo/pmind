@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     layout = new QHBoxLayout();
     rightLayout = new QVBoxLayout();
     map = nullptr;
+    process = new Process;
 
     rightLayout->addWidget(dockWidget);
     rightLayout->addWidget(redrawButton);
@@ -24,12 +25,15 @@ MainWindow::MainWindow(QWidget *parent) :
     layout->setStretchFactor(mapScreen,7);
     layout->setStretchFactor(rightLayout,3);
 
+    QObject::connect(mapScreen,SIGNAL(undid()),process,SLOT(undo()));
+    QObject::connect(mapScreen,SIGNAL(redid()),process,SLOT(redo()));
     mapScreen->setStyleSheet("MindmapView {border: 1px solid gray; background: white;}");
     this->centralWidget()->setLayout(layout);
 
     mapScreen->mainWindow = this;
 
     QObject::connect(redrawButton, SIGNAL(clicked()),this,SLOT(reload()));
+
 }
 
 MainWindow::~MainWindow()
@@ -44,6 +48,7 @@ MainWindow::~MainWindow()
     }
     delete mapScreen;
     delete layout;
+    //delete process;
 }
 
 //re-allocate & re-draw mindmap
@@ -159,4 +164,21 @@ void MainWindow::setFileMenuToolbar() {
     connect(actionSave, SIGNAL(triggered()), this, SLOT(saveFile()));
     connect(actionSaveAs, SIGNAL(triggered()), this, SLOT(saveFileAs()));
     connect(actionQuit, SIGNAL(triggered()), this, SLOT(quit()));
+}
+
+void MainWindow::addProcess(NodeWidget* node, CommandType type){
+    switch(type){
+    case CommandType::Add:
+        process->push(new AddCommand(node));
+        break;
+    case CommandType::Delete:
+        process->push(new DeleteCommand(node));
+        break;
+    case CommandType::Text:
+        process->push(new TextCommand(node));
+        break;
+//    case CommandType::Move:
+//        process->push(new MoveCommand(node));
+//        break;
+    }
 }

@@ -124,6 +124,52 @@ void NodeTextEdit::focusOutEvent(QFocusEvent *e){
     emit focusOut();
 }
 
+void NodeLabel::mouseMoveEvent(QMouseEvent *event){
+    QDrag *drag = new QDrag(this);
+    QMimeData *mime = new QMimeData;
+    drag->setMimeData(mime);
+    mime->setColorData(qVariantFromValue((void*)parent()));
+
+    drag->setPixmap(((QWidget*)parent())->grab());
+    drag->setHotSpot((static_cast<QWidget*>(parent()))->mapFromGlobal(mapToGlobal(event->pos())));
+    drag->exec();
+    focusOut();
+    setCursor(Qt::OpenHandCursor);
+}
+
+void NodeLabel::dragEnterEvent(QDragEnterEvent *event){
+    event->accept();
+    event->setAccepted(true);
+    dragOver = true;
+    update();
+}
+
+void NodeLabel::dragMoveEvent(QDragMoveEvent *event){
+    event->accept();
+}
+
+void NodeLabel::dragLeaveEvent(QDragLeaveEvent *event){
+    Q_UNUSED(event);
+    dragOver = false;
+    update();
+}
+
+void NodeLabel::dropEvent(QDropEvent *event){
+    //resize(size() * 1.1);
+    dragOver = false;
+    if (event->mimeData()->hasColor()){
+        NodeWidget* temp1 = ((NodeWidget*)parent());
+        void* temp = qvariant_cast<void*>(event->mimeData()->colorData());
+        NodeWidget* temp2 = (NodeWidget*)temp;
+        if(!(temp1->isChildOf(temp2))){
+            emit commanded(temp2,temp1,CommandType::Move);
+            temp2 = temp2->takeNode();
+            temp1->insert(temp1->getChild().size(),temp2);
+        }
+    }
+    update();
+}
+
 QString NodeTextEdit::labelText(){
     QString temp = "";
     for(int i=0;i<textVector_.count()-1;i++){
@@ -211,6 +257,8 @@ void NodeWidget::init(){
     QObject::connect(&edit,SIGNAL(escPressed()),this,SLOT(closeTextEdit()));
     QObject::connect(&edit,SIGNAL(escPressed()),&selfWidget,SLOT(focusIn()));
     QObject::connect(this,SIGNAL(commanded(NodeWidget*,CommandType)),NodeWidget::mainWindow,SLOT(addProcess(NodeWidget*,CommandType)));
+    QObject::connect(&selfWidget,SIGNAL(commanded(NodeWidget*,NodeWidget*,CommandType)),this,SIGNAL(commanded(NodeWidget*,NodeWidget*,CommandType)));
+    QObject::connect(this,SIGNAL(commanded(NodeWidget*,NodeWidget*,CommandType)),NodeWidget::mainWindow,SLOT(addProcess(NodeWidget*,NodeWidget*,CommandType)));
 }
 
 NodeWidget::~NodeWidget(){
@@ -508,4 +556,23 @@ void NodeWidget::paintEvent(QPaintEvent *e){
             painter.drawPath(path);
         }
     }
+}
+
+NodeWidget* NodeWidget::takeNode(){
+    if(parent_ != nullptr){
+        parent_->child.removeAt(index);
+        for(int i=index;i<parent_->child.count();i++)
+            parent_->child[i]->index--;
+    }
+    getRoot()->update();
+    return this;
+}
+
+bool NodeWidget::isChildOf(NodeWidget* ptr){
+    if(parent_== nullptr)
+        return false;
+    else if(parent_ == ptr)
+        return true;
+    else
+        return parent_->isChildOf(ptr);
 }

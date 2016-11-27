@@ -177,8 +177,13 @@ void MainWindow::addProcess(NodeWidget* node, CommandType type){
     case CommandType::Text:
         process->push(new TextCommand(node));
         break;
-//    case CommandType::Move:
-//        process->push(new MoveCommand(node));
-//        break;
+    }
+}
+
+void MainWindow::addProcess(NodeWidget *movedNode, NodeWidget *to, CommandType type){
+    switch(type){
+    case CommandType::Move:
+        process->push(new MoveCommand(movedNode, to));
+        break;
     }
 }

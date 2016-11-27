@@ -109,6 +109,14 @@ void DeleteCommand::redo(){
     deletedNode->label().focusOut();
 }
 
+MoveCommand::MoveCommand(NodeWidget *movedNode, NodeWidget *to) : Command(CommandType::Move){
+    this->movedNode = movedNode;
+    this->to = to;
+    from = movedNode->getParent();
+    fromIndex = movedNode->getIndex();
+    toIndex = to->getChild().count();
+}
+
 void MoveCommand::undo(){
     movedNode->disconnectUpperNode();
     movedNode->close();

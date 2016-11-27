@@ -15,6 +15,9 @@
 #include <QFont>
 #include <QScrollBar>
 #include <QFocusEvent>
+#include <QDrag>
+#include <QMimeData>
+#include <QDropEvent>
 #include <QDebug>
 #include "headers/parsing.h"
 #include "headers/process.h"
@@ -25,9 +28,17 @@ class NodeWidget;
 class NodeLabel : public QLabel{
     Q_OBJECT
 public:
+    NodeLabel(){
+        setAcceptDrops(true);
+    }
     void mousePressEvent(QMouseEvent *e);
     void keyPressEvent(QKeyEvent *e);
     void focusOutEvent(QFocusEvent *e);
+    void mouseMoveEvent(QMouseEvent *e);
+    void dragEnterEvent(QDragEnterEvent *e);
+    void dragLeaveEvent(QDragLeaveEvent *e);
+    void dragMoveEvent(QDragMoveEvent *e);
+    void dropEvent(QDropEvent *e);
     bool isFocus(){return focus;}
     void setNodeShape(int shape){nodeShape = shape;}
     int getNodeShape(){return nodeShape;}
@@ -44,6 +55,7 @@ signals:
     void keyPressed();
     void arrowPressed(int key);
     void redraw();
+    void commanded(NodeWidget*, NodeWidget*, CommandType);
 
 public slots:
     void focusIn();
@@ -54,6 +66,8 @@ private:
     int nodeShape;
     QString nodeTextColor;
     NodeWidget* container_;
+    QColor color;
+    bool dragOver;
 };
 
 class NodeTextEdit : public QTextEdit{
@@ -95,6 +109,9 @@ public:
     NodeLabel* labelPointer(){return &selfWidget;}
     int getIndex(){return index;}
 
+    NodeWidget* takeNode();
+    bool isChildOf(NodeWidget* ptr);
+
     static NodeWidget* searchFocusInNode(NodeWidget* root);
     //2016/11/14일 추가한 함수
 
@@ -112,6 +129,7 @@ public slots:
 
 signals:
     void commanded(NodeWidget*, CommandType);
+    void commanded(NodeWidget*, NodeWidget*, CommandType);
 
 private:
     void init();

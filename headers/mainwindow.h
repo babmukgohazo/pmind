@@ -46,6 +46,7 @@ public slots:
     void quit();
 
     void addProcess(NodeWidget*, CommandType);
+    void addProcess(NodeWidget*, NodeWidget*, CommandType);
 
 private:
     void setFileMenuToolbar();

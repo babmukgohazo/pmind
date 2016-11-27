@@ -81,7 +81,7 @@ private:
 
 class MoveCommand : public Command{
 public:
-    MoveCommand(NodeWidget*);
+    MoveCommand(NodeWidget*, NodeWidget*);
     virtual void undo();
     virtual void redo();
 

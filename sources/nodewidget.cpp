@@ -161,7 +161,7 @@ void NodeLabel::dropEvent(QDropEvent *event){
         NodeWidget* temp1 = ((NodeWidget*)parent());
         void* temp = qvariant_cast<void*>(event->mimeData()->colorData());
         NodeWidget* temp2 = (NodeWidget*)temp;
-        if(!(temp1->isChildOf(temp2))){
+        if(!(temp1->isChildOf(temp2) || temp2 == temp2)){
             emit commanded(temp2,temp1,CommandType::Move);
             temp2 = temp2->takeNode();
             temp1->insert(temp1->getChild().size(),temp2);

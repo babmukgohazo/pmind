@@ -12,6 +12,35 @@ PropertyTab::PropertyTab(QWidget *parent) :
     //QObject::connect(colorDial,SIGNAL(colorSelected(QColor)),this,SLOT(changeTextOfColor()));
     ui->setupUi(this);
 
+    QPixmap colorCircle(":/buttonStyle/content/color_circle.png");
+    QIcon colorButton(colorCircle);
+
+    QPixmap boldImg(":/buttonStyle/content/bold_img.png");
+    QIcon boldButton(boldImg);
+
+    QPixmap italicImg(":/buttonStyle/content/italic_img.png");
+    QIcon italicButton(italicImg);
+
+    QPixmap rectangleImg(":/buttonStyle/node/rectangle_img.png");
+    QIcon rectangleButton(rectangleImg);
+
+    QPixmap roundRecImg(":/buttonStyle/node/roundRec_img.png");
+    QIcon roundRecButton(roundRecImg);
+
+    QPixmap underlineImg(":/buttonStyle/node/underline_img.png");
+    QIcon underlineButton(underlineImg);
+
+    QPixmap dottedLineImg(":/buttonStyle/line/dottedLine_img.png");
+    QIcon dottedLineButton(dottedLineImg);
+
+    ui->buttonColor->setIcon(colorButton);
+    ui->buttonBold->setIcon(boldButton);
+    ui->buttonItalic->setIcon(italicButton);
+    ui->rectangleButton->setIcon(rectangleButton);
+    ui->roundRecButton->setIcon(roundRecButton);
+    ui->underlineButton->setIcon(underlineButton);
+    ui->lineColorButton->setIcon(colorButton);
+    ui->dottedLineButton->setIcon(dottedLineButton);
 }
 
 PropertyTab::~PropertyTab()
@@ -155,7 +184,9 @@ void PropertyTab::showAllProperty(){//node의 속성 dockWidget에 보여주기
     setDockWedigetDefault();
 
     if(font.bold())//굵기
-        ui->buttonBold->setFont(boldFont);
+        ui->buttonBold->setStyleSheet("background-color : #378de5;");
+        //ui->buttonBold->setFont(boldFont);
+
 
     if(font.italic())//기울임
         ui->buttonItalic->setFont(boldFont);
@@ -176,6 +207,7 @@ void PropertyTab::showAllProperty(){//node의 속성 dockWidget에 보여주기
 void PropertyTab::setDockWedigetDefault(){//dockWidget속성 초기화
     QFont notBoldFont;
     notBoldFont.setBold(false);
+    ui->buttonBold->setStyleSheet("background-color : QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #79bbff, stop: 1 #378de5);");
     ui->buttonBold->setFont(notBoldFont);
     ui->buttonItalic->setFont(notBoldFont);
     ui->rectangleButton->setFont(notBoldFont);

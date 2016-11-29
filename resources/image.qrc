@@ -1,1 +1,15 @@
-<RCC/>
+<RCC>
+    <qresource prefix="/buttonStyle/content">
+        <file>color_circle.png</file>
+        <file>bold_img.png</file>
+        <file>italic_img.png</file>
+    </qresource>
+    <qresource prefix="/buttonStyle/node">
+        <file>rectangle_img.png</file>
+        <file>roundRec_img.png</file>
+        <file>underline_img.png</file>
+    </qresource>
+    <qresource prefix="/buttonStyle/line">
+        <file>dottedLine_img.png</file>
+    </qresource>
+</RCC>

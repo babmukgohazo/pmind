@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>322</width>
-    <height>377</height>
+    <height>432</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,7 +22,7 @@
   <property name="minimumSize">
    <size>
     <width>322</width>
-    <height>377</height>
+    <height>432</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -30,6 +30,29 @@
     <width>322</width>
     <height>524287</height>
    </size>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QPushButton { 
+	background-color:QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #79bbff, stop: 1 #378de5);
+	border:1px solid #84bbf3;
+	border-radius:15px;
+	text-indent:0;
+	color:#666666;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	font-style:normal;
+	line-height:45px;
+	height:30px;
+	width:300px;
+	text-decoration:none;
+	text-align:center;
+}
+QPushButton:hover {
+	
+	background-color:QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #378de5, stop: 1 #79bbff);
+}
+</string>
   </property>
   <property name="windowTitle">
    <string>PropertyTab</string>
@@ -139,20 +162,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>Bold</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="buttonColor">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Color</string>
+               <string/>
               </property>
              </widget>
             </item>
@@ -164,8 +174,27 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="styleSheet">
+               <string notr="true"/>
+              </property>
               <property name="text">
-               <string>Italic</string>
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="buttonColor">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="styleSheet">
+               <string notr="true"/>
+              </property>
+              <property name="text">
+               <string/>
               </property>
              </widget>
             </item>
@@ -239,7 +268,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>네모</string>
+               <string/>
               </property>
              </widget>
             </item>
@@ -252,7 +281,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>둥근네모</string>
+               <string/>
               </property>
              </widget>
             </item>
@@ -265,7 +294,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>밑줄</string>
+               <string/>
               </property>
              </widget>
             </item>
@@ -302,19 +331,6 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="lineColorButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Color</string>
-              </property>
-             </widget>
-            </item>
-            <item>
              <widget class="QPushButton" name="dottedLineButton">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -323,7 +339,20 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>점선</string>
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="lineColorButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string/>
               </property>
              </widget>
             </item>

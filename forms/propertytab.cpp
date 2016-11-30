@@ -205,3 +205,7 @@ void PropertyTab::setDockWedigetDefault(){//dockWidget속성 초기화
     ui->roundRecButton->setFont(notBoldFont);
     ui->underlineButton->setFont(notBoldFont);
 }
+
+QTextEdit* PropertyTab::getTextEdit() {
+    return ui->textEdit;
+}

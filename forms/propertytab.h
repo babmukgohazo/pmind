@@ -20,7 +20,7 @@ public:
     void showAllProperty(); //node가 가지고 있는 속성을 dockWidget에 표현한다.
     void setDockWedigetDefault(); //dockWidget의 값을 초기화 한다.
     void setNodeWidget(NodeWidget * map){this->map = map;}
-
+    QTextEdit* getTextEdit();
 
 private slots:
  //ui에 있는 속성들이 각각 눌렸을 때

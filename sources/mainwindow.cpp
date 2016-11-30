@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // construct & set UI component
     mapScreen = new MindmapView();
     dockWidget = new PropertyTab(this);
-    edit = new QTextEdit();
+    edit = dockWidget->getTextEdit();
     redrawButton = new QPushButton("Redraw");
     layout = new QVBoxLayout();
     programLayout = new QHBoxLayout();

@@ -161,6 +161,8 @@ void NodeLabel::dropEvent(QDropEvent *event){
         NodeWidget* temp1 = ((NodeWidget*)parent());
         void* temp = qvariant_cast<void*>(event->mimeData()->colorData());
         NodeWidget* temp2 = (NodeWidget*)temp;
+        if(temp1==temp2)
+            return;
         if(!(temp1->isChildOf(temp2))){
             emit commanded(temp2,temp1,CommandType::Move);
             temp2 = temp2->takeNode();
@@ -228,6 +230,8 @@ NodeWidget* NodeWidget::getRoot(){
 }
 
 void NodeWidget::init(){
+    edit.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    edit.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     fm = new QFontMetrics(edit.currentFont());
     selfWidget.setContainer(this);
     this->setStyleSheet("background-color: transparent");
@@ -241,7 +245,6 @@ void NodeWidget::init(){
     childWidget.setLayout(&childLayout);
     layout.setContentsMargins(0,0,0,0);
     childLayout.setMargin(0);
-    edit.verticalScrollBar()->close();
     QObject::connect(&edit,SIGNAL(enterPressed()),NodeWidget::mainWindow,SLOT(renewTextEdit()));
     QObject::connect(&edit,SIGNAL(enterPressed()),this,SLOT(textEditToLabel()));
     QObject::connect(&edit,SIGNAL(enterPressed()),&selfWidget,SLOT(focusIn()));
@@ -332,7 +335,7 @@ void NodeWidget::textEditToLabel(){
 
         editMode = false;
         selfWidget.show();
-        selfWidget.setText(edit.labelText());
+        labelSizeRenew();
         delete layout.takeAt(0);
         layout.insertWidget(0,&selfWidget);
         edit.close();
@@ -350,52 +353,22 @@ void NodeWidget::closeTextEdit(){
 }
 
 void NodeWidget::textEditSizeRenew(){
-    int charCount;
-    int y = 1;
-    QString temp = "";
-    QString text;
-    QStringList spaceSplit;
     if(editMode){
-        edit.textVector().clear();
-        text = edit.toPlainText();
-        charCount = text.count();
-        for(int i=0;i<charCount;i++){
-            temp += text[i];
-            if(text[i] == '\n'){
-                y++;
-                edit.textVector().append("");
-                for(int i=0;i<temp.count()-1;i++)
-                    edit.textVector()[edit.textVector().count()-1]+=temp[i];
-                temp = "";
-                continue;
-            }
-            if(fm->width(temp) > 100){
-                spaceSplit = temp.split(' ');
-                if(spaceSplit.count() == 1){
-                    edit.textVector().append("");
-                    for(int i=0;i<temp.count()-1;i++)
-                        edit.textVector()[edit.textVector().count()-1]+=temp[i];
-                    temp = temp[temp.count()-1];
-                    y++;
-                }
-                else{
-                    edit.textVector().append("");
-                    for(int i=0;i<spaceSplit.count()-2;i++)
-                        edit.textVector()[edit.textVector().count()-1]+=spaceSplit[i] + " ";
-                    edit.textVector()[edit.textVector().count()-1]+=spaceSplit[spaceSplit.count()-2];
-                    temp = spaceSplit.last();
-                    y++;
-                }
-            }
-        }
-        edit.textVector().append(temp);
-        if(y == 1){
-            edit.setFixedSize(fm->width(temp) + 30, fm->height() + 12);
-            edit.setFixedSize(fm->width(temp) + 10, fm->height() + 12);
+        QString text = edit.toPlainText();
+        int x = fm->width(text);
+        int n = x/300 + 1;
+        if(x<=300){
+            edit.setFixedWidth(x + 10);
+            int y = edit.document()->size().height();
+            if(x<=30)
+                x=30;
+            if(y==0)
+                y=fm->height() + 12;
+            edit.setFixedSize(x + 10, y);
         }
         else{
-            edit.setFixedSize(130, (fm->height()+2)*y + 10);
-            edit.setFixedSize(110, (fm->height()+2)*y + 10);
+            int y = edit.document()->size().height();
+            edit.setFixedSize(310,y);
         }
     }
     this->update();
@@ -420,7 +393,7 @@ void NodeWidget::labelSizeRenew(){
                 temp = "";
                 continue;
             }
-            if(fm->width(temp) > 100){
+            if(fm->width(temp) > 300){
                 spaceSplit = temp.split(' ');
                 if(spaceSplit.count() == 1){
                     edit.textVector().append("");
@@ -462,6 +435,8 @@ void NodeWidget::makeDefaultSiblingNode(){
 }
 
 void NodeWidget::deleteFromMap(){
+    if(parent_==nullptr)
+        return;
     emit commanded(this, CommandType::Delete);
     disconnectUpperNode();
     this->close();
@@ -582,6 +557,8 @@ void NodeWidget::setEditFont(const QFont &font){
     fm = new QFontMetrics(font);
     this->font = font;
     edit.setFont(font);
-    if(editMode)
-        textEditSizeRenew();
+    labelSizeRenew();
+    editMode = true;
+    textEditSizeRenew();
+    editMode = false;
 }

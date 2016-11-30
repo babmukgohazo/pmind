@@ -13,17 +13,34 @@ MainWindow::MainWindow(QWidget *parent) :
     dockWidget = new PropertyTab(this);
     edit = new QTextEdit();
     redrawButton = new QPushButton("Redraw");
-    layout = new QHBoxLayout();
+    layout = new QVBoxLayout();
+    programLayout = new QHBoxLayout();
     rightLayout = new QVBoxLayout();
     map = nullptr;
     process = new Process;
 
+    scaleComboLayout = new QHBoxLayout;
+    scaleCombo = ui->scaleCombo;
+    percentLabel = ui->percentLabel;
+
+    scaleCombo->setEditable(true);
+    scaleCombo->setInsertPolicy(QComboBox::NoInsert);
+    scaleCombo->setFocusPolicy(Qt::ClickFocus);
+
+    scaleComboLayout->addWidget(scaleCombo);
+    scaleComboLayout->addWidget(percentLabel);
+    scaleComboLayout->addStretch();
+
     rightLayout->addWidget(dockWidget);
     rightLayout->addWidget(redrawButton);
-    layout->addWidget(mapScreen);
-    layout->addLayout(rightLayout);
-    layout->setStretchFactor(mapScreen,7);
-    layout->setStretchFactor(rightLayout,3);
+
+    programLayout->addWidget(mapScreen);
+    programLayout->addLayout(rightLayout);
+    programLayout->setStretchFactor(mapScreen,7);
+    programLayout->setStretchFactor(rightLayout,3);
+
+    layout->addLayout(scaleComboLayout);
+    layout->addLayout(programLayout);
 
     QObject::connect(mapScreen,SIGNAL(undid()),process,SLOT(undo()));
     QObject::connect(mapScreen,SIGNAL(redid()),process,SLOT(redo()));
@@ -33,6 +50,8 @@ MainWindow::MainWindow(QWidget *parent) :
     mapScreen->mainWindow = this;
 
     QObject::connect(redrawButton, SIGNAL(clicked()),this,SLOT(reload()));
+    QObject::connect(mapScreen, SIGNAL(zoomSignal()),this,SLOT(scaleCombo_setCurrentScale()));
+
 
 }
 
@@ -185,5 +204,31 @@ void MainWindow::addProcess(NodeWidget *movedNode, NodeWidget *to, CommandType t
     case CommandType::Move:
         process->push(new MoveCommand(movedNode, to));
         break;
+    }
+}
+
+void MainWindow::on_scaleCombo_currentIndexChanged(const QString &arg1)
+{
+    bool ok;
+    int ratio = arg1.toInt(&ok,10);
+    mapScreen->adjustScale(ratio);
+}
+
+
+void MainWindow::scaleCombo_setCurrentScale()
+{
+    QString curScale = QString::number(mapScreen->getCurrentScale());
+    QStringList intScale = curScale.split('.');
+    scaleCombo->setEditText(intScale[0]);
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
+    {
+        bool ok;
+        int scale = (scaleCombo->currentText()).toInt(&ok);
+        if (ok == true)
+            mapScreen->adjustScale(scale);
     }
 }

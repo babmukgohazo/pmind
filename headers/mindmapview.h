@@ -16,13 +16,32 @@ public:
     QGraphicsScene* mindmapScene;
     MainWindow* mainWindow;
 
+    void adjustScale(int ratio){
+        qreal x,y;
+        x = ratio/currentScale;
+        y = ratio/currentScale;
+        scale(x,y);
+        currentScale = ratio;
+    }
+
+    double getCurrentScale(){
+        return currentScale;
+    }
+
+signals:
+    void zoomSignal();
+
 public slots:
 
     void zoomIn(){
-        scale(1.2,1.2);
+        scale(1.25,1.25);
+        currentScale *=1.25;
+        emit zoomSignal();
     }
     void zoomOut(){
         scale(0.8,0.8);
+        currentScale *=0.8;
+        emit zoomSignal();
     }
 
     void focusIn();
@@ -38,6 +57,9 @@ protected:
     }
     void mousePressEvent(QMouseEvent *e);
     void keyPressEvent(QKeyEvent *e);
+
+private:
+    double currentScale;
 };
 
 #endif

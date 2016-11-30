@@ -11,6 +11,7 @@
 #include <QFileDialog>
 #include <QTextStream>
 #include <QKeyEvent>
+#include <QComboBox>
 #include <QDebug>
 #include "headers/mindmapview.h"
 #include "forms/propertytab.h"
@@ -48,6 +49,13 @@ public slots:
     void addProcess(NodeWidget*, CommandType);
     void addProcess(NodeWidget*, NodeWidget*, CommandType);
 
+private slots:
+    void on_scaleCombo_currentIndexChanged(const QString& arg1);
+    void scaleCombo_setCurrentScale();
+
+protected:
+    void keyPressEvent(QKeyEvent *event);
+
 private:
     void setFileMenuToolbar();
 
@@ -61,7 +69,6 @@ private:
     PropertyTab * dockWidget;
     QTextEdit* edit;
     QPushButton* redrawButton;
-    QHBoxLayout* layout;
     QVBoxLayout* rightLayout;
 
     // FileMenu Toolbar actions
@@ -73,6 +80,13 @@ private:
     QAction *actionQuit;
 
     Process* process;
+
+    QVBoxLayout* layout;
+    QHBoxLayout* programLayout;
+    QHBoxLayout* scaleComboLayout;
+    QComboBox* scaleCombo;
+    QLabel* percentLabel;
+
 };
 
 #endif // MAINWINDOW_H

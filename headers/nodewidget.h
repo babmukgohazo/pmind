@@ -46,6 +46,7 @@ public:
     QString getNodeTextColor(){return nodeTextColor;}
     NodeWidget* container(){return container_;}
     void setContainer(NodeWidget* container_){this->container_=container_;}
+    QColor& getColor(){return color;}
 
 signals:
     void doubleClicked();
@@ -111,6 +112,8 @@ public:
 
     NodeWidget* takeNode();
     bool isChildOf(NodeWidget* ptr);
+
+    void setEditFont(const QFont &);
 
     static NodeWidget* searchFocusInNode(NodeWidget* root);
     //2016/11/14일 추가한 함수

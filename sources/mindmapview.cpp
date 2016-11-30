@@ -4,6 +4,7 @@ MindmapView::MindmapView(){
     mindmapScene = new QGraphicsScene();
     this->setScene(mindmapScene);
     setDragMode(QGraphicsView::ScrollHandDrag);
+    currentScale = 100;
 }
 
 void MindmapView::mousePressEvent(QMouseEvent *e){

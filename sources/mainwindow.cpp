@@ -31,8 +31,9 @@ MainWindow::MainWindow(QWidget *parent) :
     scaleComboLayout->addWidget(percentLabel);
     scaleComboLayout->addStretch();
 
-    rightLayout->addWidget(dockWidget);
-    rightLayout->addWidget(redrawButton);
+    //rightLayout->addWidget(dockWidget);
+    addDockWidget(Qt::RightDockWidgetArea,dockWidget);
+    //rightLayout->addWidget(redrawButton);
 
     programLayout->addWidget(mapScreen);
     programLayout->addLayout(rightLayout);
@@ -40,7 +41,8 @@ MainWindow::MainWindow(QWidget *parent) :
     programLayout->setStretchFactor(rightLayout,3);
 
     layout->addLayout(scaleComboLayout);
-    layout->addLayout(programLayout);
+    //layout->addLayout(programLayout);
+    layout->addWidget(mapScreen);
 
     QObject::connect(mapScreen,SIGNAL(undid()),process,SLOT(undo()));
     QObject::connect(mapScreen,SIGNAL(redid()),process,SLOT(redo()));

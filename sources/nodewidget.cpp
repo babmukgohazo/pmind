@@ -576,3 +576,12 @@ bool NodeWidget::isChildOf(NodeWidget* ptr){
     else
         return parent_->isChildOf(ptr);
 }
+
+void NodeWidget::setEditFont(const QFont &font){
+    delete fm;
+    fm = new QFontMetrics(font);
+    this->font = font;
+    edit.setFont(font);
+    if(editMode)
+        textEditSizeRenew();
+}

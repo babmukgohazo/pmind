@@ -92,13 +92,17 @@ void NodeLabel::focusIn(){
         temp->label().focusOut();
     this->setFocus();
     focus = true;
-    //this->setStyleSheet("border: 4px solid gray;");
+    QString shapeTmp =this->getNodeShapeCSS();
+    QString colorTmp =this->getNodeTextColor();
+    this->setStyleSheet(shapeTmp+colorTmp+"background-color : #6699ff;");
     emit redraw();
 }
 
 void NodeLabel::focusOut(){
     focus = false;
-    //this->setStyleSheet("border: 2px solid gray;");
+    QString shapeTmp =this->getNodeShapeCSS();
+    QString colorTmp =this->getNodeTextColor();
+    this->setStyleSheet(shapeTmp+colorTmp+"background-color : #ffffff;");
     emit redraw();
 }
 
@@ -170,6 +174,19 @@ void NodeLabel::dropEvent(QDropEvent *event){
     update();
 }
 
+QString NodeLabel::getNodeShapeCSS(){
+    switch(nodeShape){
+    case rec:
+        return recCSS;
+    case roundRec:
+        return roundRecCSS;
+    case underline:
+        return underlineCSS;
+    default:
+        return nothingCSS;
+    }
+}
+
 QString NodeTextEdit::labelText(){
     QString temp = "";
     for(int i=0;i<textVector_.count()-1;i++){
@@ -233,7 +250,7 @@ void NodeWidget::init(){
     this->setStyleSheet("background-color: transparent");
     //selfWidget.setStyleSheet("background-color: transparent ; border-bottom: 1px solid black;");
     selfWidget.setStyleSheet("border: 2px solid gray;");
-    selfWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+    //selfWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
     layout.addWidget(&selfWidget);
     layout.addWidget(&childWidget);
     layout.setSpacing(30);

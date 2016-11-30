@@ -47,10 +47,6 @@ private:
     NodeWidget * map;
     NodeLabel* focusedNode;
     QColorDialog *colorDial;
-    QString underlineCSS =  "border-top-style: none; border-right-style: none; border-bottom-style: solid; border-left-style: none; border-width: 2px;border-color: black;";
-    QString recCSS = "border-width: 2px;border-style : solid;border-color: black;";
-    QString roundRecCSS = "border-width: 2px; border-style : solid; border-radius: 4px; border-color: black;";
-    QString nothingCSS = "border: 2px solid gray;";
 };
 
 #endif // PROPERTYTAB_H

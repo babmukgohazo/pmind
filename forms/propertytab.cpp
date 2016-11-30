@@ -104,15 +104,14 @@ void PropertyTab::on_rectangleButton_clicked()//노드 모양 네모
 {
     NodeWidget* root= map->searchFocusInNode(map->getRoot());
     focusedNode = root->labelPointer();
-    QString textColor = "color :" +focusedNode->getNodeTextColor();
-    if(focusedNode->getNodeShape()==rec){
-        focusedNode->setStyleSheet(nothingCSS+textColor);
+    QString textColor = focusedNode->getNodeTextColor();
+    if(focusedNode->getNodeShape()==rec){//만약에 애초에 네모였음
         focusedNode->setNodeShape(nothing);
-    }
-    else{
-        focusedNode->setStyleSheet(recCSS+textColor);
+    }else{//네모가 아니였음
         focusedNode->setNodeShape(rec);
     }
+    QString shapeOfNode = focusedNode->getNodeShapeCSS();
+    focusedNode->setStyleSheet(shapeOfNode+textColor);
     showAllProperty();
 }
 
@@ -120,15 +119,15 @@ void PropertyTab::on_roundRecButton_clicked()//노드 모양 둥근 네모
 {
     NodeWidget* root= map->searchFocusInNode(map->getRoot());
     focusedNode = root->labelPointer();
-    QString textColor = "color :" +focusedNode->getNodeTextColor();
+    QString textColor = focusedNode->getNodeTextColor();
     if(focusedNode->getNodeShape()==roundRec){
-        focusedNode->setStyleSheet(nothingCSS+textColor);
         focusedNode->setNodeShape(nothing);
     }else{
-        focusedNode->setStyleSheet(roundRecCSS+textColor);
         focusedNode->setNodeShape(roundRec);
     }
-     showAllProperty();
+    QString shapeOfNode = focusedNode->getNodeShapeCSS();
+    focusedNode->setStyleSheet(shapeOfNode+textColor);
+    showAllProperty();
 }
 
 
@@ -136,14 +135,14 @@ void PropertyTab::on_underlineButton_clicked()//노드 모양 밑줄
 {
     NodeWidget* root= map->searchFocusInNode(map->getRoot());
     focusedNode = root->labelPointer();
-    QString textColor = "color :" + focusedNode->getNodeTextColor();
+    QString textColor = focusedNode->getNodeTextColor();
     if(focusedNode->getNodeShape()==underline){
-        focusedNode->setStyleSheet(nothingCSS+textColor);
         focusedNode->setNodeShape(nothing);
     }else{
-        focusedNode->setStyleSheet(underlineCSS+textColor);
         focusedNode->setNodeShape(underline);
     }
+    QString shapeOfNode = focusedNode->getNodeShapeCSS();
+    focusedNode->setStyleSheet(shapeOfNode+textColor);
     showAllProperty();
 }
 
@@ -156,22 +155,12 @@ void PropertyTab::on_buttonColor_clicked(){//글자색 입력받는 슬롯
 void PropertyTab::changeTextOfColor(){//글자 색 바꾸는 슬롯
     NodeWidget* root= map->searchFocusInNode(map->getRoot());
     focusedNode = root->labelPointer();
+
     focusedNode->setNodeTextColor(colorDial->selectedColor());
-    QString textColor = "color :"+focusedNode->getNodeTextColor();
-    QString shape;
-    int sh=-1;
-    sh = focusedNode->getNodeShape();
-    switch(sh){
-    case rec:
-        shape = recCSS; break;
-    case roundRec:
-        shape = roundRecCSS; break;
-    case underline:
-        shape = underlineCSS; break;
-    default:
-        shape = nothingCSS; break;
-    }
-    focusedNode->setStyleSheet(shape + textColor);
+    QString textColor = focusedNode->getNodeTextColor();
+    QString shape=focusedNode->getNodeShapeCSS();
+
+    focusedNode->setStyleSheet(shape+textColor);
     showAllProperty();
 }
 

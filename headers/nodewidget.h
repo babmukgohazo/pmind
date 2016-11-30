@@ -21,6 +21,7 @@
 #include <QDebug>
 #include "headers/parsing.h"
 #include "headers/process.h"
+#include "forms/propertytab.h"
 
 class MainWindow;
 class NodeWidget;
@@ -53,6 +54,8 @@ public:
     void setContainer(NodeWidget* container_){this->container_=container_;}
 
 signals:
+    void focused();
+    void noFocused();
     void doubleClicked();
     void tabPressed();
     void enterPressed();
@@ -73,9 +76,9 @@ private:
     NodeWidget* container_;
     QColor color;
     bool dragOver;
-    QString underlineCSS =  "border-top-style: none; border-right-style: none; border-bottom-style: solid; border-left-style: none; border-width: 4px;border-color: #339900;";
-    QString recCSS = "border-width: 4px;border-style : solid;border-color: #339900;";
-    QString roundRecCSS = "border-width: 4px; border-style : solid; border-radius: 5px; border-color: #339900;";
+    QString underlineCSS =  "border-top-style: none; border-right-style: none; border-bottom-style: solid; border-left-style: none; border-width: 4px;border-color: #ff6666;";
+    QString recCSS = "border-width: 4px;border-style : solid;border-color: #ff6666;";
+    QString roundRecCSS = "border-width: 4px; border-style : solid; border-radius: 5px; border-color: #ff6666;";
     QString nothingCSS = "border: 2px solid gray;";
 };
 
@@ -157,6 +160,7 @@ private:
     int index = 0;
 
     static MainWindow* mainWindow;
+    PropertyTab* dockWidget;
 };
 
 

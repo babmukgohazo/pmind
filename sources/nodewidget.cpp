@@ -92,9 +92,10 @@ void NodeLabel::focusIn(){
         temp->label().focusOut();
     this->setFocus();
     focus = true;
-    QString shapeTmp =this->getNodeShapeCSS();
-    QString colorTmp =this->getNodeTextColor();
-    this->setStyleSheet(shapeTmp+colorTmp+"background-color : #6699ff;");
+    QString shapeTmp =this->getNodeShapeCSS();//모양을 얻어온다
+    QString colorTmp =this->getNodeTextColor();//글자 색을 얻어온다
+    this->setStyleSheet(shapeTmp+colorTmp+"background-color : #6699ff;"); //바탕화면 파란색
+    emit focused();
     emit redraw();
 }
 
@@ -102,7 +103,8 @@ void NodeLabel::focusOut(){
     focus = false;
     QString shapeTmp =this->getNodeShapeCSS();
     QString colorTmp =this->getNodeTextColor();
-    this->setStyleSheet(shapeTmp+colorTmp+"background-color : #ffffff;");
+    this->setStyleSheet(shapeTmp+colorTmp+"background-color : #ffffff;"); //바탕화면 하얀색으로 돌리기
+    emit noFocused();
     emit redraw();
 }
 
@@ -245,6 +247,7 @@ NodeWidget* NodeWidget::getRoot(){
 }
 
 void NodeWidget::init(){
+    dockWidget=mainWindow->getDockWidget();
     fm = new QFontMetrics(edit.currentFont());
     selfWidget.setContainer(this);
     this->setStyleSheet("background-color: transparent");
@@ -276,6 +279,9 @@ void NodeWidget::init(){
     QObject::connect(this,SIGNAL(commanded(NodeWidget*,CommandType)),NodeWidget::mainWindow,SLOT(addProcess(NodeWidget*,CommandType)));
     QObject::connect(&selfWidget,SIGNAL(commanded(NodeWidget*,NodeWidget*,CommandType)),this,SIGNAL(commanded(NodeWidget*,NodeWidget*,CommandType)));
     QObject::connect(this,SIGNAL(commanded(NodeWidget*,NodeWidget*,CommandType)),NodeWidget::mainWindow,SLOT(addProcess(NodeWidget*,NodeWidget*,CommandType)));
+    QObject::connect(&selfWidget,SIGNAL(focused()),dockWidget,SLOT(showAllProperty()));
+    QObject::connect(&selfWidget,SIGNAL(focused()),dockWidget,SLOT(propertyEnabled()));
+    QObject::connect(&selfWidget,SIGNAL(noFocused()),dockWidget,SLOT(propertyUnEnabled()));
 }
 
 NodeWidget::~NodeWidget(){
@@ -593,3 +599,4 @@ bool NodeWidget::isChildOf(NodeWidget* ptr){
     else
         return parent_->isChildOf(ptr);
 }
+

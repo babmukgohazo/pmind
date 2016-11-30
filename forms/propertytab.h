@@ -1,10 +1,12 @@
 #ifndef PROPERTYTAB_H
 #define PROPERTYTAB_H
 
+class NodeLabel;
+class NodeWidget;
 #include <QDockWidget>
 #include <QColorDialog>
 #include <QString>
-#include "headers/nodewidget.h"
+
 
 namespace Ui {
 class PropertyTab;
@@ -16,13 +18,14 @@ class PropertyTab : public QDockWidget
 enum nodeShape{nothing,rec,underline,roundRec};
 public:
     explicit PropertyTab(QWidget *parent = 0);
-    ~PropertyTab();
-    void showAllProperty(); //node가 가지고 있는 속성을 dockWidget에 표현한다.
+    ~PropertyTab(); 
+    void setButtonImg();
     void setDockWedigetDefault(); //dockWidget의 값을 초기화 한다.
     void setNodeWidget(NodeWidget * map){this->map = map;}
 
 
-private slots:
+public slots:
+
  //ui에 있는 속성들이 각각 눌렸을 때
     void on_fontBox_currentFontChanged(const QFont &f);
 
@@ -41,6 +44,11 @@ private slots:
     void on_buttonColor_clicked();
 
     void changeTextOfColor();
+
+    void showAllProperty(); //node가 가지고 있는 속성을 dockWidget에 표현한다.
+
+    void propertyEnabled();
+    void propertyUnEnabled();
 
 private:
     Ui::PropertyTab *ui;

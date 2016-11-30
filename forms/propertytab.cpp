@@ -2,45 +2,15 @@
 #include "ui_propertytab.h"
 #include "headers/nodewidget.h"
 #include <QDebug>
-#include <QColorDialog>
 
 PropertyTab::PropertyTab(QWidget *parent) :
     QDockWidget(parent),
     ui(new Ui::PropertyTab)
 {
 
-    //QObject::connect(colorDial,SIGNAL(colorSelected(QColor)),this,SLOT(changeTextOfColor()));
     ui->setupUi(this);
+    setButtonImg();
 
-    QPixmap colorCircle(":/buttonStyle/content/color_circle.png");
-    QIcon colorButton(colorCircle);
-
-    QPixmap boldImg(":/buttonStyle/content/bold_img.png");
-    QIcon boldButton(boldImg);
-
-    QPixmap italicImg(":/buttonStyle/content/italic_img.png");
-    QIcon italicButton(italicImg);
-
-    QPixmap rectangleImg(":/buttonStyle/node/rectangle_img.png");
-    QIcon rectangleButton(rectangleImg);
-
-    QPixmap roundRecImg(":/buttonStyle/node/roundRec_img.png");
-    QIcon roundRecButton(roundRecImg);
-
-    QPixmap underlineImg(":/buttonStyle/node/underline_img.png");
-    QIcon underlineButton(underlineImg);
-
-    QPixmap dottedLineImg(":/buttonStyle/line/dottedLine_img.png");
-    QIcon dottedLineButton(dottedLineImg);
-
-    ui->buttonColor->setIcon(colorButton);
-    ui->buttonBold->setIcon(boldButton);
-    ui->buttonItalic->setIcon(italicButton);
-    ui->rectangleButton->setIcon(rectangleButton);
-    ui->roundRecButton->setIcon(roundRecButton);
-    ui->underlineButton->setIcon(underlineButton);
-    ui->lineColorButton->setIcon(colorButton);
-    ui->dottedLineButton->setIcon(dottedLineButton);
 }
 
 PropertyTab::~PropertyTab()
@@ -111,7 +81,7 @@ void PropertyTab::on_rectangleButton_clicked()//노드 모양 네모
         focusedNode->setNodeShape(rec);
     }
     QString shapeOfNode = focusedNode->getNodeShapeCSS();
-    focusedNode->setStyleSheet(shapeOfNode+textColor);
+    focusedNode->setStyleSheet(shapeOfNode+textColor+"background-color : #6699ff;");
     showAllProperty();
 }
 
@@ -126,7 +96,7 @@ void PropertyTab::on_roundRecButton_clicked()//노드 모양 둥근 네모
         focusedNode->setNodeShape(roundRec);
     }
     QString shapeOfNode = focusedNode->getNodeShapeCSS();
-    focusedNode->setStyleSheet(shapeOfNode+textColor);
+    focusedNode->setStyleSheet(shapeOfNode+textColor+"background-color : #6699ff;");
     showAllProperty();
 }
 
@@ -142,7 +112,7 @@ void PropertyTab::on_underlineButton_clicked()//노드 모양 밑줄
         focusedNode->setNodeShape(underline);
     }
     QString shapeOfNode = focusedNode->getNodeShapeCSS();
-    focusedNode->setStyleSheet(shapeOfNode+textColor);
+    focusedNode->setStyleSheet(shapeOfNode+textColor+"background-color : #6699ff;");
     showAllProperty();
 }
 
@@ -160,7 +130,7 @@ void PropertyTab::changeTextOfColor(){//글자 색 바꾸는 슬롯
     QString textColor = focusedNode->getNodeTextColor();
     QString shape=focusedNode->getNodeShapeCSS();
 
-    focusedNode->setStyleSheet(shape+textColor);
+    focusedNode->setStyleSheet(shape+textColor+"background-color : #6699ff;");
     showAllProperty();
 }
 
@@ -168,27 +138,24 @@ void PropertyTab::showAllProperty(){//node의 속성 dockWidget에 보여주기
     NodeWidget* root= map->searchFocusInNode(map->getRoot());
     focusedNode = root->labelPointer();
     QFont font = focusedNode->font();
-    QFont boldFont;
-    boldFont.setBold(true);
     setDockWedigetDefault();
 
     if(font.bold())//굵기
-        ui->buttonBold->setStyleSheet("background-color : #378de5;");
-        //ui->buttonBold->setFont(boldFont);
+        ui->buttonBold->setStyleSheet("background-color : #0033cc;");
 
 
     if(font.italic())//기울임
-        ui->buttonItalic->setFont(boldFont);
+        ui->buttonItalic->setStyleSheet("background-color : #0033cc;");
 
     ui->contentSizeBox->setValue(font.pointSize()); //글씨크기
     ui->fontBox->setCurrentText(font.toString()); //글꼴
     switch(focusedNode->getNodeShape()){
     case rec:
-        ui->rectangleButton->setFont(boldFont); break;
+        ui->rectangleButton->setStyleSheet("background-color : #0033cc;"); break;
     case roundRec:
-        ui->roundRecButton->setFont(boldFont); break;
+        ui->roundRecButton->setStyleSheet("background-color : #0033cc;"); break;
     case underline:
-        ui->underlineButton->setFont(boldFont); break;
+        ui->underlineButton->setStyleSheet("background-color : #0033cc;"); break;
     default :
         break;
     }
@@ -196,10 +163,51 @@ void PropertyTab::showAllProperty(){//node의 속성 dockWidget에 보여주기
 void PropertyTab::setDockWedigetDefault(){//dockWidget속성 초기화
     QFont notBoldFont;
     notBoldFont.setBold(false);
-    ui->buttonBold->setStyleSheet("background-color : QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #79bbff, stop: 1 #378de5);");
     ui->buttonBold->setFont(notBoldFont);
     ui->buttonItalic->setFont(notBoldFont);
-    ui->rectangleButton->setFont(notBoldFont);
-    ui->roundRecButton->setFont(notBoldFont);
-    ui->underlineButton->setFont(notBoldFont);
+    ui->buttonBold->setStyleSheet("background-color : QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #79bbff, stop: 1 #378de5);");
+    ui->buttonItalic->setStyleSheet("background-color : QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #79bbff, stop: 1 #378de5);");
+    ui->rectangleButton->setStyleSheet("background-color : QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #79bbff, stop: 1 #378de5);");
+    ui->roundRecButton->setStyleSheet("background-color : QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #79bbff, stop: 1 #378de5);");
+    ui->underlineButton->setStyleSheet("background-color : QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #79bbff, stop: 1 #378de5);");
+}
+
+void PropertyTab::setButtonImg(){
+    QPixmap colorCircle(":/buttonStyle/content/color_circle.png");
+    QIcon colorButton(colorCircle);
+
+    QPixmap boldImg(":/buttonStyle/content/bold_img.png");
+    QIcon boldButton(boldImg);
+
+    QPixmap italicImg(":/buttonStyle/content/italic_img.png");
+    QIcon italicButton(italicImg);
+
+    QPixmap rectangleImg(":/buttonStyle/node/rectangle_img.png");
+    QIcon rectangleButton(rectangleImg);
+
+    QPixmap roundRecImg(":/buttonStyle/node/roundRec_img.png");
+    QIcon roundRecButton(roundRecImg);
+
+    QPixmap underlineImg(":/buttonStyle/node/underline_img.png");
+    QIcon underlineButton(underlineImg);
+
+    QPixmap dottedLineImg(":/buttonStyle/line/dottedLine_img.png");
+    QIcon dottedLineButton(dottedLineImg);
+
+    ui->buttonColor->setIcon(colorButton);
+    ui->buttonBold->setIcon(boldButton);
+    ui->buttonItalic->setIcon(italicButton);
+    ui->rectangleButton->setIcon(rectangleButton);
+    ui->roundRecButton->setIcon(roundRecButton);
+    ui->underlineButton->setIcon(underlineButton);
+    ui->lineColorButton->setIcon(colorButton);
+    ui->dottedLineButton->setIcon(dottedLineButton);
+}
+
+void PropertyTab::propertyEnabled(){
+    this->setEnabled(true);
+}
+
+void PropertyTab::propertyUnEnabled(){
+    this->setEnabled(false);
 }

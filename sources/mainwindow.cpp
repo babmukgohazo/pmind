@@ -193,6 +193,31 @@ void MainWindow::saveFileAs(){
     saveFile();
 }
 
+void MainWindow::imageExport(){
+    QFileDialog dialog(this,
+                       tr("Image export"),
+                       QDir::homePath(),
+                       tr("PNG (*.png);;JPEG (*.jpeg);;BMP (*.bmp)"));
+    dialog.setAcceptMode(QFileDialog::AcceptSave);
+
+    if(!dialog.exec())
+        return;
+
+    QPixmap pixmap;
+    QString fileName = dialog.selectedFiles().first();
+    QFile file(fileName);
+    file.open(QIODevice::WriteOnly);
+    if(map==nullptr)
+        return;
+    pixmap = map->grab();
+    QImage background(pixmap.size()+QSize(40,40),QImage::Format_RGB32);
+    background.fill(Qt::white);
+    QPainter painter(&background);
+    painter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
+    painter.drawImage(20,20,pixmap.toImage());
+    background.save(fileName);
+}
+
 void MainWindow::quit(){
     //just quit :)
     QApplication::instance()->quit();
@@ -203,12 +228,14 @@ void MainWindow::setFileMenuToolbar() {
     actionLoad = new QAction("Load");
     actionSave = new QAction("Save");
     actionSaveAs = new QAction("Save as");
+    actionExport = new QAction("Image export");
     actionQuit = new QAction("Quit");
     menuFile = new QMenu("Menu");
     menuFile->addAction(actionNew);
     menuFile->addAction(actionLoad);
     menuFile->addAction(actionSave);
     menuFile->addAction(actionSaveAs);
+    menuFile->addAction(actionExport);
     menuFile->addSeparator();
     menuFile->addAction(actionQuit);
     this->menuBar()->addMenu(menuFile);
@@ -217,6 +244,7 @@ void MainWindow::setFileMenuToolbar() {
     connect(actionLoad, SIGNAL(triggered()), this, SLOT(openFile()));
     connect(actionSave, SIGNAL(triggered()), this, SLOT(saveFile()));
     connect(actionSaveAs, SIGNAL(triggered()), this, SLOT(saveFileAs()));
+    connect(actionExport,SIGNAL(triggered()),this,SLOT(imageExport()));
     connect(actionQuit, SIGNAL(triggered()), this, SLOT(quit()));
 }
 

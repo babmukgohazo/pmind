@@ -42,6 +42,7 @@ public slots:
     void openFile();
     void saveFile();
     void saveFileAs();
+    void imageExport();
 
     //handle changed content at quit
     void quit();
@@ -87,6 +88,7 @@ private:
     QAction *actionLoad;
     QAction *actionSave;
     QAction *actionSaveAs;
+    QAction *actionExport;
     QAction *actionQuit;
 
     Process* process;

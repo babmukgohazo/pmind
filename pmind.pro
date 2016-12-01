@@ -17,21 +17,21 @@ SOURCES += \
     sources/mainwindow.cpp \
     sources/parsing.cpp \
     sources/nodewidget.cpp \
-    forms/filemanage.cpp \
-    forms/namecheckdialog.cpp
+    forms/propertytab.cpp \
+    sources/mindmapview.cpp \
+    sources/process.cpp
 
 HEADERS  += \
     headers/mainwindow.h \
     headers/parsing.h \
     headers/mindmapview.h \
     headers/nodewidget.h \
-    forms/filemanage.h \
-    forms/namecheckdialog.h
+    forms/propertytab.h \
+    headers/process.h
 
 FORMS    += \
     forms/mainwindow.ui \
-    forms/filemanage.ui \
-    forms/namecheckdialog.ui
+    forms/propertytab.ui
 
 RESOURCES += \
     resources/image.qrc

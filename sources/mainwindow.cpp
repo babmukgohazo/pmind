@@ -9,37 +9,54 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setFileMenuToolbar();
     setWindowTitle("P-mind");
-
     // construct & set UI component
     mapScreen = new MindmapView();
-    edit = new QTextEdit();
+    dockWidget = new PropertyTab(this);
+    edit = dockWidget->getTextEdit();
     redrawButton = new QPushButton("Redraw");
-    layout = new QHBoxLayout();
+    layout = new QVBoxLayout();
+    programLayout = new QHBoxLayout();
     rightLayout = new QVBoxLayout();
     map = nullptr;
+    process = new Process;
 
-    rightLayout->addWidget(edit);
-    rightLayout->addWidget(redrawButton);
+    scaleComboLayout = new QHBoxLayout;
+    scaleCombo = ui->scaleCombo;
+    percentLabel = ui->percentLabel;
+
+    scaleCombo->setEditable(true);
+    scaleCombo->setInsertPolicy(QComboBox::NoInsert);
+    scaleCombo->setFocusPolicy(Qt::ClickFocus);
+
+    scaleComboLayout->addWidget(scaleCombo);
+    scaleComboLayout->addWidget(percentLabel);
+    scaleComboLayout->addStretch();
+
+    //rightLayout->addWidget(dockWidget);
+    addDockWidget(Qt::RightDockWidgetArea,dockWidget);
+    //rightLayout->addWidget(redrawButton);
+
+    programLayout->addWidget(mapScreen);
+    programLayout->addLayout(rightLayout);
+    programLayout->setStretchFactor(mapScreen,7);
+    programLayout->setStretchFactor(rightLayout,3);
+
+    layout->addLayout(scaleComboLayout);
+    //layout->addLayout(programLayout);
     layout->addWidget(mapScreen);
-    layout->addLayout(rightLayout);
-    layout->setStretchFactor(mapScreen,7);
-    layout->setStretchFactor(rightLayout,3);
 
+    QObject::connect(mapScreen,SIGNAL(undid()),process,SLOT(undo()));
+    QObject::connect(mapScreen,SIGNAL(redid()),process,SLOT(redo()));
     mapScreen->setStyleSheet("MindmapView {border: 1px solid gray; background: white;}");
     this->centralWidget()->setLayout(layout);
 
+    mapScreen->mainWindow = this;
+
     QObject::connect(redrawButton, SIGNAL(clicked()),this,SLOT(reload()));
 
-    contentChanged = false;
+    QObject::connect(mapScreen, SIGNAL(zoomSignal()),this,SLOT(scaleCombo_setCurrentScale()));
 
-    QObject::connect(edit, SIGNAL(textChanged()),this,SLOT(on_textEdit_textChanged()));
 
-    filemanage = new FileManage();
-    filemanage->setModal(true);
-    filemanage->show();
-
-    QObject::connect(filemanage, SIGNAL(signal_open()),this,SLOT(openFile()));
-    QObject::connect(filemanage, SIGNAL(signal_new()),this,SLOT(newFile()));
 }
 
 MainWindow::~MainWindow()
@@ -54,21 +71,28 @@ MainWindow::~MainWindow()
     }
     delete mapScreen;
     delete layout;
+    //delete process;
 }
 
 //re-allocate & re-draw mindmap
 void MainWindow::reload(){
-    if (map!=nullptr){
+   if (map!=nullptr){
+        QObject::disconnect(mapScreen,SIGNAL(viewClicked()),map,SLOT(update()));
         delete map;
         map = nullptr;
     }
     QString str = edit->toPlainText();
     QQueue<MdString> q;
     getQqueue(str,q);
-    map = new NodeWidget(q);
+    map = new NodeWidget(q, this);
     mapScreen->mindmapScene->addWidget(map);
+    QObject::connect(mapScreen,SIGNAL(viewClicked()),map,SLOT(update()));
+    dockWidget->setNodeWidget(map);
 }
 
+void MainWindow::renewTextEdit(){
+
+}
 
 void MainWindow::newFile(){
     m_fileName = QDir::homePath() + "/untitled.pmind"; //use default file name
@@ -194,4 +218,52 @@ void MainWindow::setFileMenuToolbar() {
     connect(actionSave, SIGNAL(triggered()), this, SLOT(saveFile()));
     connect(actionSaveAs, SIGNAL(triggered()), this, SLOT(saveFileAs()));
     connect(actionQuit, SIGNAL(triggered()), this, SLOT(quit()));
+}
+
+void MainWindow::addProcess(NodeWidget* node, CommandType type){
+    switch(type){
+    case CommandType::Add:
+        process->push(new AddCommand(node));
+        break;
+    case CommandType::Delete:
+        process->push(new DeleteCommand(node));
+        break;
+    case CommandType::Text:
+        process->push(new TextCommand(node));
+        break;
+    }
+}
+
+void MainWindow::addProcess(NodeWidget *movedNode, NodeWidget *to, CommandType type){
+    switch(type){
+    case CommandType::Move:
+        process->push(new MoveCommand(movedNode, to));
+        break;
+    }
+}
+
+void MainWindow::on_scaleCombo_currentIndexChanged(const QString &arg1)
+{
+    bool ok;
+    int ratio = arg1.toInt(&ok,10);
+    mapScreen->adjustScale(ratio);
+}
+
+
+void MainWindow::scaleCombo_setCurrentScale()
+{
+    QString curScale = QString::number(mapScreen->getCurrentScale());
+    QStringList intScale = curScale.split('.');
+    scaleCombo->setEditText(intScale[0]);
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
+    {
+        bool ok;
+        int scale = (scaleCombo->currentText()).toInt(&ok);
+        if (ok == true)
+            mapScreen->adjustScale(scale);
+    }
 }

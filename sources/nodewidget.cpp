@@ -1,6 +1,7 @@
 #include "headers/mainwindow.h"
 
 void NodeLabel::mousePressEvent(QMouseEvent *e){
+    prePos = e->pos();
     if(focus){
         emit doubleClicked();
     }
@@ -125,16 +126,19 @@ void NodeTextEdit::focusOutEvent(QFocusEvent *e){
 }
 
 void NodeLabel::mouseMoveEvent(QMouseEvent *event){
-    QDrag *drag = new QDrag(this);
-    QMimeData *mime = new QMimeData;
-    drag->setMimeData(mime);
-    mime->setColorData(qVariantFromValue((void*)parent()));
+    if(QLineF(prePos, event->pos()).length() > 10){
+        QDrag *drag = new QDrag(this);
+        QMimeData *mime = new QMimeData;
+        drag->setMimeData(mime);
+        mime->setColorData(qVariantFromValue((void*)parent()));
 
-    drag->setPixmap(((QWidget*)parent())->grab());
-    drag->setHotSpot((static_cast<QWidget*>(parent()))->mapFromGlobal(mapToGlobal(event->pos())));
-    drag->exec();
-    focusOut();
-    setCursor(Qt::OpenHandCursor);
+        drag->setPixmap(((QWidget*)parent())->grab());
+        drag->setHotSpot((static_cast<QWidget*>(parent()))->mapFromGlobal(mapToGlobal(event->pos())));
+        drag->exec();
+        focusOut();
+        setCursor(Qt::OpenHandCursor);
+
+    }
 }
 
 void NodeLabel::dragEnterEvent(QDragEnterEvent *event){

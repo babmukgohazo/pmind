@@ -37,8 +37,9 @@ private:
         return e;
     }
     static NodeWidget* createNodeWidget(QDomElement e){
-        NodeWidget* newNode = new NodeWidget();
-        newNode->label().setText(e.attribute("content"));
+        //NodeWidget* newNode = new NodeWidget();
+        //newNode->label().setText(e.attribute("content"));
+        NodeWidget* newNode = new NodeWidget(e.attribute("content"));
         newNode->label().setNodeShape(e.attribute("nodestyle").toInt());
         QFont font;
         font.fromString( e.attribute("font"));

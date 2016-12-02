@@ -69,6 +69,7 @@ private:
     NodeWidget* container_;
     QColor color;
     bool dragOver;
+    QPoint prePos;
 };
 
 class NodeTextEdit : public QTextEdit{

@@ -225,6 +225,8 @@ void MainWindow::saveFileAs(){
 }
 
 void MainWindow::imageExport(){
+    if(map==nullptr)
+        return;
     QFileDialog dialog(this,
                        tr("Image export"),
                        QDir::homePath(),
@@ -238,8 +240,6 @@ void MainWindow::imageExport(){
     QString fileName = dialog.selectedFiles().first();
     QFile file(fileName);
     file.open(QIODevice::WriteOnly);
-    if(map==nullptr)
-        return;
     pixmap = map->grab();
     QImage background(pixmap.size()+QSize(40,40),QImage::Format_RGB32);
     background.fill(Qt::white);

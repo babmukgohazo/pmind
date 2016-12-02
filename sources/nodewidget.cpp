@@ -488,19 +488,16 @@ void NodeWidget::focusMoveByArrow(int key){
 }
 
 void NodeWidget::paintEvent(QPaintEvent *e){
-    QPainter painter(this);
-    QPen myPen;
-    myPen.setWidth(2);
-    painter.setPen(myPen);
-    painter.setRenderHint(QPainter::HighQualityAntialiasing);
 
     QPoint pos1, pos2;
 
     //painter.drawLine();
     //painter.drawLine(selfWidget.mapToParent(selfWidget.rect().bottomLeft()),selfWidget.mapToParent(selfWidget.rect().bottomRight()));
-
     if(editMode){
         for(int i = 0; i<child.count(); i++){
+            QPainter& painter = child[i]->getPainter();
+            painter.begin(this);
+
             QPoint temp;
             temp = edit.mapToGlobal(edit.rect().bottomRight());
             pos1 = this->mapFromGlobal(temp);
@@ -512,10 +509,15 @@ void NodeWidget::paintEvent(QPaintEvent *e){
             path.moveTo(pos1);
             path.cubicTo(pos1+QPoint(10,0),pos2+QPoint(-10,0),pos2);
             painter.drawPath(path);
+
+            painter.end();
         }
     }
     else{
         for(int i = 0 ; i<child.count() ; i++){
+            QPainter& painter = child[i]->getPainter();
+            painter.begin(this);
+
             QPoint temp;
             if(child[i]->editMode){
                 temp = selfWidget.mapToGlobal(selfWidget.rect().bottomRight());
@@ -534,6 +536,8 @@ void NodeWidget::paintEvent(QPaintEvent *e){
             path.moveTo(pos1);
             path.cubicTo(pos1+QPoint(10,0),pos2+QPoint(-10,0),pos2);
             painter.drawPath(path);
+
+            painter.end();
         }
     }
 }
@@ -566,4 +570,13 @@ void NodeWidget::setEditFont(const QFont &font){
     editMode = true;
     textEditSizeRenew();
     editMode = false;
+}
+
+QPainter& NodeWidget::getPainter(){
+    return painter;
+}
+
+void NodeWidget::setPainter(QPainter& painter){
+    this->painter = painter;
+    parentWidget()->update();
 }

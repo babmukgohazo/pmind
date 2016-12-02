@@ -19,6 +19,7 @@
 #include <QMimeData>
 #include <QDropEvent>
 #include <QDebug>
+#include <QPainter>
 #include "headers/parsing.h"
 #include "headers/process.h"
 
@@ -119,6 +120,9 @@ public:
     static NodeWidget* searchFocusInNode(NodeWidget* root);
     //2016/11/14일 추가한 함수
 
+    QPainter& getPainter();
+    void setPainter(QPainter& painter);
+
 public slots:
     void labelToTextEdit();
     void textEditToLabel();
@@ -152,6 +156,8 @@ private:
     int index = 0;
 
     static MainWindow* mainWindow;
+
+    QPainter painter;
 };
 
 

@@ -49,9 +49,13 @@ public slots:
     void labelClick(){labelClicked = true;}
 
 signals:
-    void viewClicked();
     void undid();
     void redid();
+    void newFile();
+    void save();
+    void load();
+    void saveAs();
+    void quit();
 
 protected:
     void wheelEvent(QWheelEvent *event){

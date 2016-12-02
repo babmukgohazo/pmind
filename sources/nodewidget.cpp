@@ -2,7 +2,7 @@
 
 void NodeLabel::mousePressEvent(QMouseEvent *e){
     prePos = e->pos();
-    if(e->button()==Qt::RightButton){
+    if(e->button()==Qt::LeftButton){
         if(focus){
             emit doubleClicked();
         }
@@ -86,7 +86,7 @@ void NodeLabel::keyPressEvent(QKeyEvent *e){
 }
 
 void NodeLabel::focusOutEvent(QFocusEvent *e){
-    //this->focusOut();
+    focusOut();
 }
 
 void NodeLabel::focusIn(){
@@ -104,12 +104,14 @@ void NodeLabel::focusIn(){
 }
 
 void NodeLabel::focusOut(){
-    focus = false;
-    QString shapeTmp =this->getNodeShapeCSS();
-    QString colorTmp =this->getNodeTextColor();
-    this->setStyleSheet(shapeTmp+colorTmp+"background-color : #ffffff;"); //바탕화면 하얀색으로 돌리기
-    emit noFocused();
-    emit redraw();
+    if(focus){
+        focus = false;
+        QString shapeTmp =this->getNodeShapeCSS();
+        QString colorTmp =this->getNodeTextColor();
+        this->setStyleSheet(shapeTmp+colorTmp+"background-color : #ffffff;"); //바탕화면 하얀색으로 돌리기
+        emit noFocused();
+        emit redraw();
+    }
 }
 
 void NodeTextEdit::keyPressEvent(QKeyEvent *e){
@@ -273,6 +275,7 @@ void NodeWidget::init(){
     this->setStyleSheet("background-color: transparent");
     //selfWidget.setStyleSheet("background-color: transparent ; border-bottom: 1px solid black;");
     selfWidget.setStyleSheet("border: 2px solid gray;");
+
 //<<<<<<< HEAD
     selfWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
     childWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));

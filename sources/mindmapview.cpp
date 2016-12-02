@@ -10,7 +10,7 @@ MindmapView::MindmapView(){
 }
 
 void MindmapView::mousePressEvent(QMouseEvent *e){
-    emit viewClicked();
+    update();
     QGraphicsView::mousePressEvent(e);
     focusIn();
 }
@@ -20,20 +20,31 @@ void MindmapView::keyPressEvent(QKeyEvent *e){
     case Qt::Key_Z:
         if(e->modifiers().testFlag(Qt::ControlModifier))
             emit undid();
-        else
-            QGraphicsView::keyPressEvent(e);
-
         break;
     case Qt::Key_Y:
         if(e->modifiers().testFlag(Qt::ControlModifier))
             emit redid();
-        else
-            QGraphicsView::keyPressEvent(e);
         break;
-    default:
-        QGraphicsView::keyPressEvent(e);
+    case Qt::Key_N:
+        if(e->modifiers().testFlag(Qt::ControlModifier))
+            emit newFile();
+        break;
+    case Qt::Key_S:
+        if(e->modifiers().testFlag(Qt::ControlModifier))
+            emit save();
+        else if(e->modifiers().testFlag(Qt::ShiftModifier))
+            emit saveAs();
+        break;
+    case Qt::Key_L:
+        if(e->modifiers().testFlag(Qt::ControlModifier))
+            emit load();
+        break;
+    case Qt::Key_Q:
+        if(e->modifiers().testFlag(Qt::ControlModifier))
+            emit quit();
         break;
     }
+    QGraphicsView::keyPressEvent(e);
 }
 
 void MindmapView::focusIn(){
@@ -42,7 +53,7 @@ void MindmapView::focusIn(){
     if(temp != nullptr){
         if(!labelClicked){
             temp->label().focusOut();
-            if(editClicked)
+            if(!editClicked)
                 temp->textEditToLabel();
         }
     }

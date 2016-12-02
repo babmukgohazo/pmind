@@ -48,6 +48,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect(mapScreen,SIGNAL(undid()),process,SLOT(undo()));
     QObject::connect(mapScreen,SIGNAL(redid()),process,SLOT(redo()));
+    QObject::connect(mapScreen,SIGNAL(newFile()),this,SLOT(newFile()));
+    QObject::connect(mapScreen,SIGNAL(save()),this,SLOT(saveFile()));
+    QObject::connect(mapScreen,SIGNAL(saveAs()),this,SLOT(saveFileAs()));
+    QObject::connect(mapScreen,SIGNAL(load()),this,SLOT(openFile()));
+    QObject::connect(mapScreen,SIGNAL(quit()),this,SLOT(quit()));
+
     mapScreen->setStyleSheet("MindmapView {border: 1px solid gray; background: white;}");
     this->centralWidget()->setLayout(layout);
 
@@ -78,7 +84,6 @@ MainWindow::~MainWindow()
 //re-allocate & re-draw mindmap
 void MainWindow::reload(){
    if (map!=nullptr){
-        QObject::disconnect(mapScreen,SIGNAL(viewClicked()),map,SLOT(update()));
         delete map;
         map = nullptr;
     }
@@ -87,7 +92,6 @@ void MainWindow::reload(){
     getQqueue(str,q);
     map = new NodeWidget(q, this);
     mapScreen->mindmapScene->addWidget(map);
-    QObject::connect(mapScreen,SIGNAL(viewClicked()),map,SLOT(update()));
     dockWidget->setNodeWidget(map);
 }
 

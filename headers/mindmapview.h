@@ -45,6 +45,8 @@ public slots:
     }
 
     void focusIn();
+    void editClick(){editClicked = true;}
+    void labelClick(){labelClicked = true;}
 
 signals:
     void viewClicked();
@@ -60,6 +62,8 @@ protected:
 
 private:
     double currentScale;
+    bool editClicked;
+    bool labelClicked;
 };
 
 #endif

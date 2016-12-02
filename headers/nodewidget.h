@@ -65,6 +65,7 @@ signals:
     void arrowPressed(int key);
     void redraw();
     void commanded(NodeWidget*, NodeWidget*, CommandType);
+    void labelClicked();
 
 public slots:
     void focusIn();
@@ -92,6 +93,7 @@ class NodeTextEdit : public QTextEdit{
 public:
     void keyPressEvent(QKeyEvent *e);
     void focusOutEvent(QFocusEvent *e);
+    void mousePressEvent(QMouseEvent *e);
     QVector<QString>& textVector(){return textVector_;}
     QString labelText();
     void saveText(QString text_){this->text_ = text_;}
@@ -101,6 +103,7 @@ signals:
     void enterPressed();
     void focusOut();
     void escPressed();
+    void editClicked();
 
 private:
     QVector<QString> textVector_;
@@ -125,6 +128,7 @@ public:
     NodeLabel& label(){return selfWidget;}
     NodeLabel* labelPointer(){return &selfWidget;}
     int getIndex(){return index;}
+    bool isEditMode(){return editMode;}
 
     NodeWidget* takeNode();
     bool isChildOf(NodeWidget* ptr);

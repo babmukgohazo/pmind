@@ -5,13 +5,14 @@ MindmapView::MindmapView(){
     this->setScene(mindmapScene);
     setDragMode(QGraphicsView::ScrollHandDrag);
     currentScale = 100;
+    editClicked = false;
+    labelClicked = false;
 }
 
 void MindmapView::mousePressEvent(QMouseEvent *e){
-    focusIn();
     emit viewClicked();
-
     QGraphicsView::mousePressEvent(e);
+    focusIn();
 }
 
 void MindmapView::keyPressEvent(QKeyEvent *e){
@@ -38,7 +39,14 @@ void MindmapView::keyPressEvent(QKeyEvent *e){
 void MindmapView::focusIn(){
     NodeWidget* temp;
     temp = NodeWidget::searchFocusInNode(mainWindow->getMap());
-    if(temp != nullptr)
-        temp->label().focusOut();
+    if(temp != nullptr){
+        if(!labelClicked){
+            temp->label().focusOut();
+            if(editClicked)
+                temp->textEditToLabel();
+        }
+    }
+    editClicked = false;
+    labelClicked = false;
     this->setFocus();
 }

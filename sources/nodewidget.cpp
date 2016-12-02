@@ -2,11 +2,14 @@
 
 void NodeLabel::mousePressEvent(QMouseEvent *e){
     prePos = e->pos();
-    if(focus){
-        emit doubleClicked();
-    }
-    else{
-        this->focusIn();
+    if(e->button()==Qt::RightButton){
+        if(focus){
+            emit doubleClicked();
+        }
+        else{
+            this->focusIn();
+        }
+        emit labelClicked();
     }
 }
 
@@ -129,6 +132,11 @@ void NodeTextEdit::keyPressEvent(QKeyEvent *e){
 
 void NodeTextEdit::focusOutEvent(QFocusEvent *e){
     emit focusOut();
+}
+
+void NodeTextEdit::mousePressEvent(QMouseEvent *e){
+    emit editClicked();
+    QTextEdit::mousePressEvent(e);
 }
 
 void NodeLabel::mouseMoveEvent(QMouseEvent *event){
@@ -256,6 +264,7 @@ void NodeWidget::init(){
 //<<<<<<< HEAD
     edit.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     edit.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    edit.setContextMenuPolicy(Qt::NoContextMenu);
 //=======
     dockWidget=mainWindow->getDockWidget();
 //>>>>>>> feature/sprint_3_dockWidget
@@ -297,6 +306,8 @@ void NodeWidget::init(){
     QObject::connect(&selfWidget,SIGNAL(focused()),dockWidget,SLOT(showAllProperty()));
     QObject::connect(&selfWidget,SIGNAL(focused()),dockWidget,SLOT(propertyEnabled()));
     QObject::connect(&selfWidget,SIGNAL(noFocused()),dockWidget,SLOT(propertyUnEnabled()));
+    QObject::connect(&edit,SIGNAL(editClicked()),NodeWidget::mainWindow->getMapScreen(),SLOT(editClick()));
+    QObject::connect(&selfWidget,SIGNAL(labelClicked()),NodeWidget::mainWindow->getMapScreen(),SLOT(labelClick()));
 }
 
 NodeWidget::~NodeWidget(){

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -27,7 +27,8 @@ HEADERS  += \
     headers/mindmapview.h \
     headers/nodewidget.h \
     forms/propertytab.h \
-    headers/process.h
+    headers/process.h \
+    headers/xmlhandler.h
 
 FORMS    += \
     forms/mainwindow.ui \

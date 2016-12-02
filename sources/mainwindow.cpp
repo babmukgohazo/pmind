@@ -1,6 +1,7 @@
 #include "headers/mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QMessageBox>
+#include "headers/xmlhandler.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -136,7 +137,7 @@ void MainWindow::openFile(){
     QFileDialog dialog(this,
                        tr("Open Mindmap"),
                        QDir::homePath(),
-                       QString("P-mind (*.pmind)"));
+                       QString("P-mind (*.pmind);; xml File (*.md)"));
     dialog.setAcceptMode(QFileDialog::AcceptOpen);
     dialog.setDefaultSuffix("pmind");
     if (!dialog.exec())
@@ -149,17 +150,34 @@ void MainWindow::openFile(){
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
 
-    //copy to text edit
-    edit->setText("");
-    while (!file.atEnd()) {
-        QByteArray line = file.readLine();
-        edit->setText(edit->toPlainText().append(line));
-    }
-    file.close();
-    contentChanged = false;
+    if(m_fileName.endsWith(".pmind",Qt::CaseInsensitive)){
+        //open file
+        QDomDocument doc;
+        if (!doc.setContent(&file))
+        {
+            file.close();
+            return;
+        }
+        file.close();
 
-    //draw mindmap
-    reload();
+        if(map != nullptr){
+            delete map;
+        }
+        map = XmlHandler::Xml2Mindmap(doc);
+        mapScreen->mindmapScene->addWidget(map);
+    }
+
+    else if(m_fileName.endsWith(".md",Qt::CaseInsensitive)){
+
+        //copy to text edit
+        edit->setText("");
+        while (!file.atEnd()) {
+            QByteArray line = file.readLine();
+            edit->setText(edit->toPlainText().append(line));
+        }
+        file.close();
+        reload();
+    }
     changeWindowTitle();
 }
 void MainWindow::saveFile(){
@@ -170,8 +188,19 @@ void MainWindow::saveFile(){
         return;
     }
 
-    QTextStream out(&file);
-    out << edit->toPlainText();
+
+    if(m_fileName.endsWith(".pmind",Qt::CaseInsensitive)){
+
+        QTextStream out(&file);
+        out << XmlHandler::mindmap2Xml(map);
+    }
+
+    else if(m_fileName.endsWith(".md",Qt::CaseInsensitive)){
+
+        QTextStream out(&file);
+        out << edit->toPlainText();
+    }
+
     file.close();
     contentChanged = false;
     changeWindowTitle();
@@ -183,7 +212,7 @@ void MainWindow::saveFileAs(){
     QFileDialog dialog(this,
                        tr("Save Mindmap as"),
                        QDir::homePath(),
-                       QString("P-mind (*.pmind)"));
+                       QString("P-mind (*.pmind);; xml File (*.xml)"));
     dialog.setAcceptMode(QFileDialog::AcceptSave);
     dialog.setDefaultSuffix("pmind");
     if (!dialog.exec())

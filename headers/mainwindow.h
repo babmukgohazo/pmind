@@ -14,7 +14,7 @@
 #include <QComboBox>
 #include <QDebug>
 #include "headers/mindmapview.h"
-#include "forms/propertytab.h"
+//#include "forms/propertytab.h"
 
 namespace Ui {
 class MainWindow;
@@ -31,6 +31,7 @@ public:
     MindmapView* getMapScreen(){return mapScreen;}
     NodeWidget* getMap(){return map;}
     Process* getProcess(){return process;}
+    PropertyTab* getDockWidget(){return dockWidget;};
 
 public slots:
     //slots for graphic & drawing
@@ -50,12 +51,15 @@ public slots:
     void addProcess(NodeWidget*, CommandType);
     void addProcess(NodeWidget*, NodeWidget*, CommandType);
 
+//<<<<<<< HEAD
 private slots:
     void on_scaleCombo_currentIndexChanged(const QString& arg1);
     void scaleCombo_setCurrentScale();
 
 protected:
     void keyPressEvent(QKeyEvent *event);
+//=======
+//>>>>>>> feature/sprint_3_dockWidget
 
 private:
     void setFileMenuToolbar();

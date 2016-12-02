@@ -21,16 +21,19 @@
 #include <QDebug>
 #include "headers/parsing.h"
 #include "headers/process.h"
+#include "forms/propertytab.h"
 
 class MainWindow;
 class NodeWidget;
-
+enum nodeShape{nothing,rec,underline,roundRec};
 class NodeLabel : public QLabel{
     Q_OBJECT
 public:
     NodeLabel(){
         setAcceptDrops(true);
+        color="";
     }
+    enum nodeShape{nothing,rec,underline,roundRec};
     void mousePressEvent(QMouseEvent *e);
     void keyPressEvent(QKeyEvent *e);
     void focusOutEvent(QFocusEvent *e);
@@ -40,15 +43,20 @@ public:
     void dragMoveEvent(QDragMoveEvent *e);
     void dropEvent(QDropEvent *e);
     bool isFocus(){return focus;}
+
     void setNodeShape(int shape){nodeShape = shape;}
     int getNodeShape(){return nodeShape;}
+    QString getNodeShapeCSS();
     void setNodeTextColor(QColor col){nodeTextColor=col.name();}
-    QString getNodeTextColor(){return nodeTextColor;}
+    QString getNodeTextColor(){return "color : "+nodeTextColor+";";}
+
     NodeWidget* container(){return container_;}
     void setContainer(NodeWidget* container_){this->container_=container_;}
     QColor& getColor(){return color;}
 
 signals:
+    void focused();
+    void noFocused();
     void doubleClicked();
     void tabPressed();
     void enterPressed();
@@ -69,7 +77,14 @@ private:
     NodeWidget* container_;
     QColor color;
     bool dragOver;
+//<<<<<<< HEAD
     QPoint prePos;
+//=======
+    QString underlineCSS =  "border-top-style: none; border-right-style: none; border-bottom-style: solid; border-left-style: none; border-width: 4px;border-color: #ff6666;";
+    QString recCSS = "border-width: 4px;border-style : solid;border-color: #ff6666;";
+    QString roundRecCSS = "border-width: 4px; border-style : solid; border-radius: 5px; border-color: #ff6666;";
+    QString nothingCSS = "border: 2px solid gray;";
+//>>>>>>> feature/sprint_3_dockWidget
 };
 
 class NodeTextEdit : public QTextEdit{
@@ -119,6 +134,8 @@ public:
     static NodeWidget* searchFocusInNode(NodeWidget* root);
     //2016/11/14일 추가한 함수
 
+    static void setMainWindow(MainWindow* m){mainWindow = m;}
+
 public slots:
     void labelToTextEdit();
     void textEditToLabel();
@@ -152,7 +169,7 @@ private:
     int index = 0;
 
     static MainWindow* mainWindow;
+    PropertyTab* dockWidget;
 };
-
 
 #endif // NODEWIDGET_H

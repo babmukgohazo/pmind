@@ -93,13 +93,19 @@ void NodeLabel::focusIn(){
         temp->label().focusOut();
     this->setFocus();
     focus = true;
-    //this->setStyleSheet("border: 4px solid gray;");
+    QString shapeTmp =this->getNodeShapeCSS();//모양을 얻어온다
+    QString colorTmp =this->getNodeTextColor();//글자 색을 얻어온다
+    this->setStyleSheet(shapeTmp+colorTmp+"background-color : #6699ff;"); //바탕화면 파란색
+    emit focused();
     emit redraw();
 }
 
 void NodeLabel::focusOut(){
     focus = false;
-    //this->setStyleSheet("border: 2px solid gray;");
+    QString shapeTmp =this->getNodeShapeCSS();
+    QString colorTmp =this->getNodeTextColor();
+    this->setStyleSheet(shapeTmp+colorTmp+"background-color : #ffffff;"); //바탕화면 하얀색으로 돌리기
+    emit noFocused();
     emit redraw();
 }
 
@@ -176,6 +182,19 @@ void NodeLabel::dropEvent(QDropEvent *event){
     update();
 }
 
+QString NodeLabel::getNodeShapeCSS(){
+    switch(nodeShape){
+    case rec:
+        return recCSS;
+    case roundRec:
+        return roundRecCSS;
+    case underline:
+        return underlineCSS;
+    default:
+        return nothingCSS;
+    }
+}
+
 QString NodeTextEdit::labelText(){
     QString temp = "";
     for(int i=0;i<textVector_.count()-1;i++){
@@ -234,15 +253,23 @@ NodeWidget* NodeWidget::getRoot(){
 }
 
 void NodeWidget::init(){
+//<<<<<<< HEAD
     edit.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     edit.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+//=======
+    dockWidget=mainWindow->getDockWidget();
+//>>>>>>> feature/sprint_3_dockWidget
     fm = new QFontMetrics(edit.currentFont());
     selfWidget.setContainer(this);
     this->setStyleSheet("background-color: transparent");
     //selfWidget.setStyleSheet("background-color: transparent ; border-bottom: 1px solid black;");
     selfWidget.setStyleSheet("border: 2px solid gray;");
+//<<<<<<< HEAD
     selfWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
     childWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
+//=======
+    //selfWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+//>>>>>>> feature/sprint_3_dockWidget
     layout.addWidget(&selfWidget);
     layout.addWidget(&childWidget);
     layout.setSpacing(30);
@@ -267,6 +294,9 @@ void NodeWidget::init(){
     QObject::connect(this,SIGNAL(commanded(NodeWidget*,CommandType)),NodeWidget::mainWindow,SLOT(addProcess(NodeWidget*,CommandType)));
     QObject::connect(&selfWidget,SIGNAL(commanded(NodeWidget*,NodeWidget*,CommandType)),this,SIGNAL(commanded(NodeWidget*,NodeWidget*,CommandType)));
     QObject::connect(this,SIGNAL(commanded(NodeWidget*,NodeWidget*,CommandType)),NodeWidget::mainWindow,SLOT(addProcess(NodeWidget*,NodeWidget*,CommandType)));
+    QObject::connect(&selfWidget,SIGNAL(focused()),dockWidget,SLOT(showAllProperty()));
+    QObject::connect(&selfWidget,SIGNAL(focused()),dockWidget,SLOT(propertyEnabled()));
+    QObject::connect(&selfWidget,SIGNAL(noFocused()),dockWidget,SLOT(propertyUnEnabled()));
 }
 
 NodeWidget::~NodeWidget(){
@@ -557,6 +587,7 @@ bool NodeWidget::isChildOf(NodeWidget* ptr){
         return parent_->isChildOf(ptr);
 }
 
+//<<<<<<< HEAD
 void NodeWidget::setEditFont(const QFont &font){
     delete fm;
     fm = new QFontMetrics(font);
@@ -567,3 +598,7 @@ void NodeWidget::setEditFont(const QFont &font){
     textEditSizeRenew();
     editMode = false;
 }
+
+
+//=======
+//>>>>>>> feature/sprint_3_dockWidget

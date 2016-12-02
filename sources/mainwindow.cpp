@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowTitle("P-mind");
     // construct & set UI component
     mapScreen = new MindmapView();
-    dockWidget = new PropertyTab(this);
+    dockWidget = new PropertyTab;
     edit = dockWidget->getTextEdit();
     redrawButton = new QPushButton("Redraw");
     layout = new QVBoxLayout();
@@ -57,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect(mapScreen, SIGNAL(zoomSignal()),this,SLOT(scaleCombo_setCurrentScale()));
 
-
+    NodeWidget::setMainWindow(this);
 }
 
 MainWindow::~MainWindow()
@@ -105,6 +105,7 @@ void MainWindow::newFile(){
     }
     map = new NodeWidget;
     mapScreen->mindmapScene->addWidget(map);
+    dockWidget->setNodeWidget(map);
     changeWindowTitle();
 }
 
@@ -167,6 +168,7 @@ void MainWindow::openFile(){
         }
         map = XmlHandler::Xml2Mindmap(doc);
         mapScreen->mindmapScene->addWidget(map);
+        dockWidget->setNodeWidget(map);
     }
 
     else if(m_fileName.endsWith(".md",Qt::CaseInsensitive)){

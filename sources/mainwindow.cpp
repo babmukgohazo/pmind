@@ -103,6 +103,8 @@ void MainWindow::newFile(){
         delete map;
         map = nullptr;
     }
+    map = new NodeWidget;
+    mapScreen->mindmapScene->addWidget(map);
     changeWindowTitle();
 }
 

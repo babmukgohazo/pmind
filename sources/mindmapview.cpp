@@ -43,6 +43,10 @@ void MindmapView::keyPressEvent(QKeyEvent *e){
         if(e->modifiers().testFlag(Qt::ControlModifier))
             emit quit();
         break;
+    case Qt::Key_I:
+        if(e->modifiers().testFlag(Qt::ControlModifier))
+            emit imageExport();
+        break;
     }
     QGraphicsView::keyPressEvent(e);
 }

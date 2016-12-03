@@ -55,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(mapScreen,SIGNAL(saveAs()),this,SLOT(saveFileAs()));
     QObject::connect(mapScreen,SIGNAL(load()),this,SLOT(openFile()));
     QObject::connect(mapScreen,SIGNAL(quit()),this,SLOT(quit()));
+    QObject::connect(mapScreen,SIGNAL(imageExport()),this,SLOT(imageExport()));
 
     mapScreen->setStyleSheet("MindmapView {border: 1px solid gray; background: white;}");
     this->centralWidget()->setLayout(layout);

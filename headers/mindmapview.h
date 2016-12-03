@@ -61,6 +61,7 @@ signals:
     void save();
     void load();
     void saveAs();
+    void imageExport();
     void quit();
 
 private:

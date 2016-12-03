@@ -96,7 +96,7 @@ void NodeLabel::focusIn(){
     focus = true;
     QString shapeTmp =this->getNodeShapeCSS();//모양을 얻어온다
     QString colorTmp =this->getNodeTextColor();//글자 색을 얻어온다
-    QString borderTmp = this->defaultColorToString();//노드의 default 색깔 값을 얻어온다.
+    QString borderTmp = this->getDefaultColorCSS();//노드의 default 색깔 값을 얻어온다.
     this->setStyleSheet(shapeTmp+colorTmp+borderTmp+"background-color : #6699ff;"); //바탕화면 파란색
     emit focused();
     emit redraw();
@@ -106,13 +106,13 @@ void NodeLabel::focusOut(){
     focus = false;
     QString shapeTmp =this->getNodeShapeCSS();
     QString colorTmp =this->getNodeTextColor();
-    QString borderTmp = this->defaultColorToString();//노드의 default 색깔 값을 얻어온다.
+    QString borderTmp = this->getDefaultColorCSS();//노드의 default 색깔 값을 얻어온다.
     this->setStyleSheet(shapeTmp+colorTmp+borderTmp+"background-color : #ffffff;"); //바탕화면 하얀색으로 돌리기
     emit noFocused();
     emit redraw();
 }
 
-QString NodeLabel::defaultColorToString(){
+QString NodeLabel::getDefaultColorCSS(){
     switch(defaultColor){
     case blue:
         defaultColorCSS="border-color: #298aab;"; break;

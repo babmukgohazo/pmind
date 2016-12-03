@@ -55,7 +55,7 @@ public:
     QString getNodeTextColor(){return "color : "+nodeTextColor+";";}
     void setDefaultColor(int a){defaultColor=a;}
     int getDefaultColor(){return defaultColor;}
-    QString defaultColorToString();
+    QString getDefaultColorCSS();
 
     NodeWidget* container(){return container_;}
     void setContainer(NodeWidget* container_){this->container_=container_;}

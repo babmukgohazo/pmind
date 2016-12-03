@@ -140,7 +140,7 @@ void MainWindow::openFile(){
     QFileDialog dialog(this,
                        tr("Open Mindmap"),
                        QDir::homePath(),
-                       QString("P-mind (*.pmind);; xml File (*.md)"));
+                       QString("P-mind (*.pmind);; md File (*.md)"));
     dialog.setAcceptMode(QFileDialog::AcceptOpen);
     dialog.setDefaultSuffix("pmind");
     if (!dialog.exec())
@@ -216,7 +216,7 @@ void MainWindow::saveFileAs(){
     QFileDialog dialog(this,
                        tr("Save Mindmap as"),
                        QDir::homePath(),
-                       QString("P-mind (*.pmind);; xml File (*.xml)"));
+                       QString("P-mind (*.pmind);; md File (*.md)"));
     dialog.setAcceptMode(QFileDialog::AcceptSave);
     dialog.setDefaultSuffix("pmind");
     if (!dialog.exec())

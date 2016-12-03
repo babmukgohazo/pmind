@@ -98,6 +98,8 @@ void MainWindow::reload(){
     QString str = edit->toPlainText();
     getQqueue(str,mdQueue);
     map = new NodeWidget(mdQueue, this);
+    map->labelPointer()->setStyleSheet("border-width: 3px; border-style : solid; border-color: #aed339;");
+    map->labelPointer()->setNodeShape(root);
     mapScreen->mindmapScene->addWidget(map);
     renewTextEdit();
     QObject::connect(mapScreen,SIGNAL(viewClicked()),map,SLOT(update()));

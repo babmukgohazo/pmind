@@ -19,6 +19,7 @@
 #include <QMimeData>
 #include <QDropEvent>
 #include <QDebug>
+#include <QPainter>
 #include "headers/parsing.h"
 #include "headers/process.h"
 #include "forms/propertytab.h"
@@ -135,6 +136,10 @@ public:
 
     static void setMainWindow(MainWindow* m){mainWindow = m;}
 
+    QPen& getPen();
+    void setPen(QPen& pen);
+
+
 public slots:
     void labelToTextEdit();
     void textEditToLabel();
@@ -171,6 +176,8 @@ private:
     static MainWindow* mainWindow;
     PropertyTab* PropertyDock;
     TextView* textViewDock;
+
+    QPen pen;
 };
 
 #endif // NODEWIDGET_H

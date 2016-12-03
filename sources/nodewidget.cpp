@@ -115,22 +115,56 @@ void NodeLabel::focusOut(){
 QString NodeLabel::getDefaultColorCSS(){
     switch(defaultColor){
     case blue:
-        defaultColorCSS="border-color: #298aab;"; break;
+        defaultColorCSS="border-color: #298aab;";
+        break;
     case red:
-        defaultColorCSS="border-color: #e55251;"; break;
+        defaultColorCSS="border-color: #e55251;";
+        break;
     case green:
-        defaultColorCSS="border-color: #41a441;"; break;
+        defaultColorCSS="border-color: #41a441;";
+        break;
     case orange:
-        defaultColorCSS="border-color: #e79527;"; break;
+        defaultColorCSS="border-color: #e79527;";
+        break;
     case yellow:
-        defaultColorCSS="border-color: #fee13e;"; break;
+        defaultColorCSS="border-color: #fee13e;";
+        break;
     case mint:
-        defaultColorCSS="border-color: #37aea1;"; break;
+        defaultColorCSS="border-color: #37aea1;";
+        break;
     default:
         defaultColorCSS="";
     }
     return defaultColorCSS;
 }
+
+QString NodeLabel::getDefaultColorString()
+{
+    switch(defaultColor){
+    case blue:
+        defaultColorString="#298aab";
+        break;
+    case red:
+        defaultColorString="#e55251";
+        break;
+    case green:
+        defaultColorString="#41a441";
+        break;
+    case orange:
+        defaultColorString="#e79527";
+        break;
+    case yellow:
+        defaultColorString="#fee13e";
+        break;
+    case mint:
+        defaultColorString="#37aea1";
+        break;
+    default:
+        defaultColorString="";
+    }
+    return defaultColorString;
+}
+
 
 void NodeTextEdit::keyPressEvent(QKeyEvent *e){
     if(e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return){
@@ -300,8 +334,8 @@ void NodeWidget::init(){
     this->setStyleSheet("background-color: transparent");
     //selfWidget.setStyleSheet("background-color: transparent ; border-bottom: 1px solid black;");
     selfWidget.setStyleSheet("border: 2px solid gray;");
-    selfWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-    childWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
+    selfWidget.setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    childWidget.setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     layout.addWidget(&selfWidget);
     layout.addWidget(&childWidget);
     layout.setSpacing(30);
@@ -310,8 +344,9 @@ void NodeWidget::init(){
     layout.setContentsMargins(0,0,0,0);
     childLayout.setMargin(0);
 
-
+    QColor* col = new QColor(selfWidget.getDefaultColorString());
     pen.setWidth(2);
+    pen.setColor(*col);
 
     QObject::connect(&edit,SIGNAL(enterPressed()),NodeWidget::mainWindow,SLOT(renewTextEdit()));
 

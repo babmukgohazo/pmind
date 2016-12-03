@@ -56,6 +56,7 @@ public:
     void setDefaultColor(int a){defaultColor=a;}
     int getDefaultColor(){return defaultColor;}
     QString getDefaultColorCSS();
+    QString getDefaultColorString();
 
     NodeWidget* container(){return container_;}
     void setContainer(NodeWidget* container_){this->container_=container_;}
@@ -91,6 +92,7 @@ private:
     QString nothingCSS = "border: 2px solid gray;";
     int defaultColor;
     QString defaultColorCSS;
+    QString defaultColorString;
 };
 
 class NodeTextEdit : public QTextEdit{

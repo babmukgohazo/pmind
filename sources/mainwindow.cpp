@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mapScreen = new MindmapView();
     dockWidget = new PropertyTab;
     edit = dockWidget->getTextEdit();
+    edit->setReadOnly(true);
     redrawButton = new QPushButton("Redraw");
     layout = new QVBoxLayout();
     programLayout = new QHBoxLayout();
@@ -83,17 +84,29 @@ void MainWindow::reload(){
         map = nullptr;
     }
     QString str = edit->toPlainText();
-    QQueue<MdString> q;
-    getQqueue(str,q);
-    map = new NodeWidget(q, this);
+    getQqueue(str,mdQueue);
+    map = new NodeWidget(mdQueue, this);
     mapScreen->mindmapScene->addWidget(map);
+    renewTextEdit();
     QObject::connect(mapScreen,SIGNAL(viewClicked()),map,SLOT(update()));
     dockWidget->setNodeWidget(map);
 }
 
 void MainWindow::renewTextEdit(){
+    if (map==nullptr){
+         return;
+     }
+    QString inText;
+    mdQueue.clear();
+    dfs_stack.clear();
+    dfs_stack.push(map);
 
+    dfs(dfs_stack, mdQueue);
+    convertQqToText(inText, mdQueue);
+    edit->setPlainText(inText);
 }
+
+
 
 void MainWindow::newFile(){
     m_fileName = QDir::homePath() + "/untitled.pmind"; //use default file name
@@ -105,6 +118,7 @@ void MainWindow::newFile(){
     }
     map = new NodeWidget;
     mapScreen->mindmapScene->addWidget(map);
+    renewTextEdit();
     dockWidget->setNodeWidget(map);
     changeWindowTitle();
 }
@@ -168,6 +182,7 @@ void MainWindow::openFile(){
         }
         map = XmlHandler::Xml2Mindmap(doc);
         mapScreen->mindmapScene->addWidget(map);
+        renewTextEdit();
         dockWidget->setNodeWidget(map);
     }
 

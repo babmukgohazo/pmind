@@ -115,6 +115,7 @@ public:
     QVector<NodeWidget*>& getChild(){ return child; }
     NodeWidget* getParent(){return parent_;}
     NodeWidget* getRoot();
+    int getDepth();
     //int getChildNum(childNum)
     ~NodeWidget();
 
@@ -151,6 +152,7 @@ public slots:
 signals:
     void commanded(NodeWidget*, CommandType);
     void commanded(NodeWidget*, NodeWidget*, CommandType);
+    void generated();
 
 private:
     void init();

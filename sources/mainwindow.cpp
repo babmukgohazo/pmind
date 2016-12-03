@@ -86,6 +86,7 @@ void MainWindow::reload(){
     getQqueue(str,mdQueue);
     map = new NodeWidget(mdQueue, this);
     mapScreen->mindmapScene->addWidget(map);
+    renewTextEdit();
     QObject::connect(mapScreen,SIGNAL(viewClicked()),map,SLOT(update()));
     dockWidget->setNodeWidget(map);
 }
@@ -116,6 +117,7 @@ void MainWindow::newFile(){
     }
     map = new NodeWidget;
     mapScreen->mindmapScene->addWidget(map);
+    renewTextEdit();
     dockWidget->setNodeWidget(map);
     changeWindowTitle();
 }
@@ -179,6 +181,7 @@ void MainWindow::openFile(){
         }
         map = XmlHandler::Xml2Mindmap(doc);
         mapScreen->mindmapScene->addWidget(map);
+        renewTextEdit();
         dockWidget->setNodeWidget(map);
     }
 

@@ -152,6 +152,7 @@ public slots:
 signals:
     void commanded(NodeWidget*, CommandType);
     void commanded(NodeWidget*, NodeWidget*, CommandType);
+    void generated();
 
 private:
     void init();

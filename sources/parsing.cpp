@@ -70,7 +70,7 @@ int getQqueue(QString &inText, QQueue<MdString> &mdQueue)
     return 0;
 }
 
-int convertQqToText(QString &inText,QQueue<MdString> &mdQueue){
+void convertQqToText(QString &inText,QQueue<MdString> &mdQueue){
     inText = "";
 
     for (int i = 0; i < mdQueue.length(); i++){

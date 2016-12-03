@@ -31,7 +31,7 @@ public:
     MindmapView* getMapScreen(){return mapScreen;}
     NodeWidget* getMap(){return map;}
     Process* getProcess(){return process;}
-    PropertyTab* getDockWidget(){return dockWidget;};
+    PropertyTab* getDockWidget(){return dockWidget;}
 
 public slots:
     //slots for graphic & drawing

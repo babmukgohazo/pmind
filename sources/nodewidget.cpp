@@ -288,10 +288,10 @@ void NodeWidget::init(){
     childWidget.setLayout(&childLayout);
     layout.setContentsMargins(0,0,0,0);
     childLayout.setMargin(0);
-    QObject::connect(&edit,SIGNAL(enterPressed()),NodeWidget::mainWindow,SLOT(renewTextEdit()));
     QObject::connect(&edit,SIGNAL(enterPressed()),this,SLOT(textEditToLabel()));
     QObject::connect(&edit,SIGNAL(enterPressed()),&selfWidget,SLOT(focusIn()));
     QObject::connect(&edit,SIGNAL(focusOut()),this,SLOT(textEditToLabel()));
+    QObject::connect(&edit,SIGNAL(focusOut()),NodeWidget::mainWindow,SLOT(renewTextEdit()));
     QObject::connect(&selfWidget,SIGNAL(doubleClicked()),this,SLOT(labelToTextEdit()));
     QObject::connect(&edit,SIGNAL(textChanged()),this,SLOT(textEditSizeRenew()));
     QObject::connect(&selfWidget,SIGNAL(tabPressed()),this,SLOT(makeDefaultChildNode()));
@@ -308,6 +308,7 @@ void NodeWidget::init(){
     QObject::connect(&selfWidget,SIGNAL(focused()),dockWidget,SLOT(showAllProperty()));
     QObject::connect(&selfWidget,SIGNAL(focused()),dockWidget,SLOT(propertyEnabled()));
     QObject::connect(&selfWidget,SIGNAL(noFocused()),dockWidget,SLOT(propertyUnEnabled()));
+    QObject::connect(this,SIGNAL(generated()),NodeWidget::mainWindow,SLOT(renewTextEdit()));
 }
 
 NodeWidget::~NodeWidget(){
@@ -323,6 +324,7 @@ void NodeWidget::add(NodeWidget *subNodeWidget){
     childLayout.addWidget(subNodeWidget);
     subNodeWidget->parent_ = this;
     subNodeWidget->index = child.count()-1;
+    emit generated();
 }
 
 void NodeWidget::insert(int index, NodeWidget *subNode){
@@ -332,6 +334,7 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
         child[i]->index++;
     subNode->parent_ = this;
     subNode->index = index;
+    emit generated();
 }
 
 NodeWidget* NodeWidget::searchFocusInNode(NodeWidget* root){
@@ -496,6 +499,7 @@ void NodeWidget::disconnectUpperNode(){
             parent_->child[i]->index--;
         parent_=nullptr;
     }
+    emit generated();
     getRoot()->update();
 }
 

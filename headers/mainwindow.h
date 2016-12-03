@@ -13,7 +13,9 @@
 #include <QKeyEvent>
 #include <QComboBox>
 #include <QDebug>
+#include <QSettings>
 #include "headers/mindmapview.h"
+#include "headers/qgoogleanalytics.h"
 //#include "forms/propertytab.h"
 
 namespace Ui {
@@ -103,6 +105,7 @@ private:
     QComboBox* scaleCombo;
     QLabel* percentLabel;
 
+    QGoogleAnalytics* qGA;
 };
 
 #endif // MAINWINDOW_H

@@ -55,6 +55,9 @@ public slots:
     void propertyEnabled();
     void propertyUnEnabled();
 
+signals:
+    void fontChanged(NodeWidget*,QFont);
+
 private:
     Ui::PropertyTab *ui;
     NodeWidget * map;

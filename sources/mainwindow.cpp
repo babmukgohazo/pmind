@@ -57,6 +57,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(mapScreen,SIGNAL(quit()),this,SLOT(quit()));
     QObject::connect(mapScreen,SIGNAL(imageExport()),this,SLOT(imageExport()));
 
+    QObject::connect(dockWidget,SIGNAL(fontChanged(NodeWidget*,QFont)),this,SLOT(addProcess(NodeWidget*,QFont)));
+
     mapScreen->setStyleSheet("MindmapView {border: 1px solid gray; background: white;}");
     this->centralWidget()->setLayout(layout);
 
@@ -308,6 +310,10 @@ void MainWindow::addProcess(NodeWidget *movedNode, NodeWidget *to, CommandType t
         process->push(new MoveCommand(movedNode, to));
         break;
     }
+}
+
+void MainWindow::addProcess(NodeWidget *fontChangedNode, QFont lastFont){
+    process->push(new FontCommand(fontChangedNode, lastFont));
 }
 
 void MainWindow::on_scaleCombo_currentIndexChanged(const QString &arg1)

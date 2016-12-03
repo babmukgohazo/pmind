@@ -50,6 +50,7 @@ public slots:
 
     void addProcess(NodeWidget*, CommandType);
     void addProcess(NodeWidget*, NodeWidget*, CommandType);
+    void addProcess(NodeWidget*, QFont);
 
 //<<<<<<< HEAD
 private slots:

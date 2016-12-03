@@ -12,8 +12,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>322</width>
-    <height>432</height>
+    <width>280</width>
+    <height>310</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -24,8 +24,8 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>322</width>
-    <height>432</height>
+    <width>280</width>
+    <height>310</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -38,7 +38,7 @@
    <string notr="true">QPushButton { 
 	background-color:QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #79bbff, stop: 1 #378de5);
 	border:1px solid #84bbf3;
-	border-radius:15px;
+	border-radius:10px;
 	text-indent:0;
 	color:#666666;
 	font-family:Arial;
@@ -46,7 +46,7 @@
 	font-weight:bold;
 	font-style:normal;
 	line-height:45px;
-	height:30px;
+	height:18px;
 	width:300px;
 	text-decoration:none;
 	text-align:center;
@@ -116,7 +116,7 @@ QPushButton:hover {
         <item>
          <widget class="QPushButton" name="buttonBold">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -129,7 +129,7 @@ QPushButton:hover {
         <item>
          <widget class="QPushButton" name="buttonItalic">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -145,7 +145,7 @@ QPushButton:hover {
         <item>
          <widget class="QPushButton" name="buttonColor">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -222,7 +222,7 @@ QPushButton:hover {
         <item>
          <widget class="QPushButton" name="rectangleButton">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -235,7 +235,7 @@ QPushButton:hover {
         <item>
          <widget class="QPushButton" name="roundRecButton">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -248,7 +248,7 @@ QPushButton:hover {
         <item>
          <widget class="QPushButton" name="underlineButton">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -293,7 +293,7 @@ QPushButton:hover {
         <item>
          <widget class="QPushButton" name="dottedLineButton">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -306,7 +306,7 @@ QPushButton:hover {
         <item>
          <widget class="QPushButton" name="lineColorButton">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -334,8 +334,6 @@ QPushButton:hover {
      </spacer>
     </item>
    </layout>
-   <zorder></zorder>
-   <zorder>label</zorder>
    <zorder></zorder>
    <zorder></zorder>
    <zorder>line</zorder>

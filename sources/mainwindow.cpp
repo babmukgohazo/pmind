@@ -31,9 +31,9 @@ MainWindow::MainWindow(QWidget *parent) :
     scaleCombo->setInsertPolicy(QComboBox::NoInsert);
     scaleCombo->setFocusPolicy(Qt::ClickFocus);
 
-    scaleComboLayout->addWidget(scaleCombo);
-    scaleComboLayout->addWidget(percentLabel);
-    scaleComboLayout->addStretch();
+    //scaleComboLayout->addWidget(scaleCombo);
+    //scaleComboLayout->addWidget(percentLabel);
+    //scaleComboLayout->addStretch();
 
     //rightLayout->addWidget(dockWidget);
     addDockWidget(Qt::RightDockWidgetArea,propertyDock);
@@ -43,14 +43,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //rightLayout->addWidget(redrawButton);
 
-    programLayout->addWidget(mapScreen);
-    programLayout->addLayout(rightLayout);
-    programLayout->setStretchFactor(mapScreen,7);
-    programLayout->setStretchFactor(rightLayout,3);
+
 
     layout->addLayout(scaleComboLayout);
     //layout->addLayout(programLayout);
     layout->addWidget(mapScreen);
+    layout->setMargin(0);
+    layout->setSpacing(3);
 
     propertyDock->setMapScreen(mapScreen);
 
@@ -69,6 +68,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     qGA = new QGoogleAnalytics(this);
     qGA->sendPageView("mindmapview");
+
+
+    statusBar()->addWidget(scaleCombo);
+    statusBar()->addWidget(percentLabel);
 }
 
 MainWindow::~MainWindow()

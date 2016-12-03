@@ -7,6 +7,10 @@ MindmapView::MindmapView(){
     currentScale = 100;
     editClicked = false;
     labelClicked = false;
+    this->setBackgroundBrush(QBrush(QColor(242,242,242), Qt::SolidPattern));
+
+    //184 184 184
+    //242 242 242
 }
 
 void MindmapView::mousePressEvent(QMouseEvent *e){

@@ -107,7 +107,7 @@ void dfs(QStack<NodeWidget*>& qStack, QQueue<MdString>& mdQueue){
 
     QVector<NodeWidget*>& childNodes = tempNode->getChild();
 
-    for (int i = childNodes.length()-1; i >= 0; i--){
+    for (int i = 0; i < childNodes.length(); i++){
         qStack.push(childNodes.at(i));
         dfs(qStack, mdQueue);
     }

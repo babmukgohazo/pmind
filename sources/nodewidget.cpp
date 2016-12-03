@@ -1,4 +1,5 @@
 #include "headers/mainwindow.h"
+int NodeWidget::counter = 0;
 
 void NodeLabel::mousePressEvent(QMouseEvent *e){
     prePos = e->pos();
@@ -116,20 +117,85 @@ void NodeLabel::focusIn(){
     focus = true;
     QString shapeTmp =this->getNodeShapeCSS();//모양을 얻어온다
     QString colorTmp =this->getNodeTextColor();//글자 색을 얻어온다
-    this->setStyleSheet(shapeTmp+colorTmp+"background-color : #6699ff;"); //바탕화면 파란색
+    QString borderTmp = this->getDefaultColorCSS();//노드의 default 색깔 값을 얻어온다.
+    this->setStyleSheet(shapeTmp+colorTmp+borderTmp+"background-color : #6699ff;"); //바탕화면 파란색
     emit focused();
     emit redraw();
 }
 
 void NodeLabel::focusOut(){
+//<<<<<<< HEAD
     if(focus){
         focus = false;
         QString shapeTmp =this->getNodeShapeCSS();
         QString colorTmp =this->getNodeTextColor();
-        this->setStyleSheet(shapeTmp+colorTmp+"background-color : #ffffff;"); //바탕화면 하얀색으로 돌리기
+        QString borderTmp = this->getDefaultColorCSS();//노드의 default 색깔 값을 얻어온다.
+        this->setStyleSheet(shapeTmp+colorTmp+borderTmp+"background-color : #ffffff;"); //바탕화면 하얀색으로 돌리기
         emit noFocused();
         emit redraw();
     }
+//=======
+//    focus = false;
+//    QString shapeTmp =this->getNodeShapeCSS();
+//    QString colorTmp =this->getNodeTextColor();
+//    QString borderTmp = this->getDefaultColorCSS();//노드의 default 색깔 값을 얻어온다.
+//    this->setStyleSheet(shapeTmp+colorTmp+borderTmp+"background-color : #ffffff;"); //바탕화면 하얀색으로 돌리기
+//    emit noFocused();
+//    emit redraw();
+//>>>>>>> feature/sprint3_nodeColor_Gyuyong
+}
+
+QString NodeLabel::getDefaultColorCSS(){
+    switch(defaultColor){
+    case blue:
+        defaultColorCSS="border-color: #298aab;";
+        break;
+    case red:
+        defaultColorCSS="border-color: #e55251;";
+        break;
+    case green:
+        defaultColorCSS="border-color: #41a441;";
+        break;
+    case orange:
+        defaultColorCSS="border-color: #e79527;";
+        break;
+    case yellow:
+        defaultColorCSS="border-color: #fee13e;";
+        break;
+    case mint:
+        defaultColorCSS="border-color: #37aea1;";
+        break;
+    default:
+        defaultColorCSS="";
+    }
+    return defaultColorCSS;
+}
+
+QString NodeLabel::getDefaultColorString()
+{
+    switch(defaultColor){
+    case blue:
+        defaultColorString="#298aab";
+        break;
+    case red:
+        defaultColorString="#e55251";
+        break;
+    case green:
+        defaultColorString="#41a441";
+        break;
+    case orange:
+        defaultColorString="#e79527";
+        break;
+    case yellow:
+        defaultColorString="#fee13e";
+        break;
+    case mint:
+        defaultColorString="#37aea1";
+        break;
+    default:
+        defaultColorString="";
+    }
+    return defaultColorString;
 }
 
 void NodeTextEdit::keyPressEvent(QKeyEvent *e){
@@ -291,6 +357,10 @@ int NodeWidget::getDepth(){
     return depth;
 }
 
+int NodeWidget::getDefaultColor(){
+    return selfWidget.getDefaultColor();
+}
+
 void NodeWidget::init(){
     edit.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     edit.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -352,12 +422,40 @@ NodeWidget::~NodeWidget(){
         delete child[i];
     }
 }
+/*
+void NodeWidget::setChildDefaultColor(QVector<NodeWidget*> child, int color){
+    qDebug() << this;
 
+    for(int i=0;i<child.count();i++)
+    {
+        if(child[i]->child.empty())
+            child[i]->selfWidget.setDefaultColor(color);
+        else
+        {
+            setChildDefaultColor(child[i]->child,color);
+            child[i]->selfWidget.setDefaultColor(color);
+        }
+    }
+}
+*/
 void NodeWidget::add(NodeWidget *subNodeWidget){
     child.push_back(subNodeWidget);
     childLayout.addWidget(subNodeWidget);
     subNodeWidget->parent_ = this;
     subNodeWidget->index = child.count()-1;
+    if(subNodeWidget->parent_==getRoot())
+    {
+        subNodeWidget->selfWidget.setDefaultColor(counter%6);
+        counter++;
+    }
+    else if(subNodeWidget->parent_!=nullptr)//맵이면 안됨
+    {
+        subNodeWidget->selfWidget.setDefaultColor(this->getDefaultColor());
+    }
+
+    QColor* col = new QColor(subNodeWidget->selfWidget.getDefaultColorString());
+    subNodeWidget->pen.setColor(*col);
+
     emit generated();
 }
 
@@ -368,6 +466,36 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
         child[i]->index++;
     subNode->parent_ = this;
     subNode->index = index;
+    if(subNode->parent_==getRoot()) // NodeWidget::mainWindow->getMap()
+    {
+        subNode->selfWidget.setDefaultColor(counter%6);
+        counter++;
+
+        QColor* col = new QColor(subNode->selfWidget.getDefaultColorString());
+        subNode->pen.setColor(*col);
+    }
+    else if(subNode->parent_!=nullptr)//맵이면 안됨
+    {
+        QQueue<NodeWidget*> queue;
+        NodeWidget* temp;
+
+        queue.push_back(this);
+
+        while(!queue.empty()){
+            temp = queue.front();
+
+            temp->selfWidget.setDefaultColor(this->getDefaultColor());
+            QColor* col = new QColor(temp->selfWidget.getDefaultColorString());
+            temp->pen.setColor(*col);
+
+            queue.pop_front();
+
+            for(int i = 0; i<temp->child.count();i++)
+                queue.push_back(temp->child[i]);
+        }
+
+    }
+
     emit generated();
 }
 

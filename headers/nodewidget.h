@@ -28,6 +28,8 @@
 class MainWindow;
 class NodeWidget;
 enum nodeShape{nothing,rec,underline,roundRec};
+enum defaultColor{blue,red,green,orange,yellow,mint};
+
 class NodeLabel : public QLabel{
     Q_OBJECT
 public:
@@ -52,6 +54,17 @@ public:
     QString getNodeShapeCSS();
     void setNodeTextColor(QColor col){nodeTextColor=col.name();}
     QString getNodeTextColor(){return "color : "+nodeTextColor+";";}
+    void setDefaultColor(int a){
+        defaultColor=a;
+        QString shapeTmp =getNodeShapeCSS();//모양을 얻어온다
+        QString colorTmp =getNodeTextColor();//글자 색을 얻어온다
+        QString borderTmp =getDefaultColorCSS();//노드의 default 색깔 값을 얻어온다.
+        setStyleSheet(shapeTmp+colorTmp+borderTmp); //바탕화면 파란색
+
+    }
+    int getDefaultColor(){return defaultColor;}
+    QString getDefaultColorCSS();
+    QString getDefaultColorString();
 
     NodeWidget* container(){return container_;}
     void setContainer(NodeWidget* container_){this->container_=container_;}
@@ -84,10 +97,13 @@ private:
     QColor color;
     bool dragOver;
     QPoint prePos;
-    QString underlineCSS =  "border-top-style: none; border-right-style: none; border-bottom-style: solid; border-left-style: none; border-width: 4px;border-color: #ff6666;";
-    QString recCSS = "border-width: 4px;border-style : solid;border-color: #ff6666;";
-    QString roundRecCSS = "border-width: 4px; border-style : solid; border-radius: 5px; border-color: #ff6666;";
-    QString nothingCSS = "border: 2px solid gray;";
+    QString underlineCSS =  "border-top-style: none; border-right-style: none; border-bottom-style: solid; border-left-style: none; border-width: 4px;";
+    QString recCSS = "border-width: 4px;border-style : solid;";
+    QString roundRecCSS = "border-width: 4px; border-style : solid; border-radius: 5px;";
+    QString nothingCSS = "border-top-style: none; border-right-style: none; border-bottom-style: solid; border-left-style: none; border-width: 2px;";
+    int defaultColor;
+    QString defaultColorCSS;
+    QString defaultColorString;
 };
 
 class NodeTextEdit : public QTextEdit{
@@ -122,6 +138,7 @@ public:
     NodeWidget* getParent(){return parent_;}
     NodeWidget* getRoot();
     int getDepth();
+    int getDefaultColor();
     //int getChildNum(childNum)
     ~NodeWidget();
 
@@ -141,7 +158,6 @@ public:
     void setEditFont(const QFont &);
 
     static NodeWidget* searchFocusInNode(NodeWidget* root);
-    //2016/11/14일 추가한 함수
 
     static void setMainWindow(MainWindow* m){mainWindow = m;}
 
@@ -168,6 +184,7 @@ signals:
 
 private:
     void init();
+    //void setChildDefaultColor(QVector<NodeWidget*>, int);
 
     QFont font;
     QFontMetrics* fm;
@@ -178,6 +195,7 @@ private:
     QVBoxLayout childLayout;
     NodeWidget* parent_ = nullptr;
     QVector<NodeWidget*> child;
+    static int counter;
     bool editMode = false;
     bool clicked = false;
     int index = 0;

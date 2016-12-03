@@ -1,4 +1,5 @@
 #include "headers/mainwindow.h"
+int NodeWidget::counter = 0;
 
 void NodeLabel::mousePressEvent(QMouseEvent *e){
     prePos = e->pos();
@@ -95,7 +96,8 @@ void NodeLabel::focusIn(){
     focus = true;
     QString shapeTmp =this->getNodeShapeCSS();//모양을 얻어온다
     QString colorTmp =this->getNodeTextColor();//글자 색을 얻어온다
-    this->setStyleSheet(shapeTmp+colorTmp+"background-color : #6699ff;"); //바탕화면 파란색
+    QString borderTmp = this->defaultColorToString();//노드의 default 색깔 값을 얻어온다.
+    this->setStyleSheet(shapeTmp+colorTmp+borderTmp+"background-color : #6699ff;"); //바탕화면 파란색
     emit focused();
     emit redraw();
 }
@@ -104,9 +106,30 @@ void NodeLabel::focusOut(){
     focus = false;
     QString shapeTmp =this->getNodeShapeCSS();
     QString colorTmp =this->getNodeTextColor();
-    this->setStyleSheet(shapeTmp+colorTmp+"background-color : #ffffff;"); //바탕화면 하얀색으로 돌리기
+    QString borderTmp = this->defaultColorToString();//노드의 default 색깔 값을 얻어온다.
+    this->setStyleSheet(shapeTmp+colorTmp+borderTmp+"background-color : #ffffff;"); //바탕화면 하얀색으로 돌리기
     emit noFocused();
     emit redraw();
+}
+
+QString NodeLabel::defaultColorToString(){
+    switch(defaultColor){
+    case blue:
+        defaultColorCSS="border-color: #298aab;"; break;
+    case red:
+        defaultColorCSS="border-color: #e55251;"; break;
+    case green:
+        defaultColorCSS="border-color: #41a441;"; break;
+    case orange:
+        defaultColorCSS="border-color: #e79527;"; break;
+    case yellow:
+        defaultColorCSS="border-color: #fee13e;"; break;
+    case mint:
+        defaultColorCSS="border-color: #37aea1;"; break;
+    default:
+        defaultColorCSS="";
+    }
+    return defaultColorCSS;
 }
 
 void NodeTextEdit::keyPressEvent(QKeyEvent *e){
@@ -263,6 +286,10 @@ int NodeWidget::getDepth(){
     return depth;
 }
 
+int NodeWidget::getDefaultColor(){
+    return selfWidget.getDefaultColor();
+}
+
 void NodeWidget::init(){
     edit.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     edit.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -320,20 +347,42 @@ NodeWidget::~NodeWidget(){
 }
 
 void NodeWidget::add(NodeWidget *subNodeWidget){
+    //static int cou=0;
     child.push_back(subNodeWidget);
     childLayout.addWidget(subNodeWidget);
     subNodeWidget->parent_ = this;
     subNodeWidget->index = child.count()-1;
+    if(subNodeWidget->parent_==getRoot())
+    {
+        subNodeWidget->selfWidget.setDefaultColor(counter%6);
+        counter++;
+    }
+    else if(subNodeWidget->parent_!=nullptr)//맵이면 안됨
+    {
+        subNodeWidget->selfWidget.setDefaultColor(this->getDefaultColor());
+    }
+    //cou++;
     emit generated();
 }
 
 void NodeWidget::insert(int index, NodeWidget *subNode){
+    //static int cou=0;
     child.insert(index, subNode);
     childLayout.insertWidget(index, subNode);
     for(int i=index+1;i<child.count();i++)
         child[i]->index++;
     subNode->parent_ = this;
     subNode->index = index;
+    if(subNode->parent_==getRoot()) // NodeWidget::mainWindow->getMap()
+    {
+        subNode->selfWidget.setDefaultColor(counter%6);
+        counter++;
+    }
+    else if(subNode->parent_!=nullptr)//맵이면 안됨
+    {
+        subNode->selfWidget.setDefaultColor(this->getDefaultColor());
+    }
+    //cou++;
     emit generated();
 }
 

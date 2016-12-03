@@ -346,6 +346,19 @@ NodeWidget::~NodeWidget(){
     }
 }
 
+void NodeWidget::setChildDefaultColor(QVector<NodeWidget*> child, int color){
+    for(int i=0;i<child.count();i++)
+    {
+        if(child[i]->getChild().empty())
+            child[i]->selfWidget.setDefaultColor(color);
+        else
+        {
+            setChildDefaultColor(child[i]->getChild(),color);
+            child[i]->selfWidget.setDefaultColor(color);
+        }
+    }
+}
+
 void NodeWidget::add(NodeWidget *subNodeWidget){
     //static int cou=0;
     child.push_back(subNodeWidget);
@@ -380,7 +393,30 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
     }
     else if(subNode->parent_!=nullptr)//맵이면 안됨
     {
-        subNode->selfWidget.setDefaultColor(this->getDefaultColor());
+        setChildDefaultColor(child,this->getDefaultColor());
+
+        /*
+        QQueue<NodeWidget*> queue;
+        NodeWidget* temp;
+
+        queue.push_back(this);
+
+        while(!queue.empty()){
+            temp = queue.front();
+            temp->selfWidget.setDefaultColor(this->getDefaultColor());
+            queue.pop_front();
+            for(int i = 0; i<temp->child.count();i++)
+                queue.push_back(temp->child[i]);
+        }
+        */
+        /*
+        for(int i=0;i<child.count();i++)
+        {
+            child[i]->selfWidget.setDefaultColor(this->getDefaultColor());
+        }
+*/
+        //subNode->selfWidget.setDefaultColor(this->getDefaultColor());
+
     }
     //cou++;
     emit generated();

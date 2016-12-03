@@ -166,6 +166,7 @@ signals:
 
 private:
     void init();
+    void setChildDefaultColor(QVector<NodeWidget*>, int);
 
     QFont font;
     QFontMetrics* fm;

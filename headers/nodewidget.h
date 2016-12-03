@@ -37,6 +37,7 @@ public:
     }
     enum nodeShape{nothing,rec,underline,roundRec};
     void mousePressEvent(QMouseEvent *e);
+    void mouseReleaseEvent(QMouseEvent *e);
     void keyPressEvent(QKeyEvent *e);
     void focusOutEvent(QFocusEvent *e);
     void mouseMoveEvent(QMouseEvent *e);
@@ -67,6 +68,9 @@ signals:
     void arrowPressed(int key);
     void redraw();
     void commanded(NodeWidget*, NodeWidget*, CommandType);
+    void labelClicked();
+    void italic();
+    void bold();
 
 public slots:
     void focusIn();
@@ -91,6 +95,7 @@ class NodeTextEdit : public QTextEdit{
 public:
     void keyPressEvent(QKeyEvent *e);
     void focusOutEvent(QFocusEvent *e);
+    void mousePressEvent(QMouseEvent *e);
     QVector<QString>& textVector(){return textVector_;}
     QString labelText();
     void saveText(QString text_){this->text_ = text_;}
@@ -100,10 +105,12 @@ signals:
     void enterPressed();
     void focusOut();
     void escPressed();
+    void editClicked();
 
 private:
     QVector<QString> textVector_;
     QString text_;
+    QFont font;
 };
 
 class NodeWidget : public QWidget{
@@ -125,6 +132,8 @@ public:
     NodeLabel& label(){return selfWidget;}
     NodeLabel* labelPointer(){return &selfWidget;}
     int getIndex(){return index;}
+    bool isEditMode(){return editMode;}
+    NodeWidget* getNearestChild();
 
     NodeWidget* takeNode();
     bool isChildOf(NodeWidget* ptr);

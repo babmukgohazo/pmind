@@ -28,6 +28,12 @@ public:
         return currentScale;
     }
 
+    void wheelEvent(QWheelEvent *event){
+        event->delta() > 0 ? zoomIn() : zoomOut();
+    }
+    void mousePressEvent(QMouseEvent *e);
+    void keyPressEvent(QKeyEvent *e);
+
 signals:
     void zoomSignal();
 
@@ -45,21 +51,23 @@ public slots:
     }
 
     void focusIn();
+    void editClick(){editClicked = true;}
+    void labelClick(){labelClicked = true;}
 
 signals:
-    void viewClicked();
     void undid();
     void redid();
-
-protected:
-    void wheelEvent(QWheelEvent *event){
-        event->delta() > 0 ? zoomIn() : zoomOut();
-    }
-    void mousePressEvent(QMouseEvent *e);
-    void keyPressEvent(QKeyEvent *e);
+    void newFile();
+    void save();
+    void load();
+    void saveAs();
+    void imageExport();
+    void quit();
 
 private:
     double currentScale;
+    bool editClicked;
+    bool labelClicked;
 };
 
 #endif

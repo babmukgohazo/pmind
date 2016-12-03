@@ -130,3 +130,19 @@ void MoveCommand::redo(){
     to->insert(toIndex, movedNode);
     movedNode->show();
 }
+
+FontCommand::FontCommand(NodeWidget *fontChangedNode, QFont lastFont) : Command(CommandType::Font){
+    this->fontChangedNode = fontChangedNode;
+    this->lastFont = lastFont;
+    font = fontChangedNode->label().font();
+}
+
+void FontCommand::undo(){
+    fontChangedNode->label().setFont(lastFont);
+    fontChangedNode->getEdit().setFont(lastFont);
+}
+
+void FontCommand::redo(){
+    fontChangedNode->label().setFont(font);
+    fontChangedNode->getEdit().setFont(font);
+}

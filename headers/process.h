@@ -4,12 +4,13 @@
 #include <QObject>
 #include <QVector>
 #include <QString>
+#include <QFont>
 
 class NodeWidget;
 class Command;
 
 enum class CommandType{
-    Text, Add, Delete, Move
+    Text, Add, Delete, Move, Font
 };
 
 class Process : public QObject{
@@ -91,6 +92,18 @@ private:
     NodeWidget* movedNode;
     int fromIndex;
     int toIndex;
+};
+
+class FontCommand : public Command{
+public:
+    FontCommand(NodeWidget*, QFont);
+    virtual void undo();
+    virtual void redo();
+
+private:
+    NodeWidget* fontChangedNode;
+    QFont lastFont;
+    QFont font;
 };
 
 #endif // PROCESS_H

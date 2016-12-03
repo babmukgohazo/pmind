@@ -51,6 +51,7 @@ public slots:
 
     void addProcess(NodeWidget*, CommandType);
     void addProcess(NodeWidget*, NodeWidget*, CommandType);
+    void addProcess(NodeWidget*, QFont);
 
 private slots:
     void on_scaleCombo_currentIndexChanged(const QString& arg1);

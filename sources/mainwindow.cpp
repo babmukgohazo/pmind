@@ -52,8 +52,19 @@ MainWindow::MainWindow(QWidget *parent) :
     //layout->addLayout(programLayout);
     layout->addWidget(mapScreen);
 
+    propertyDock->setMapScreen(mapScreen);
+
     QObject::connect(mapScreen,SIGNAL(undid()),process,SLOT(undo()));
     QObject::connect(mapScreen,SIGNAL(redid()),process,SLOT(redo()));
+    QObject::connect(mapScreen,SIGNAL(newFile()),this,SLOT(newFile()));
+    QObject::connect(mapScreen,SIGNAL(save()),this,SLOT(saveFile()));
+    QObject::connect(mapScreen,SIGNAL(saveAs()),this,SLOT(saveFileAs()));
+    QObject::connect(mapScreen,SIGNAL(load()),this,SLOT(openFile()));
+    QObject::connect(mapScreen,SIGNAL(quit()),this,SLOT(quit()));
+    QObject::connect(mapScreen,SIGNAL(imageExport()),this,SLOT(imageExport()));
+
+    QObject::connect(propertyDock,SIGNAL(fontChanged(NodeWidget*,QFont)),this,SLOT(addProcess(NodeWidget*,QFont)));
+
     mapScreen->setStyleSheet("MindmapView {border: 1px solid gray; background: white;}");
     this->centralWidget()->setLayout(layout);
 
@@ -84,7 +95,6 @@ MainWindow::~MainWindow()
 //re-allocate & re-draw mindmap
 void MainWindow::reload(){
    if (map!=nullptr){
-        QObject::disconnect(mapScreen,SIGNAL(viewClicked()),map,SLOT(update()));
         delete map;
         map = nullptr;
     }
@@ -321,6 +331,10 @@ void MainWindow::addProcess(NodeWidget *movedNode, NodeWidget *to, CommandType t
         process->push(new MoveCommand(movedNode, to));
         break;
     }
+}
+
+void MainWindow::addProcess(NodeWidget *fontChangedNode, QFont lastFont){
+    process->push(new FontCommand(fontChangedNode, lastFont));
 }
 
 void MainWindow::on_scaleCombo_currentIndexChanged(const QString &arg1)

@@ -1,6 +1,6 @@
 #include "propertytab.h"
 #include "ui_propertytab.h"
-#include "headers/nodewidget.h"
+#include "headers/mainwindow.h"
 #include <QDebug>
 
 PropertyTab::PropertyTab(QWidget *parent) :
@@ -18,6 +18,20 @@ PropertyTab::~PropertyTab()
     delete ui;
 }
 
+void PropertyTab::keyPressEvent(QKeyEvent *e){
+    mapScreen->setFocus();
+    switch(e->key()){
+    case Qt::Key_Tab:
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+        QDockWidget::keyPressEvent(e);
+        break;
+    default:
+        mapScreen->keyPressEvent(e);
+        break;
+    }
+}
+
 void PropertyTab::on_fontBox_currentFontChanged(const QFont &f)//글꼴
 {
 
@@ -32,6 +46,7 @@ void PropertyTab::on_fontBox_currentFontChanged(const QFont &f)//글꼴
    font.setPointSize(fontOfNode.pointSize());
    focusedNode->setFont(font);
    root->setEditFont(font);
+   emit fontChanged(root,font);
    showAllProperty();
 }
 
@@ -42,12 +57,15 @@ void PropertyTab::on_buttonBold_clicked()//굵기
          return;
      focusedNode = root->labelPointer(); //focused 된 라벨의 주소를 받아왔다 치자
      QFont font = focusedNode->font();
+     QFont lastFont = font;
      if(font.bold())//만약 이미 굵은 상태
         font.setBold(false);
      else
          font.setBold(true);
      focusedNode->setFont(font);
      root->setEditFont(font);
+     if(font!=lastFont)
+         emit fontChanged(root,lastFont);
      showAllProperty();
 }
 
@@ -58,13 +76,16 @@ void PropertyTab::on_buttonItalic_clicked()//기울임
         return;
     focusedNode = root->labelPointer(); //focused 된 라벨의 주소를 받아왔다 치자
     QFont font = focusedNode->font();
+    QFont lastFont = font;
     if(font.italic())//만약 이미 기울어진 상태
        font.setItalic(false);
     else
         font.setItalic(true);
     focusedNode->setFont(font);
     root->setEditFont(font);
-     showAllProperty();
+    if(font!=lastFont)
+        emit fontChanged(root,lastFont);
+    showAllProperty();
 }
 
 void PropertyTab::on_contentSizeBox_valueChanged(int arg1)//글씨크기
@@ -74,9 +95,12 @@ void PropertyTab::on_contentSizeBox_valueChanged(int arg1)//글씨크기
         return;
     focusedNode = root->labelPointer();
     QFont font = focusedNode->font();
+    QFont lastFont = font;
     font.setPointSize(ui->contentSizeBox->value());
     focusedNode->setFont(font);
     root->setEditFont(font);
+    if(font!=lastFont)
+        emit fontChanged(root,lastFont);
     showAllProperty();
 }
 

@@ -2,11 +2,17 @@
 
 void NodeLabel::mousePressEvent(QMouseEvent *e){
     prePos = e->pos();
-    if(focus){
-        emit doubleClicked();
-    }
-    else{
-        this->focusIn();
+}
+
+void NodeLabel::mouseReleaseEvent(QMouseEvent *e){
+    if(e->button()==Qt::LeftButton){
+        if(focus){
+            emit doubleClicked();
+        }
+        else{
+            this->focusIn();
+        }
+        emit labelClicked();
     }
 }
 
@@ -38,6 +44,18 @@ void NodeLabel::keyPressEvent(QKeyEvent *e){
     case Qt::Key_Down:
         emit arrowPressed(Qt::Key_Down);
         break;
+    case Qt::Key_I:
+        if(e->modifiers().testFlag(Qt::ControlModifier))
+            emit italic();
+        else
+            emit keyPressed();
+        break;
+    case Qt::Key_B:
+        if(e->modifiers().testFlag(Qt::ControlModifier))
+            emit bold();
+        else
+            emit keyPressed();
+        break;
     case Qt::Key_Z:
     case Qt::Key_Y:
     case Qt::Key_Q:
@@ -46,7 +64,6 @@ void NodeLabel::keyPressEvent(QKeyEvent *e){
     case Qt::Key_R:
     case Qt::Key_T:
     case Qt::Key_U:
-    case Qt::Key_I:
     case Qt::Key_O:
     case Qt::Key_P:
     case Qt::Key_A:
@@ -61,7 +78,6 @@ void NodeLabel::keyPressEvent(QKeyEvent *e){
     case Qt::Key_X:
     case Qt::Key_C:
     case Qt::Key_V:
-    case Qt::Key_B:
     case Qt::Key_N:
     case Qt::Key_M:
     case Qt::Key_0:
@@ -83,7 +99,7 @@ void NodeLabel::keyPressEvent(QKeyEvent *e){
 }
 
 void NodeLabel::focusOutEvent(QFocusEvent *e){
-    //this->focusOut();
+   // focusOut();
 }
 
 void NodeLabel::focusIn(){
@@ -101,12 +117,14 @@ void NodeLabel::focusIn(){
 }
 
 void NodeLabel::focusOut(){
-    focus = false;
-    QString shapeTmp =this->getNodeShapeCSS();
-    QString colorTmp =this->getNodeTextColor();
-    this->setStyleSheet(shapeTmp+colorTmp+"background-color : #ffffff;"); //바탕화면 하얀색으로 돌리기
-    emit noFocused();
-    emit redraw();
+    if(focus){
+        focus = false;
+        QString shapeTmp =this->getNodeShapeCSS();
+        QString colorTmp =this->getNodeTextColor();
+        this->setStyleSheet(shapeTmp+colorTmp+"background-color : #ffffff;"); //바탕화면 하얀색으로 돌리기
+        emit noFocused();
+        emit redraw();
+    }
 }
 
 void NodeTextEdit::keyPressEvent(QKeyEvent *e){
@@ -129,6 +147,11 @@ void NodeTextEdit::keyPressEvent(QKeyEvent *e){
 
 void NodeTextEdit::focusOutEvent(QFocusEvent *e){
     emit focusOut();
+}
+
+void NodeTextEdit::mousePressEvent(QMouseEvent *e){
+    emit editClicked();
+    QTextEdit::mousePressEvent(e);
 }
 
 void NodeLabel::mouseMoveEvent(QMouseEvent *event){
@@ -268,7 +291,9 @@ void NodeWidget::init(){
     edit.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     PropertyDock=mainWindow->getPropertyDock();
     textViewDock=mainWindow->getTextViewDock();
+    edit.setContextMenuPolicy(Qt::NoContextMenu);
     fm = new QFontMetrics(edit.currentFont());
+    font = edit.currentFont();
     selfWidget.setContainer(this);
     this->setStyleSheet("background-color: transparent");
     //selfWidget.setStyleSheet("background-color: transparent ; border-bottom: 1px solid black;");
@@ -309,6 +334,10 @@ void NodeWidget::init(){
     QObject::connect(&selfWidget,SIGNAL(focused()),PropertyDock,SLOT(propertyEnabled()));
     QObject::connect(&selfWidget,SIGNAL(noFocused()),PropertyDock,SLOT(propertyUnEnabled()));
     QObject::connect(this,SIGNAL(generated()),NodeWidget::mainWindow,SLOT(renewTextEdit()));
+    QObject::connect(&edit,SIGNAL(editClicked()),NodeWidget::mainWindow->getMapScreen(),SLOT(editClick()));
+    QObject::connect(&selfWidget,SIGNAL(labelClicked()),NodeWidget::mainWindow->getMapScreen(),SLOT(labelClick()));
+    QObject::connect(&selfWidget,SIGNAL(italic()),PropertyDock,SLOT(on_buttonItalic_clicked()));
+    QObject::connect(&selfWidget,SIGNAL(bold()),PropertyDock,SLOT(on_buttonBold_clicked()));
 }
 
 NodeWidget::~NodeWidget(){
@@ -406,18 +435,51 @@ void NodeWidget::textEditSizeRenew(){
         QString text = edit.toPlainText();
         int x = fm->width(text);
         int n = x/300 + 1;
-        if(x<=300){
-            edit.setFixedWidth(x + 10);
-            int y = edit.document()->size().height();
-            if(x<=30)
-                x=30;
-            if(y==0)
-                y=fm->height() + 12;
-            edit.setFixedSize(x + 10, y);
+        int space = 11;
+        int max;
+        bool widthLimit;
+
+        if(font.italic())
+            space = 14;
+
+        QStringList enterSplit = text.split('\n');
+        QVector<QString> splitVector = enterSplit.toVector();
+
+        if(splitVector.count()<=1){
+            if(x>300)
+                widthLimit = true;
+            else
+                widthLimit = false;
+            max = x;
         }
         else{
+            int temp;
+
+            max = fm->width(splitVector[0]);
+            for(int i=1; i<splitVector.count();i++){
+                temp = fm->width(splitVector[i]);
+                if(max < temp)
+                    max = temp;
+            }
+
+            if(max>300)
+                widthLimit = true;
+            else
+                widthLimit = false;
+        }
+
+        if(widthLimit){
             int y = edit.document()->size().height();
-            edit.setFixedSize(310,y);
+            edit.setFixedSize(300 + space,y);
+        }
+        else{
+            edit.setFixedWidth(max + space);
+            int y = edit.document()->size().height();
+            if(max<=30)
+                max=30;
+            if(y==0)
+                y=fm->height() + 12;
+            edit.setFixedSize(max + space, y);
         }
     }
     this->update();
@@ -503,6 +565,28 @@ void NodeWidget::disconnectUpperNode(){
     getRoot()->update();
 }
 
+NodeWidget* NodeWidget::getNearestChild(){
+    if(child.count()==0)
+        return nullptr;
+    NodeWidget* nearestChild = child.front();
+    QPoint origin = label().mapToGlobal(QPoint(0,0));
+    QPoint diff;
+    int minLength;
+    int length;
+    diff = nearestChild->label().mapToGlobal(QPoint(0,0)) - origin;
+    minLength = diff.manhattanLength();
+
+    for(int i=1;i<child.count();i++){
+        diff = child[i]->label().mapToGlobal(QPoint(0,0)) - origin;
+        length = diff.manhattanLength();
+        if(length < minLength){
+            minLength = length;
+            nearestChild = child[i];
+        }
+    }
+    return nearestChild;
+}
+
 void NodeWidget::focusMoveByArrow(int key){
     switch(key){
     case Qt::Key_Left:
@@ -514,19 +598,29 @@ void NodeWidget::focusMoveByArrow(int key){
     case Qt::Key_Right:
         if(child.count()!=0){
             selfWidget.focusOut();
-            child[0]->label().focusIn();
+            getNearestChild()->label().focusIn();
         }
         break;
     case Qt::Key_Up:
+        if(parent_==nullptr)
+            break;
+        selfWidget.focusOut();
         if(index!=0){
-            selfWidget.focusOut();
             parent_->child[index-1]->label().focusIn();
+        }
+        else if(index == 0){
+            parent_->child.last()->label().focusIn();
         }
         break;
     case Qt::Key_Down:
-        if(parent_!=nullptr && this!=parent_->child.last()){
-            selfWidget.focusOut();
+        if(parent_==nullptr)
+                break;
+        selfWidget.focusOut();
+        if(this!=parent_->child.last()){
             parent_->child[index+1]->label().focusIn();
+        }
+        else if(this==parent_->child.last()){
+            parent_->child.front()->label().focusIn();
         }
         break;
     }
@@ -605,6 +699,7 @@ bool NodeWidget::isChildOf(NodeWidget* ptr){
 
 void NodeWidget::setEditFont(const QFont &font){
     delete fm;
+    this->font = font;
     fm = new QFontMetrics(font);
     this->font = font;
     edit.setFont(font);

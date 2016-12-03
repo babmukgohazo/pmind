@@ -54,15 +54,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     propertyDock->setMapScreen(mapScreen);
 
-    QObject::connect(mapScreen,SIGNAL(undid()),process,SLOT(undo()));
-    QObject::connect(mapScreen,SIGNAL(redid()),process,SLOT(redo()));
-    QObject::connect(mapScreen,SIGNAL(newFile()),this,SLOT(newFile()));
-    QObject::connect(mapScreen,SIGNAL(save()),this,SLOT(saveFile()));
-    QObject::connect(mapScreen,SIGNAL(saveAs()),this,SLOT(saveFileAs()));
-    QObject::connect(mapScreen,SIGNAL(load()),this,SLOT(openFile()));
-    QObject::connect(mapScreen,SIGNAL(quit()),this,SLOT(quit()));
-    QObject::connect(mapScreen,SIGNAL(imageExport()),this,SLOT(imageExport()));
-
     QObject::connect(propertyDock,SIGNAL(fontChanged(NodeWidget*,QFont)),this,SLOT(addProcess(NodeWidget*,QFont)));
 
     mapScreen->setStyleSheet("MindmapView {border: 1px solid gray; background: white;}");
@@ -352,13 +343,47 @@ void MainWindow::scaleCombo_setCurrentScale()
     scaleCombo->setEditText(intScale[0]);
 }
 
-void MainWindow::keyPressEvent(QKeyEvent *event)
+void MainWindow::keyPressEvent(QKeyEvent *e)
 {
-    if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
+    if(e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return)
     {
         bool ok;
         int scale = (scaleCombo->currentText()).toInt(&ok);
         if (ok == true)
             mapScreen->adjustScale(scale);
+    }
+    switch(e->key()){
+    case Qt::Key_Z:
+        if(e->modifiers().testFlag(Qt::ControlModifier))
+            process->undo();
+        break;
+    case Qt::Key_Y:
+        if(e->modifiers().testFlag(Qt::ControlModifier))
+            process->redo();
+        break;
+    case Qt::Key_N:
+        if(e->modifiers().testFlag(Qt::ControlModifier))
+            newFile();
+        break;
+    case Qt::Key_S:
+        if(e->modifiers().testFlag(Qt::ControlModifier))
+            saveFile();
+        else if(e->modifiers().testFlag(Qt::ShiftModifier))
+            saveFileAs();
+       break;
+    case Qt::Key_L:
+        if(e->modifiers().testFlag(Qt::ControlModifier))
+            openFile();
+        break;
+    case Qt::Key_Q:
+        if(e->modifiers().testFlag(Qt::ControlModifier))
+            quit();
+        break;
+    case Qt::Key_E:
+        if(e->modifiers().testFlag(Qt::ControlModifier))
+            imageExport();
+        break;
+    default:
+        break;
     }
 }

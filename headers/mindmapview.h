@@ -55,14 +55,6 @@ public slots:
     void labelClick(){labelClicked = true;}
 
 signals:
-    void undid();
-    void redid();
-    void newFile();
-    void save();
-    void load();
-    void saveAs();
-    void imageExport();
-    void quit();
 
 private:
     double currentScale;

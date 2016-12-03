@@ -21,7 +21,7 @@ class PropertyTab : public QDockWidget
 enum nodeShape{nothing,rec,underline,roundRec};
 public:
     explicit PropertyTab(QWidget *parent = 0);
-    ~PropertyTab(); 
+    ~PropertyTab();
     void keyPressEvent(QKeyEvent *e);
     void setButtonImg();
     void setDockWedigetDefault(); //dockWidget의 값을 초기화 한다.

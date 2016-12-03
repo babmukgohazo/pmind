@@ -17,6 +17,11 @@ void NodeLabel::mouseReleaseEvent(QMouseEvent *e){
 }
 
 void NodeLabel::keyPressEvent(QKeyEvent *e){
+    if(e->modifiers().testFlag(Qt::ControlModifier)|e->modifiers().testFlag(Qt::ShiftModifier)){
+        QLabel::keyPressEvent(e);
+        return;
+    }
+
     if(!focus)
         return;
     switch(e->key()){

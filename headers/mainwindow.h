@@ -31,8 +31,8 @@ public:
     MindmapView* getMapScreen(){return mapScreen;}
     NodeWidget* getMap(){return map;}
     Process* getProcess(){return process;}
-    PropertyTab* getPropertyDock(){return propertyDock;};
-    TextView* getTextViewDock(){return textDock;};
+    PropertyTab* getPropertyDock(){return propertyDock;}
+    TextView* getTextViewDock(){return textDock;}
 
 public slots:
     //slots for graphic & drawing
@@ -58,7 +58,7 @@ private slots:
     void scaleCombo_setCurrentScale();
 
 protected:
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *e);
 
 private:
     void setFileMenuToolbar();

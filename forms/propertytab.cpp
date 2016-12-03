@@ -98,6 +98,7 @@ void PropertyTab::on_contentSizeBox_valueChanged(int arg1)//글씨크기
     QFont lastFont = font;
     font.setPointSize(ui->contentSizeBox->value());
     focusedNode->setFont(font);
+    root->setEditFont(font);
     if(font!=lastFont)
         emit fontChanged(root,lastFont);
     showAllProperty();

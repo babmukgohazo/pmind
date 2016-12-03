@@ -139,8 +139,10 @@ FontCommand::FontCommand(NodeWidget *fontChangedNode, QFont lastFont) : Command(
 
 void FontCommand::undo(){
     fontChangedNode->label().setFont(lastFont);
+    fontChangedNode->getEdit().setFont(lastFont);
 }
 
 void FontCommand::redo(){
     fontChangedNode->label().setFont(font);
+    fontChangedNode->getEdit().setFont(font);
 }

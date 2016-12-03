@@ -7,7 +7,7 @@ MindmapView::MindmapView(){
     currentScale = 100;
     editClicked = false;
     labelClicked = false;
-    this->setBackgroundBrush(QBrush(QColor(242,242,242), Qt::SolidPattern));
+    this->setBackgroundBrush(QBrush(QColor(250,250,250), Qt::SolidPattern));
 
     //184 184 184
     //242 242 242

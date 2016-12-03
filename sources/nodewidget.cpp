@@ -19,6 +19,14 @@ void NodeLabel::mouseReleaseEvent(QMouseEvent *e){
 
 void NodeLabel::keyPressEvent(QKeyEvent *e){
     if(e->modifiers().testFlag(Qt::ControlModifier)|e->modifiers().testFlag(Qt::ShiftModifier)){
+        if(e->key()==Qt::Key_I){
+            if(e->modifiers().testFlag(Qt::ControlModifier))
+                emit italic();
+        }
+        else if(e->key()==Qt::Key_B){
+            if(e->modifiers().testFlag(Qt::ControlModifier))
+                emit bold();
+        }
         QLabel::keyPressEvent(e);
         return;
     }
@@ -51,17 +59,7 @@ void NodeLabel::keyPressEvent(QKeyEvent *e){
         emit arrowPressed(Qt::Key_Down);
         break;
     case Qt::Key_I:
-        if(e->modifiers().testFlag(Qt::ControlModifier))
-            emit italic();
-        else
-            emit keyPressed();
-        break;
     case Qt::Key_B:
-        if(e->modifiers().testFlag(Qt::ControlModifier))
-            emit bold();
-        else
-            emit keyPressed();
-        break;
     case Qt::Key_Z:
     case Qt::Key_Y:
     case Qt::Key_Q:

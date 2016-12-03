@@ -20,8 +20,16 @@ PropertyTab::~PropertyTab()
 
 void PropertyTab::keyPressEvent(QKeyEvent *e){
     mapScreen->setFocus();
-    mapScreen->keyPressEvent(e);
-    QDockWidget::keyPressEvent(e);
+    switch(e->key()){
+    case Qt::Key_Tab:
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+        QDockWidget::keyPressEvent(e);
+        break;
+    default:
+        mapScreen->keyPressEvent(e);
+        break;
+    }
 }
 
 void PropertyTab::on_fontBox_currentFontChanged(const QFont &f)//글꼴

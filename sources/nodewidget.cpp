@@ -250,6 +250,9 @@ void NodeWidget::init(){
     childWidget.setLayout(&childLayout);
     layout.setContentsMargins(0,0,0,0);
     childLayout.setMargin(0);
+
+    pen.setWidth(2);
+
     QObject::connect(&edit,SIGNAL(enterPressed()),NodeWidget::mainWindow,SLOT(renewTextEdit()));
     QObject::connect(&edit,SIGNAL(enterPressed()),this,SLOT(textEditToLabel()));
     QObject::connect(&edit,SIGNAL(enterPressed()),&selfWidget,SLOT(focusIn()));
@@ -488,6 +491,8 @@ void NodeWidget::focusMoveByArrow(int key){
 }
 
 void NodeWidget::paintEvent(QPaintEvent *e){
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::HighQualityAntialiasing);
 
     QPoint pos1, pos2;
 
@@ -495,8 +500,7 @@ void NodeWidget::paintEvent(QPaintEvent *e){
     //painter.drawLine(selfWidget.mapToParent(selfWidget.rect().bottomLeft()),selfWidget.mapToParent(selfWidget.rect().bottomRight()));
     if(editMode){
         for(int i = 0; i<child.count(); i++){
-            QPainter& painter = child[i]->getPainter();
-            painter.begin(this);
+            painter.setPen(child[i]->getPen());
 
             QPoint temp;
             temp = edit.mapToGlobal(edit.rect().bottomRight());
@@ -504,19 +508,16 @@ void NodeWidget::paintEvent(QPaintEvent *e){
             temp = child[i]->selfWidget.mapToGlobal(child[i]->selfWidget.rect().bottomLeft());
             pos2 = this->mapFromGlobal(temp);
 
-
             QPainterPath path;
             path.moveTo(pos1);
             path.cubicTo(pos1+QPoint(10,0),pos2+QPoint(-10,0),pos2);
             painter.drawPath(path);
 
-            painter.end();
         }
     }
     else{
         for(int i = 0 ; i<child.count() ; i++){
-            QPainter& painter = child[i]->getPainter();
-            painter.begin(this);
+            painter.setPen(child[i]->getPen());
 
             QPoint temp;
             if(child[i]->editMode){
@@ -537,7 +538,6 @@ void NodeWidget::paintEvent(QPaintEvent *e){
             path.cubicTo(pos1+QPoint(10,0),pos2+QPoint(-10,0),pos2);
             painter.drawPath(path);
 
-            painter.end();
         }
     }
 }
@@ -572,11 +572,11 @@ void NodeWidget::setEditFont(const QFont &font){
     editMode = false;
 }
 
-QPainter& NodeWidget::getPainter(){
-    return painter;
+QPen& NodeWidget::getPen(){
+    return pen;
 }
 
-void NodeWidget::setPainter(QPainter& painter){
-    this->painter = painter;
+void NodeWidget::setPen(QPen& pen){
+    this->pen = pen;
     parentWidget()->update();
 }

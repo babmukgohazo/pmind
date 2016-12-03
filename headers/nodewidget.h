@@ -120,8 +120,8 @@ public:
     static NodeWidget* searchFocusInNode(NodeWidget* root);
     //2016/11/14일 추가한 함수
 
-    QPainter& getPainter();
-    void setPainter(QPainter& painter);
+    QPen& getPen();
+    void setPen(QPen& pen);
 
 public slots:
     void labelToTextEdit();
@@ -157,7 +157,7 @@ private:
 
     static MainWindow* mainWindow;
 
-    QPainter painter;
+    QPen pen;
 };
 
 

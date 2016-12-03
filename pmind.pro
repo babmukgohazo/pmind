@@ -19,7 +19,8 @@ SOURCES += \
     sources/nodewidget.cpp \
     forms/propertytab.cpp \
     sources/mindmapview.cpp \
-    sources/process.cpp
+    sources/process.cpp \
+    forms/textview.cpp
 
 HEADERS  += \
     headers/mainwindow.h \
@@ -28,11 +29,13 @@ HEADERS  += \
     headers/nodewidget.h \
     forms/propertytab.h \
     headers/process.h \
-    headers/xmlhandler.h
+    headers/xmlhandler.h \
+    forms/textview.h
 
 FORMS    += \
     forms/mainwindow.ui \
-    forms/propertytab.ui
+    forms/propertytab.ui \
+    forms/textview.ui
 
 RESOURCES += \
     resources/image.qrc

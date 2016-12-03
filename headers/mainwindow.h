@@ -31,7 +31,7 @@ public:
     MindmapView* getMapScreen(){return mapScreen;}
     NodeWidget* getMap(){return map;}
     Process* getProcess(){return process;}
-    PropertyTab* getDockWidget(){return dockWidget;};
+    PropertyTab* getDockWidget(){return propertyDock;};
 
 public slots:
     //slots for graphic & drawing
@@ -81,7 +81,8 @@ private:
     //widget & graphic component
     MindmapView* mapScreen;
     NodeWidget* map;
-    PropertyTab * dockWidget;
+    PropertyTab* propertyDock;
+    TextView* textDock;
     QTextEdit* edit;
     QPushButton* redrawButton;
     QVBoxLayout* rightLayout;

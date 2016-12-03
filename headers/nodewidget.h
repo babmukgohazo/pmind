@@ -22,6 +22,7 @@
 #include "headers/parsing.h"
 #include "headers/process.h"
 #include "forms/propertytab.h"
+#include "forms/textview.h"
 
 class MainWindow;
 class NodeWidget;

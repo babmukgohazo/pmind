@@ -252,7 +252,3 @@ void PropertyTab::propertyEnabled(){
 void PropertyTab::propertyUnEnabled(){
     this->setEnabled(false);
 }
-
-QTextEdit* PropertyTab::getTextEdit() {
-    return ui->textEdit;
-}

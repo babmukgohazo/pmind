@@ -108,6 +108,7 @@ signals:
 private:
     QVector<QString> textVector_;
     QString text_;
+    QFont font;
 };
 
 class NodeWidget : public QWidget{

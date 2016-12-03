@@ -86,7 +86,7 @@ void NodeLabel::keyPressEvent(QKeyEvent *e){
 }
 
 void NodeLabel::focusOutEvent(QFocusEvent *e){
-    focusOut();
+   // focusOut();
 }
 
 void NodeLabel::focusIn(){
@@ -271,6 +271,7 @@ void NodeWidget::init(){
     dockWidget=mainWindow->getDockWidget();
 //>>>>>>> feature/sprint_3_dockWidget
     fm = new QFontMetrics(edit.currentFont());
+    font = edit.currentFont();
     selfWidget.setContainer(this);
     this->setStyleSheet("background-color: transparent");
     //selfWidget.setStyleSheet("background-color: transparent ; border-bottom: 1px solid black;");
@@ -406,18 +407,54 @@ void NodeWidget::textEditSizeRenew(){
         QString text = edit.toPlainText();
         int x = fm->width(text);
         int n = x/300 + 1;
-        if(x<=300){
-            edit.setFixedWidth(x + 10);
-            int y = edit.document()->size().height();
-            if(x<=30)
-                x=30;
-            if(y==0)
-                y=fm->height() + 12;
-            edit.setFixedSize(x + 10, y);
+        int space = 10;
+        int max;
+        bool widthLimit;
+
+        if(font.italic())
+            space = 14;
+
+        QStringList enterSplit = text.split('\n');
+        QVector<QString> splitVector = enterSplit.toVector();
+
+        if(splitVector.count()<=1){
+            if(x>300)
+                widthLimit = true;
+            else
+                widthLimit = false;
+            max = x;
         }
         else{
+            int temp;
+
+            max = fm->width(splitVector[0]);
+            for(int i=0; i<splitVector.count();i++){
+                qDebug()<<splitVector[i];
+            }
+            for(int i=1; i<splitVector.count();i++){
+                temp = fm->width(splitVector[i]);
+                if(max < temp)
+                    max = temp;
+            }
+
+            if(max>300)
+                widthLimit = true;
+            else
+                widthLimit = false;
+        }
+
+        if(widthLimit){
             int y = edit.document()->size().height();
-            edit.setFixedSize(310,y);
+            edit.setFixedSize(300 + space,y);
+        }
+        else{
+            edit.setFixedWidth(max + space);
+            int y = edit.document()->size().height();
+            if(max<=30)
+                max=30;
+            if(y==0)
+                y=fm->height() + 12;
+            edit.setFixedSize(max + space, y);
         }
     }
     this->update();
@@ -604,6 +641,7 @@ bool NodeWidget::isChildOf(NodeWidget* ptr){
 //<<<<<<< HEAD
 void NodeWidget::setEditFont(const QFont &font){
     delete fm;
+    this->font = font;
     fm = new QFontMetrics(font);
     this->font = font;
     edit.setFont(font);

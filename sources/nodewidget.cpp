@@ -252,6 +252,17 @@ NodeWidget* NodeWidget::getRoot(){
     return temp;
 }
 
+int NodeWidget::getDepth(){
+    NodeWidget* temp;
+    int depth = 0;
+    temp = this;
+    while(temp->parent_!=nullptr) {
+        temp = temp->parent_;
+        depth = depth + 1;
+    }
+    return depth;
+}
+
 void NodeWidget::init(){
 //<<<<<<< HEAD
     edit.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

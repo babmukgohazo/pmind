@@ -83,17 +83,28 @@ void MainWindow::reload(){
         map = nullptr;
     }
     QString str = edit->toPlainText();
-    QQueue<MdString> q;
-    getQqueue(str,q);
-    map = new NodeWidget(q, this);
+    getQqueue(str,mdQueue);
+    map = new NodeWidget(mdQueue, this);
     mapScreen->mindmapScene->addWidget(map);
     QObject::connect(mapScreen,SIGNAL(viewClicked()),map,SLOT(update()));
     dockWidget->setNodeWidget(map);
 }
 
 void MainWindow::renewTextEdit(){
+    if (map==nullptr){
+         return;
+     }
+    QString inText;
+    mdQueue.clear();
+    dfs_stack.clear();
+    dfs_stack.push(map);
 
+    dfs(dfs_stack, mdQueue);
+    convertQqToText(inText, mdQueue);
+    edit->setPlainText(inText);
 }
+
+
 
 void MainWindow::newFile(){
     m_fileName = QDir::homePath() + "/untitled.pmind"; //use default file name

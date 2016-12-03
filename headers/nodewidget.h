@@ -115,6 +115,7 @@ public:
     QVector<NodeWidget*>& getChild(){ return child; }
     NodeWidget* getParent(){return parent_;}
     NodeWidget* getRoot();
+    int getDepth();
     //int getChildNum(childNum)
     ~NodeWidget();
 

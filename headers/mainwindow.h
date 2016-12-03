@@ -77,6 +77,8 @@ private:
     QString m_windowTitle;
     QString contents;
     bool contentChanged;  //textEdit 창이 바뀌었는지 확인
+    QQueue<MdString> mdQueue;
+    QStack<NodeWidget*> dfs_stack;
 
     //widget & graphic component
     MindmapView* mapScreen;

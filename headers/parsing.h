@@ -2,8 +2,10 @@
 #define PARSING_H
 #include<QString>
 #include<QQueue>
+#include<QStack>
 #include<QStringList>
 
+class NodeWidget;
 class MdString{
 
 public:
@@ -19,5 +21,7 @@ private:
 };
 
 int getQqueue(QString &inText,QQueue<MdString> &mdQueue);
+int convertQqToText(QString &inText,QQueue<MdString> &mdQueue);
+void dfs(QStack<NodeWidget*>& qStack, QQueue<MdString>& mdQueue);
 
 #endif // PARSING_H

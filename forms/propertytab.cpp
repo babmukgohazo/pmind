@@ -95,7 +95,8 @@ void PropertyTab::on_rectangleButton_clicked()//노드 모양 네모
         focusedNode->setNodeShape(rec);
     }
     QString shapeOfNode = focusedNode->getNodeShapeCSS();
-    focusedNode->setStyleSheet(shapeOfNode+textColor+"background-color : #6699ff;");
+    QString borderColor = focusedNode->getDefaultColorCSS();
+    focusedNode->setStyleSheet(shapeOfNode+textColor+borderColor+"background-color : #6699ff;");
     showAllProperty();
 }
 
@@ -112,7 +113,8 @@ void PropertyTab::on_roundRecButton_clicked()//노드 모양 둥근 네모
         focusedNode->setNodeShape(roundRec);
     }
     QString shapeOfNode = focusedNode->getNodeShapeCSS();
-    focusedNode->setStyleSheet(shapeOfNode+textColor+"background-color : #6699ff;");
+    QString borderColor = focusedNode->getDefaultColorCSS();
+    focusedNode->setStyleSheet(shapeOfNode+textColor+borderColor+"background-color : #6699ff;");
     showAllProperty();
 }
 
@@ -130,7 +132,8 @@ void PropertyTab::on_underlineButton_clicked()//노드 모양 밑줄
         focusedNode->setNodeShape(underline);
     }
     QString shapeOfNode = focusedNode->getNodeShapeCSS();
-    focusedNode->setStyleSheet(shapeOfNode+textColor+"background-color : #6699ff;");
+    QString borderColor = focusedNode->getDefaultColorCSS();
+    focusedNode->setStyleSheet(shapeOfNode+textColor+borderColor+"background-color : #6699ff;");
     showAllProperty();
 }
 
@@ -150,7 +153,8 @@ void PropertyTab::changeTextOfColor(){//글자 색 바꾸는 슬롯
     QString textColor = focusedNode->getNodeTextColor();
     QString shape=focusedNode->getNodeShapeCSS();
 
-    focusedNode->setStyleSheet(shape+textColor+"background-color : #6699ff;");
+    QString borderColor = focusedNode->getDefaultColorCSS();
+    focusedNode->setStyleSheet(shape+textColor+borderColor+"background-color : #6699ff;");
 
     showAllProperty();
 }

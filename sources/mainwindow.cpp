@@ -122,6 +122,7 @@ void MainWindow::newFile(){
         map = nullptr;
     }
     map = new NodeWidget;
+   //map->setStyleSheet("border-width: 3px; border-style : solid; border-radius: 7px; border-color: #aed339;");
     mapScreen->mindmapScene->addWidget(map);
     renewTextEdit();
     propertyDock->setNodeWidget(map);

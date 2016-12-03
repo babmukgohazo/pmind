@@ -57,12 +57,13 @@ public:
         defaultColor=a;
         QString shapeTmp =getNodeShapeCSS();//모양을 얻어온다
         QString colorTmp =getNodeTextColor();//글자 색을 얻어온다
-        QString borderTmp =defaultColorToString();//노드의 default 색깔 값을 얻어온다.
+        QString borderTmp =getDefaultColorCSS();//노드의 default 색깔 값을 얻어온다.
         setStyleSheet(shapeTmp+colorTmp+borderTmp); //바탕화면 파란색
 
     }
     int getDefaultColor(){return defaultColor;}
-    QString defaultColorToString();
+    QString getDefaultColorCSS();
+    QString getDefaultColorString();
 
     NodeWidget* container(){return container_;}
     void setContainer(NodeWidget* container_){this->container_=container_;}
@@ -95,9 +96,10 @@ private:
     QString underlineCSS =  "border-top-style: none; border-right-style: none; border-bottom-style: solid; border-left-style: none; border-width: 4px;";
     QString recCSS = "border-width: 4px;border-style : solid;";
     QString roundRecCSS = "border-width: 4px; border-style : solid; border-radius: 5px;";
-    QString nothingCSS = "border: 2px solid gray;";
+    QString nothingCSS = "border-top-style: none; border-right-style: none; border-bottom-style: solid; border-left-style: none; border-width: 2px;";
     int defaultColor;
     QString defaultColorCSS;
+    QString defaultColorString;
 };
 
 class NodeTextEdit : public QTextEdit{

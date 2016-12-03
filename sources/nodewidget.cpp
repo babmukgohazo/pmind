@@ -96,7 +96,7 @@ void NodeLabel::focusIn(){
     focus = true;
     QString shapeTmp =this->getNodeShapeCSS();//모양을 얻어온다
     QString colorTmp =this->getNodeTextColor();//글자 색을 얻어온다
-    QString borderTmp = this->defaultColorToString();//노드의 default 색깔 값을 얻어온다.
+    QString borderTmp = this->getDefaultColorCSS();//노드의 default 색깔 값을 얻어온다.
     this->setStyleSheet(shapeTmp+colorTmp+borderTmp+"background-color : #6699ff;"); //바탕화면 파란색
     emit focused();
     emit redraw();
@@ -106,30 +106,63 @@ void NodeLabel::focusOut(){
     focus = false;
     QString shapeTmp =this->getNodeShapeCSS();
     QString colorTmp =this->getNodeTextColor();
-    QString borderTmp = this->defaultColorToString();//노드의 default 색깔 값을 얻어온다.
+    QString borderTmp = this->getDefaultColorCSS();//노드의 default 색깔 값을 얻어온다.
     this->setStyleSheet(shapeTmp+colorTmp+borderTmp+"background-color : #ffffff;"); //바탕화면 하얀색으로 돌리기
     emit noFocused();
     emit redraw();
 }
 
-QString NodeLabel::defaultColorToString(){
+QString NodeLabel::getDefaultColorCSS(){
     switch(defaultColor){
     case blue:
-        defaultColorCSS="border-color: #298aab;"; break;
+        defaultColorCSS="border-color: #298aab;";
+        break;
     case red:
-        defaultColorCSS="border-color: #e55251;"; break;
+        defaultColorCSS="border-color: #e55251;";
+        break;
     case green:
-        defaultColorCSS="border-color: #41a441;"; break;
+        defaultColorCSS="border-color: #41a441;";
+        break;
     case orange:
-        defaultColorCSS="border-color: #e79527;"; break;
+        defaultColorCSS="border-color: #e79527;";
+        break;
     case yellow:
-        defaultColorCSS="border-color: #fee13e;"; break;
+        defaultColorCSS="border-color: #fee13e;";
+        break;
     case mint:
-        defaultColorCSS="border-color: #37aea1;"; break;
+        defaultColorCSS="border-color: #37aea1;";
+        break;
     default:
         defaultColorCSS="";
     }
     return defaultColorCSS;
+}
+
+QString NodeLabel::getDefaultColorString()
+{
+    switch(defaultColor){
+    case blue:
+        defaultColorString="#298aab";
+        break;
+    case red:
+        defaultColorString="#e55251";
+        break;
+    case green:
+        defaultColorString="#41a441";
+        break;
+    case orange:
+        defaultColorString="#e79527";
+        break;
+    case yellow:
+        defaultColorString="#fee13e";
+        break;
+    case mint:
+        defaultColorString="#37aea1";
+        break;
+    default:
+        defaultColorString="";
+    }
+    return defaultColorString;
 }
 
 void NodeTextEdit::keyPressEvent(QKeyEvent *e){
@@ -375,6 +408,10 @@ void NodeWidget::add(NodeWidget *subNodeWidget){
     {
         subNodeWidget->selfWidget.setDefaultColor(this->getDefaultColor());
     }
+
+    QColor* col = new QColor(subNodeWidget->selfWidget.getDefaultColorString());
+    subNodeWidget->pen.setColor(*col);
+
     emit generated();
 }
 
@@ -389,6 +426,9 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
     {
         subNode->selfWidget.setDefaultColor(counter%6);
         counter++;
+
+        QColor* col = new QColor(subNode->selfWidget.getDefaultColorString());
+        subNode->pen.setColor(*col);
     }
     else if(subNode->parent_!=nullptr)//맵이면 안됨
     {
@@ -401,6 +441,9 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
             temp = queue.front();
 
             temp->selfWidget.setDefaultColor(this->getDefaultColor());
+            QColor* col = new QColor(temp->selfWidget.getDefaultColorString());
+            temp->pen.setColor(*col);
+
             queue.pop_front();
 
             for(int i = 0; i<temp->child.count();i++)
@@ -408,6 +451,7 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
         }
 
     }
+
     emit generated();
 }
 

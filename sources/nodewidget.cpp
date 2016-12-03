@@ -41,6 +41,18 @@ void NodeLabel::keyPressEvent(QKeyEvent *e){
     case Qt::Key_Down:
         emit arrowPressed(Qt::Key_Down);
         break;
+    case Qt::Key_I:
+        if(e->modifiers().testFlag(Qt::ControlModifier))
+            emit italic();
+        else
+            emit keyPressed();
+        break;
+    case Qt::Key_B:
+        if(e->modifiers().testFlag(Qt::ControlModifier))
+            emit bold();
+        else
+            emit keyPressed();
+        break;
     case Qt::Key_Z:
     case Qt::Key_Y:
     case Qt::Key_Q:
@@ -49,7 +61,6 @@ void NodeLabel::keyPressEvent(QKeyEvent *e){
     case Qt::Key_R:
     case Qt::Key_T:
     case Qt::Key_U:
-    case Qt::Key_I:
     case Qt::Key_O:
     case Qt::Key_P:
     case Qt::Key_A:
@@ -64,7 +75,6 @@ void NodeLabel::keyPressEvent(QKeyEvent *e){
     case Qt::Key_X:
     case Qt::Key_C:
     case Qt::Key_V:
-    case Qt::Key_B:
     case Qt::Key_N:
     case Qt::Key_M:
     case Qt::Key_0:
@@ -312,6 +322,8 @@ void NodeWidget::init(){
     QObject::connect(&selfWidget,SIGNAL(noFocused()),dockWidget,SLOT(propertyUnEnabled()));
     QObject::connect(&edit,SIGNAL(editClicked()),NodeWidget::mainWindow->getMapScreen(),SLOT(editClick()));
     QObject::connect(&selfWidget,SIGNAL(labelClicked()),NodeWidget::mainWindow->getMapScreen(),SLOT(labelClick()));
+    QObject::connect(&selfWidget,SIGNAL(italic()),dockWidget,SLOT(on_buttonItalic_clicked()));
+    QObject::connect(&selfWidget,SIGNAL(bold()),dockWidget,SLOT(on_buttonBold_clicked()));
 }
 
 NodeWidget::~NodeWidget(){

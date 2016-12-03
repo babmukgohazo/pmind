@@ -16,39 +16,58 @@ void MindmapView::mousePressEvent(QMouseEvent *e){
 }
 
 void MindmapView::keyPressEvent(QKeyEvent *e){
+    bool modifier = true;
     switch(e->key()){
     case Qt::Key_Z:
         if(e->modifiers().testFlag(Qt::ControlModifier))
             emit undid();
+        else
+            modifier = false;
         break;
     case Qt::Key_Y:
         if(e->modifiers().testFlag(Qt::ControlModifier))
             emit redid();
+        else
+            modifier = false;
         break;
     case Qt::Key_N:
         if(e->modifiers().testFlag(Qt::ControlModifier))
             emit newFile();
+        else
+            modifier = false;
         break;
     case Qt::Key_S:
         if(e->modifiers().testFlag(Qt::ControlModifier))
             emit save();
         else if(e->modifiers().testFlag(Qt::ShiftModifier))
             emit saveAs();
+        else
+            modifier = false;
         break;
     case Qt::Key_L:
         if(e->modifiers().testFlag(Qt::ControlModifier))
             emit load();
+        else
+            modifier = false;
         break;
     case Qt::Key_Q:
         if(e->modifiers().testFlag(Qt::ControlModifier))
             emit quit();
+        else
+            modifier = false;
         break;
-    case Qt::Key_I:
+    case Qt::Key_E:
         if(e->modifiers().testFlag(Qt::ControlModifier))
             emit imageExport();
+        else
+            modifier = false;
+        break;
+    default:
+        modifier = false;
         break;
     }
-    QGraphicsView::keyPressEvent(e);
+    if(!modifier)
+        QGraphicsView::keyPressEvent(e);
 }
 
 void MindmapView::focusIn(){

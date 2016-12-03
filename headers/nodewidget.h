@@ -66,6 +66,8 @@ signals:
     void redraw();
     void commanded(NodeWidget*, NodeWidget*, CommandType);
     void labelClicked();
+    void italic();
+    void bold();
 
 public slots:
     void focusIn();

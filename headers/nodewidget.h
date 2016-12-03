@@ -53,7 +53,14 @@ public:
     QString getNodeShapeCSS();
     void setNodeTextColor(QColor col){nodeTextColor=col.name();}
     QString getNodeTextColor(){return "color : "+nodeTextColor+";";}
-    void setDefaultColor(int a){defaultColor=a;}
+    void setDefaultColor(int a){
+        defaultColor=a;
+        QString shapeTmp =getNodeShapeCSS();//모양을 얻어온다
+        QString colorTmp =getNodeTextColor();//글자 색을 얻어온다
+        QString borderTmp =defaultColorToString();//노드의 default 색깔 값을 얻어온다.
+        setStyleSheet(shapeTmp+colorTmp+borderTmp); //바탕화면 파란색
+
+    }
     int getDefaultColor(){return defaultColor;}
     QString defaultColorToString();
 
@@ -166,7 +173,7 @@ signals:
 
 private:
     void init();
-    void setChildDefaultColor(QVector<NodeWidget*>, int);
+    //void setChildDefaultColor(QVector<NodeWidget*>, int);
 
     QFont font;
     QFontMetrics* fm;

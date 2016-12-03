@@ -345,22 +345,23 @@ NodeWidget::~NodeWidget(){
         delete child[i];
     }
 }
-
+/*
 void NodeWidget::setChildDefaultColor(QVector<NodeWidget*> child, int color){
+    qDebug() << this;
+
     for(int i=0;i<child.count();i++)
     {
-        if(child[i]->getChild().empty())
+        if(child[i]->child.empty())
             child[i]->selfWidget.setDefaultColor(color);
         else
         {
-            setChildDefaultColor(child[i]->getChild(),color);
+            setChildDefaultColor(child[i]->child,color);
             child[i]->selfWidget.setDefaultColor(color);
         }
     }
 }
-
+*/
 void NodeWidget::add(NodeWidget *subNodeWidget){
-    //static int cou=0;
     child.push_back(subNodeWidget);
     childLayout.addWidget(subNodeWidget);
     subNodeWidget->parent_ = this;
@@ -374,12 +375,10 @@ void NodeWidget::add(NodeWidget *subNodeWidget){
     {
         subNodeWidget->selfWidget.setDefaultColor(this->getDefaultColor());
     }
-    //cou++;
     emit generated();
 }
 
 void NodeWidget::insert(int index, NodeWidget *subNode){
-    //static int cou=0;
     child.insert(index, subNode);
     childLayout.insertWidget(index, subNode);
     for(int i=index+1;i<child.count();i++)
@@ -393,9 +392,6 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
     }
     else if(subNode->parent_!=nullptr)//맵이면 안됨
     {
-        setChildDefaultColor(child,this->getDefaultColor());
-
-        /*
         QQueue<NodeWidget*> queue;
         NodeWidget* temp;
 
@@ -403,22 +399,15 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
 
         while(!queue.empty()){
             temp = queue.front();
+
             temp->selfWidget.setDefaultColor(this->getDefaultColor());
             queue.pop_front();
+
             for(int i = 0; i<temp->child.count();i++)
                 queue.push_back(temp->child[i]);
         }
-        */
-        /*
-        for(int i=0;i<child.count();i++)
-        {
-            child[i]->selfWidget.setDefaultColor(this->getDefaultColor());
-        }
-*/
-        //subNode->selfWidget.setDefaultColor(this->getDefaultColor());
 
     }
-    //cou++;
     emit generated();
 }
 

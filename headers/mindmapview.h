@@ -28,6 +28,12 @@ public:
         return currentScale;
     }
 
+    void wheelEvent(QWheelEvent *event){
+        event->delta() > 0 ? zoomIn() : zoomOut();
+    }
+    void mousePressEvent(QMouseEvent *e);
+    void keyPressEvent(QKeyEvent *e);
+
 signals:
     void zoomSignal();
 
@@ -56,13 +62,6 @@ signals:
     void load();
     void saveAs();
     void quit();
-
-protected:
-    void wheelEvent(QWheelEvent *event){
-        event->delta() > 0 ? zoomIn() : zoomOut();
-    }
-    void mousePressEvent(QMouseEvent *e);
-    void keyPressEvent(QKeyEvent *e);
 
 private:
     double currentScale;

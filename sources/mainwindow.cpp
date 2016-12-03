@@ -46,6 +46,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //layout->addLayout(programLayout);
     layout->addWidget(mapScreen);
 
+    dockWidget->setMapScreen(mapScreen);
+
     QObject::connect(mapScreen,SIGNAL(undid()),process,SLOT(undo()));
     QObject::connect(mapScreen,SIGNAL(redid()),process,SLOT(redo()));
     QObject::connect(mapScreen,SIGNAL(newFile()),this,SLOT(newFile()));

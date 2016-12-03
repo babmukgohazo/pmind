@@ -3,10 +3,12 @@
 
 class NodeLabel;
 class NodeWidget;
+class MindmapView;
 #include <QDockWidget>
 #include <QColorDialog>
 #include <QString>
 #include <QTextEdit>
+#include <QKeyEvent>
 
 
 namespace Ui {
@@ -20,9 +22,11 @@ enum nodeShape{nothing,rec,underline,roundRec};
 public:
     explicit PropertyTab(QWidget *parent = 0);
     ~PropertyTab(); 
+    void keyPressEvent(QKeyEvent *e);
     void setButtonImg();
     void setDockWedigetDefault(); //dockWidget의 값을 초기화 한다.
     void setNodeWidget(NodeWidget * map){this->map = map;}
+    void setMapScreen(MindmapView* mapScreen){this->mapScreen = mapScreen;}
     QTextEdit* getTextEdit();
 
 public slots:
@@ -55,6 +59,7 @@ private:
     Ui::PropertyTab *ui;
     NodeWidget * map;
     NodeLabel* focusedNode;
+    MindmapView* mapScreen;
     QColorDialog *colorDial;
 };
 

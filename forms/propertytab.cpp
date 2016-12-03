@@ -1,6 +1,6 @@
 #include "propertytab.h"
 #include "ui_propertytab.h"
-#include "headers/nodewidget.h"
+#include "headers/mainwindow.h"
 #include <QDebug>
 
 PropertyTab::PropertyTab(QWidget *parent) :
@@ -16,6 +16,12 @@ PropertyTab::PropertyTab(QWidget *parent) :
 PropertyTab::~PropertyTab()
 {
     delete ui;
+}
+
+void PropertyTab::keyPressEvent(QKeyEvent *e){
+    mapScreen->setFocus();
+    mapScreen->keyPressEvent(e);
+    QDockWidget::keyPressEvent(e);
 }
 
 void PropertyTab::on_fontBox_currentFontChanged(const QFont &f)//글꼴

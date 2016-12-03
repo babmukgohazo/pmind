@@ -12,8 +12,9 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowTitle("P-mind");
     // construct & set UI component
     mapScreen = new MindmapView();
-    dockWidget = new PropertyTab;
-    edit = dockWidget->getTextEdit();
+    propertyDock = new PropertyTab;
+    textDock = new TextView;
+    edit = textDock->getTextEdit();
     edit->setReadOnly(true);
     redrawButton = new QPushButton("Redraw");
     layout = new QVBoxLayout();
@@ -35,7 +36,11 @@ MainWindow::MainWindow(QWidget *parent) :
     scaleComboLayout->addStretch();
 
     //rightLayout->addWidget(dockWidget);
-    addDockWidget(Qt::RightDockWidgetArea,dockWidget);
+    addDockWidget(Qt::RightDockWidgetArea,propertyDock);
+    addDockWidget(Qt::RightDockWidgetArea,textDock);
+    QMainWindow::tabifyDockWidget(propertyDock,textDock);
+    propertyDock->raise();
+
     //rightLayout->addWidget(redrawButton);
 
     programLayout->addWidget(mapScreen);
@@ -89,7 +94,7 @@ void MainWindow::reload(){
     mapScreen->mindmapScene->addWidget(map);
     renewTextEdit();
     QObject::connect(mapScreen,SIGNAL(viewClicked()),map,SLOT(update()));
-    dockWidget->setNodeWidget(map);
+    propertyDock->setNodeWidget(map);
 }
 
 void MainWindow::renewTextEdit(){
@@ -119,7 +124,7 @@ void MainWindow::newFile(){
     map = new NodeWidget;
     mapScreen->mindmapScene->addWidget(map);
     renewTextEdit();
-    dockWidget->setNodeWidget(map);
+    propertyDock->setNodeWidget(map);
     changeWindowTitle();
 }
 
@@ -178,12 +183,12 @@ void MainWindow::openFile(){
         file.close();
 
         if(map != nullptr){
-            delete map;
+            map->close();
         }
         map = XmlHandler::Xml2Mindmap(doc);
         mapScreen->mindmapScene->addWidget(map);
+        propertyDock->setNodeWidget(map);
         renewTextEdit();
-        dockWidget->setNodeWidget(map);
     }
 
     else if(m_fileName.endsWith(".md",Qt::CaseInsensitive)){

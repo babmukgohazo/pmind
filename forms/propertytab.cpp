@@ -147,29 +147,11 @@ void PropertyTab::changeTextOfColor(){//글자 색 바꾸는 슬롯
     focusedNode = root->labelPointer();
 
     focusedNode->setNodeTextColor(colorDial->selectedColor());
-    //<<<<<<< HEAD
-    //    QString textColor = "color :"+focusedNode->getNodeTextColor();
-    //    QString shape;
-    //    int sh=-1;
-    //    sh = focusedNode->getNodeShape();
-    //    switch(sh){
-    //    case rec:
-    //        shape = recCSS; break;
-    //    case roundRec:
-    //        shape = roundRecCSS; break;
-    //    case underline:
-    //        shape = underlineCSS; break;
-    //    default:
-    //        shape = nothingCSS; break;
-    //    }
-    //    focusedNode->setStyleSheet(shape + textColor);
-
-    //=======
     QString textColor = focusedNode->getNodeTextColor();
     QString shape=focusedNode->getNodeShapeCSS();
 
     focusedNode->setStyleSheet(shape+textColor+"background-color : #6699ff;");
-//>>>>>>> feature/sprint_3_dockWidget
+
     showAllProperty();
 }
 
@@ -251,8 +233,4 @@ void PropertyTab::propertyEnabled(){
 
 void PropertyTab::propertyUnEnabled(){
     this->setEnabled(false);
-}
-
-QTextEdit* PropertyTab::getTextEdit() {
-    return ui->textEdit;
 }

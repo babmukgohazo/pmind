@@ -23,7 +23,6 @@ public:
     void setButtonImg();
     void setDockWedigetDefault(); //dockWidget의 값을 초기화 한다.
     void setNodeWidget(NodeWidget * map){this->map = map;}
-    QTextEdit* getTextEdit();
 
 public slots:
 

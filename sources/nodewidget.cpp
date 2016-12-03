@@ -264,23 +264,17 @@ int NodeWidget::getDepth(){
 }
 
 void NodeWidget::init(){
-//<<<<<<< HEAD
     edit.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     edit.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-//=======
-    dockWidget=mainWindow->getDockWidget();
-//>>>>>>> feature/sprint_3_dockWidget
+    PropertyDock=mainWindow->getPropertyDock();
+    textViewDock=mainWindow->getTextViewDock();
     fm = new QFontMetrics(edit.currentFont());
     selfWidget.setContainer(this);
     this->setStyleSheet("background-color: transparent");
     //selfWidget.setStyleSheet("background-color: transparent ; border-bottom: 1px solid black;");
     selfWidget.setStyleSheet("border: 2px solid gray;");
-//<<<<<<< HEAD
     selfWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
     childWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
-//=======
-    //selfWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-//>>>>>>> feature/sprint_3_dockWidget
     layout.addWidget(&selfWidget);
     layout.addWidget(&childWidget);
     layout.setSpacing(30);
@@ -305,9 +299,9 @@ void NodeWidget::init(){
     QObject::connect(this,SIGNAL(commanded(NodeWidget*,CommandType)),NodeWidget::mainWindow,SLOT(addProcess(NodeWidget*,CommandType)));
     QObject::connect(&selfWidget,SIGNAL(commanded(NodeWidget*,NodeWidget*,CommandType)),this,SIGNAL(commanded(NodeWidget*,NodeWidget*,CommandType)));
     QObject::connect(this,SIGNAL(commanded(NodeWidget*,NodeWidget*,CommandType)),NodeWidget::mainWindow,SLOT(addProcess(NodeWidget*,NodeWidget*,CommandType)));
-    QObject::connect(&selfWidget,SIGNAL(focused()),dockWidget,SLOT(showAllProperty()));
-    QObject::connect(&selfWidget,SIGNAL(focused()),dockWidget,SLOT(propertyEnabled()));
-    QObject::connect(&selfWidget,SIGNAL(noFocused()),dockWidget,SLOT(propertyUnEnabled()));
+    QObject::connect(&selfWidget,SIGNAL(focused()),PropertyDock,SLOT(showAllProperty()));
+    QObject::connect(&selfWidget,SIGNAL(focused()),PropertyDock,SLOT(propertyEnabled()));
+    QObject::connect(&selfWidget,SIGNAL(noFocused()),PropertyDock,SLOT(propertyUnEnabled()));
     QObject::connect(this,SIGNAL(generated()),NodeWidget::mainWindow,SLOT(renewTextEdit()));
 }
 
@@ -602,7 +596,6 @@ bool NodeWidget::isChildOf(NodeWidget* ptr){
         return parent_->isChildOf(ptr);
 }
 
-//<<<<<<< HEAD
 void NodeWidget::setEditFont(const QFont &font){
     delete fm;
     fm = new QFontMetrics(font);
@@ -613,7 +606,3 @@ void NodeWidget::setEditFont(const QFont &font){
     textEditSizeRenew();
     editMode = false;
 }
-
-
-//=======
-//>>>>>>> feature/sprint_3_dockWidget

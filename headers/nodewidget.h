@@ -22,6 +22,7 @@
 #include "headers/parsing.h"
 #include "headers/process.h"
 #include "forms/propertytab.h"
+#include "forms/textview.h"
 
 class MainWindow;
 class NodeWidget;
@@ -77,14 +78,11 @@ private:
     NodeWidget* container_;
     QColor color;
     bool dragOver;
-//<<<<<<< HEAD
     QPoint prePos;
-//=======
     QString underlineCSS =  "border-top-style: none; border-right-style: none; border-bottom-style: solid; border-left-style: none; border-width: 4px;border-color: #ff6666;";
     QString recCSS = "border-width: 4px;border-style : solid;border-color: #ff6666;";
     QString roundRecCSS = "border-width: 4px; border-style : solid; border-radius: 5px; border-color: #ff6666;";
     QString nothingCSS = "border: 2px solid gray;";
-//>>>>>>> feature/sprint_3_dockWidget
 };
 
 class NodeTextEdit : public QTextEdit{
@@ -171,7 +169,8 @@ private:
     int index = 0;
 
     static MainWindow* mainWindow;
-    PropertyTab* dockWidget;
+    PropertyTab* PropertyDock;
+    TextView* textViewDock;
 };
 
 #endif // NODEWIDGET_H

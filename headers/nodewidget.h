@@ -27,7 +27,7 @@
 
 class MainWindow;
 class NodeWidget;
-enum nodeShape{nothing,rec,underline,roundRec};
+enum nodeShape{nothing,rec,underline,roundRec,root};
 enum defaultColor{blue,red,green,orange,yellow,mint};
 
 class NodeLabel : public QLabel{
@@ -37,7 +37,7 @@ public:
         setAcceptDrops(true);
         color="";
     }
-    enum nodeShape{nothing,rec,underline,roundRec};
+    enum nodeShape{nothing,rec,underline,roundRec,root};
     void mousePressEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
     void keyPressEvent(QKeyEvent *e);
@@ -101,6 +101,7 @@ private:
     QString recCSS = "border-width: 4px;border-style : solid;";
     QString roundRecCSS = "border-width: 4px; border-style : solid; border-radius: 5px;";
     QString nothingCSS = "border-top-style: none; border-right-style: none; border-bottom-style: solid; border-left-style: none; border-width: 2px;";
+    QString rootCSS = "border-width: 3px; border-style : solid; border-color: #aed339;";
     int defaultColor;
     QString defaultColorCSS;
     QString defaultColorString;

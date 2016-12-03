@@ -130,7 +130,8 @@ void MainWindow::newFile(){
     }
     qGA->sendEvent("menu", "click", "newFile");
     map = new NodeWidget;
-   //map->setStyleSheet("border-width: 3px; border-style : solid; border-radius: 7px; border-color: #aed339;");
+    map->labelPointer()->setStyleSheet("border-width: 3px; border-style : solid; border-color: #aed339;");
+    map->labelPointer()->setNodeShape(root);
     mapScreen->mindmapScene->addWidget(map);
     renewTextEdit();
     propertyDock->setNodeWidget(map);

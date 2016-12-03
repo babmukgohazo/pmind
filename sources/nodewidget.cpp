@@ -284,6 +284,8 @@ QString NodeLabel::getNodeShapeCSS(){
         return roundRecCSS;
     case underline:
         return underlineCSS;
+    case root:
+        return rootCSS;
     default:
         return nothingCSS;
     }
@@ -372,7 +374,7 @@ void NodeWidget::init(){
     selfWidget.setContainer(this);
     this->setStyleSheet("background-color: transparent");
     //selfWidget.setStyleSheet("background-color: transparent ; border-bottom: 1px solid black;");
-    selfWidget.setStyleSheet("border: 2px solid gray;");
+    //selfWidget.setStyleSheet("border: 2px solid gray;");
     selfWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
     childWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
     layout.addWidget(&selfWidget);

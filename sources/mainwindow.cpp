@@ -104,6 +104,7 @@ void MainWindow::reload(){
     renewTextEdit();
     QObject::connect(mapScreen,SIGNAL(viewClicked()),map,SLOT(update()));
     propertyDock->setNodeWidget(map);
+    process = new Process;
 }
 
 void MainWindow::renewTextEdit(){
@@ -138,7 +139,7 @@ void MainWindow::newFile(){
     renewTextEdit();
     propertyDock->setNodeWidget(map);
     changeWindowTitle();
-
+    process = new Process;
 }
 
 void MainWindow::openFile(){
@@ -201,6 +202,7 @@ void MainWindow::openFile(){
         map = XmlHandler::Xml2Mindmap(doc);
         mapScreen->mindmapScene->addWidget(map);
         propertyDock->setNodeWidget(map);
+        process = new Process;
         renewTextEdit();
     }
 

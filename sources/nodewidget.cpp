@@ -232,8 +232,18 @@ void NodeLabel::mouseMoveEvent(QMouseEvent *event){
         drag->setMimeData(mime);
         mime->setColorData(qVariantFromValue((void*)parent()));
 
-        drag->setPixmap(((QWidget*)parent())->grab());
-        drag->setHotSpot((static_cast<QWidget*>(parent()))->mapFromGlobal(mapToGlobal(event->pos())));
+        QPixmap grabPixmap = ((QWidget*)parent())->grab();
+        QPixmap scaledPixmap;
+        int x,y;
+        qreal scale;
+        x = grabPixmap.width();
+        y = grabPixmap.height();
+        scale = NodeWidget::mainWindow->getMapScreen()->getCurrentScale()/100;
+        x *= scale;
+        y *= scale;
+        scaledPixmap = grabPixmap.scaled(x, y,  Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        drag->setPixmap(scaledPixmap);
+        drag->setHotSpot((static_cast<QWidget*>(parent()))->mapFromGlobal(mapToGlobal(event->pos()))*scale);
         drag->exec();
         focusOut();
         setCursor(Qt::OpenHandCursor);

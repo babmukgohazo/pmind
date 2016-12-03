@@ -165,6 +165,7 @@ public:
     QPen& getPen();
     void setPen(QPen& pen);
 
+    static MainWindow* mainWindow;
 
 public slots:
     void labelToTextEdit();
@@ -201,7 +202,6 @@ private:
     bool clicked = false;
     int index = 0;
 
-    static MainWindow* mainWindow;
     PropertyTab* PropertyDock;
     TextView* textViewDock;
 

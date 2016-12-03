@@ -35,6 +35,7 @@ public:
     }
     enum nodeShape{nothing,rec,underline,roundRec};
     void mousePressEvent(QMouseEvent *e);
+    void mouseReleaseEvent(QMouseEvent *e);
     void keyPressEvent(QKeyEvent *e);
     void focusOutEvent(QFocusEvent *e);
     void mouseMoveEvent(QMouseEvent *e);
@@ -132,6 +133,7 @@ public:
     NodeLabel* labelPointer(){return &selfWidget;}
     int getIndex(){return index;}
     bool isEditMode(){return editMode;}
+    NodeWidget* getNearestChild();
 
     NodeWidget* takeNode();
     bool isChildOf(NodeWidget* ptr);

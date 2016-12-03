@@ -2,6 +2,9 @@
 
 void NodeLabel::mousePressEvent(QMouseEvent *e){
     prePos = e->pos();
+}
+
+void NodeLabel::mouseReleaseEvent(QMouseEvent *e){
     if(e->button()==Qt::LeftButton){
         if(focus){
             emit doubleClicked();
@@ -548,6 +551,28 @@ void NodeWidget::disconnectUpperNode(){
     getRoot()->update();
 }
 
+NodeWidget* NodeWidget::getNearestChild(){
+    if(child.count()==0)
+        return nullptr;
+    NodeWidget* nearestChild = child.front();
+    QPoint origin = label().mapToGlobal(QPoint(0,0));
+    QPoint diff;
+    int minLength;
+    int length;
+    diff = nearestChild->label().mapToGlobal(QPoint(0,0)) - origin;
+    minLength = diff.manhattanLength();
+
+    for(int i=1;i<child.count();i++){
+        diff = child[i]->label().mapToGlobal(QPoint(0,0)) - origin;
+        length = diff.manhattanLength();
+        if(length < minLength){
+            minLength = length;
+            nearestChild = child[i];
+        }
+    }
+    return nearestChild;
+}
+
 void NodeWidget::focusMoveByArrow(int key){
     switch(key){
     case Qt::Key_Left:
@@ -559,19 +584,29 @@ void NodeWidget::focusMoveByArrow(int key){
     case Qt::Key_Right:
         if(child.count()!=0){
             selfWidget.focusOut();
-            child[0]->label().focusIn();
+            getNearestChild()->label().focusIn();
         }
         break;
     case Qt::Key_Up:
+        if(parent_==nullptr)
+            break;
+        selfWidget.focusOut();
         if(index!=0){
-            selfWidget.focusOut();
             parent_->child[index-1]->label().focusIn();
+        }
+        else if(index == 0){
+            parent_->child.last()->label().focusIn();
         }
         break;
     case Qt::Key_Down:
-        if(parent_!=nullptr && this!=parent_->child.last()){
-            selfWidget.focusOut();
+        if(parent_==nullptr)
+                break;
+        selfWidget.focusOut();
+        if(this!=parent_->child.last()){
             parent_->child[index+1]->label().focusIn();
+        }
+        else if(this==parent_->child.last()){
+            parent_->child.front()->label().focusIn();
         }
         break;
     }

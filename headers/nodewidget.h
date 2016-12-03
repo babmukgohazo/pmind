@@ -89,7 +89,7 @@ private:
     QString underlineCSS =  "border-top-style: none; border-right-style: none; border-bottom-style: solid; border-left-style: none; border-width: 4px;";
     QString recCSS = "border-width: 4px;border-style : solid;";
     QString roundRecCSS = "border-width: 4px; border-style : solid; border-radius: 5px;";
-    QString nothingCSS = "border: 2px solid gray;";
+    QString nothingCSS = "border-top-style: none; border-right-style: none; border-bottom-style: solid; border-left-style: none; border-width: 2px;";
     int defaultColor;
     QString defaultColorCSS;
     QString defaultColorString;

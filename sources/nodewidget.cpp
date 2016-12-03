@@ -333,7 +333,7 @@ void NodeWidget::init(){
     selfWidget.setContainer(this);
     this->setStyleSheet("background-color: transparent");
     //selfWidget.setStyleSheet("background-color: transparent ; border-bottom: 1px solid black;");
-    selfWidget.setStyleSheet("border: 2px solid gray;");
+    selfWidget.setStyleSheet("border-bottom: 2px;");
     selfWidget.setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     childWidget.setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     layout.addWidget(&selfWidget);
@@ -344,9 +344,9 @@ void NodeWidget::init(){
     layout.setContentsMargins(0,0,0,0);
     childLayout.setMargin(0);
 
-    QColor* col = new QColor(selfWidget.getDefaultColorString());
+    //QColor* col = new QColor(selfWidget.getDefaultColorString());
     pen.setWidth(2);
-    pen.setColor(*col);
+    //pen.setColor(*col);
 
     QObject::connect(&edit,SIGNAL(enterPressed()),NodeWidget::mainWindow,SLOT(renewTextEdit()));
 
@@ -396,7 +396,8 @@ void NodeWidget::add(NodeWidget *subNodeWidget){
     {
         subNodeWidget->selfWidget.setDefaultColor(this->getDefaultColor());
     }
-    //cou++;
+    QColor* col = new QColor(subNodeWidget->selfWidget.getDefaultColorString());
+    subNodeWidget->pen.setColor(*col);
     emit generated();
 }
 
@@ -417,6 +418,8 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
     {
         subNode->selfWidget.setDefaultColor(this->getDefaultColor());
     }
+    QColor* col = new QColor(subNode->selfWidget.getDefaultColorString());
+    subNode->pen.setColor(*col);
     //cou++;
     emit generated();
 }

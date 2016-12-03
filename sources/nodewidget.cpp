@@ -428,9 +428,6 @@ void NodeWidget::textEditSizeRenew(){
             int temp;
 
             max = fm->width(splitVector[0]);
-            for(int i=0; i<splitVector.count();i++){
-                qDebug()<<splitVector[i];
-            }
             for(int i=1; i<splitVector.count();i++){
                 temp = fm->width(splitVector[i]);
                 if(max < temp)

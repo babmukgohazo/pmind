@@ -28,6 +28,8 @@ public:
         return currentScale;
     }
 
+    QGraphicsScene* getScene(){return mindmapScene;}
+
     void wheelEvent(QWheelEvent *event){
         event->delta() > 0 ? zoomIn() : zoomOut();
     }

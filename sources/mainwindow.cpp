@@ -274,16 +274,23 @@ void MainWindow::imageExport(){
         return;
     qGA->sendEvent("menu", "click", "imageExport");
 
-    QPixmap pixmap;
+    int mx,my;
+    mx = map->rect().width();
+    my = map->rect().height();
+
+    QImage image(QSize(mx*5,my*5),QImage::Format_RGB32);
+    QPainter painter(&image);
+    painter.setRenderHint(QPainter::Antialiasing);
+    mapScreen->getScene()->render(&painter);
+
     QString fileName = dialog.selectedFiles().first();
     QFile file(fileName);
     file.open(QIODevice::WriteOnly);
-    pixmap = map->grab();
-    QImage background(pixmap.size()+QSize(40,40),QImage::Format_RGB32);
+    QImage background(image.size()+QSize(40,40),QImage::Format_RGB32);
     background.fill(Qt::white);
-    QPainter painter(&background);
-    painter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
-    painter.drawImage(20,20,pixmap.toImage());
+    QPainter backgroundPainter(&background);
+    backgroundPainter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
+    backgroundPainter.drawImage(20,20,image);
     background.save(fileName);
 }
 

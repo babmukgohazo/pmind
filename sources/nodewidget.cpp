@@ -230,22 +230,40 @@ void NodeLabel::mouseMoveEvent(QMouseEvent *event){
         drag->setMimeData(mime);
         mime->setColorData(qVariantFromValue((void*)parent()));
 
-        QPixmap grabPixmap = ((QWidget*)parent())->grab();
-        QPixmap scaledPixmap;
+        MindmapView* mapScreen = NodeWidget::mainWindow->getMapScreen();
+        NodeWidget* map = NodeWidget::mainWindow->getMap();
+        QWidget* parent_ = static_cast<QWidget*>(parent());
+        int mx,my;
         int x,y;
+        mx = map->rect().width();
+        my = map->rect().height();
+        x = parent_->rect().width();
+        y = parent_->rect().height();
+
         qreal scale;
-        x = grabPixmap.width();
-        y = grabPixmap.height();
-        scale = NodeWidget::mainWindow->getMapScreen()->getCurrentScale()/100;
+        scale = mapScreen->getCurrentScale()/100;
+        mx *= scale;
+        my *= scale;
         x *= scale;
         y *= scale;
-        scaledPixmap = grabPixmap.scaled(x, y,  Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        drag->setPixmap(scaledPixmap);
+
+        QImage image(QSize(mx,my),QImage::Format_ARGB32);
+        image.fill(Qt::transparent);
+        QPainter painter(&image);
+        painter.setRenderHint(QPainter::Antialiasing);
+        QRect rect;
+        QPoint origin = parent_->mapToGlobal(QPoint(0,0));
+        origin = map->mapFromGlobal(origin);
+        origin *= scale;
+        rect.setRect(origin.x(),origin.y(),x,y);
+        mapScreen->getScene()->render(&painter);
+        QImage cutImage = image.copy(rect);
+
+        drag->setPixmap(QPixmap::fromImage(cutImage));
         drag->setHotSpot((static_cast<QWidget*>(parent()))->mapFromGlobal(mapToGlobal(event->pos()))*scale);
         drag->exec();
         focusOut();
         setCursor(Qt::OpenHandCursor);
-
     }
 }
 

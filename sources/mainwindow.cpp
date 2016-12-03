@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mapScreen = new MindmapView();
     dockWidget = new PropertyTab;
     edit = dockWidget->getTextEdit();
+    edit->setReadOnly(true);
     redrawButton = new QPushButton("Redraw");
     layout = new QVBoxLayout();
     programLayout = new QHBoxLayout();

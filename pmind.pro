@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml
+QT       += core gui xml network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -20,7 +20,8 @@ SOURCES += \
     forms/propertytab.cpp \
     sources/mindmapview.cpp \
     sources/process.cpp \
-    forms/textview.cpp
+    forms/textview.cpp \
+    sources/qgoogleanalytics.cpp
 
 HEADERS  += \
     headers/mainwindow.h \
@@ -30,7 +31,8 @@ HEADERS  += \
     forms/propertytab.h \
     headers/process.h \
     headers/xmlhandler.h \
-    forms/textview.h
+    forms/textview.h \
+    headers/qgoogleanalytics.h
 
 FORMS    += \
     forms/mainwindow.ui \

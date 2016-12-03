@@ -66,6 +66,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(mapScreen, SIGNAL(zoomSignal()),this,SLOT(scaleCombo_setCurrentScale()));
 
     NodeWidget::setMainWindow(this);
+
+    qGA = new QGoogleAnalytics(this);
+    qGA->sendPageView("mindmapview");
 }
 
 MainWindow::~MainWindow()
@@ -122,11 +125,13 @@ void MainWindow::newFile(){
         delete map;
         map = nullptr;
     }
+    qGA->sendEvent("menu", "click", "newFile");
     map = new NodeWidget;
     mapScreen->mindmapScene->addWidget(map);
     renewTextEdit();
     propertyDock->setNodeWidget(map);
     changeWindowTitle();
+
 }
 
 void MainWindow::openFile(){
@@ -165,7 +170,7 @@ void MainWindow::openFile(){
     dialog.setDefaultSuffix("pmind");
     if (!dialog.exec())
         return;
-
+    qGA->sendEvent("menu", "click", "openFile");
     m_fileName = dialog.selectedFiles().first();    //get path & filename (ex: C:/Users/KIMJEONGHUN/test.pmind )
 
     //open file
@@ -212,7 +217,7 @@ void MainWindow::saveFile(){
         messageBox.critical(0,"Error","파일을 저장하다가 오류가 났습니다.");
         return;
     }
-
+    qGA->sendEvent("menu", "click", "saveFile");
 
     if(m_fileName.endsWith(".pmind",Qt::CaseInsensitive)){
 
@@ -242,7 +247,7 @@ void MainWindow::saveFileAs(){
     dialog.setDefaultSuffix("pmind");
     if (!dialog.exec())
         return;
-
+    qGA->sendEvent("menu", "click", "saveFileAs");
     m_fileName = dialog.selectedFiles().first();
     saveFile();
 }
@@ -258,6 +263,7 @@ void MainWindow::imageExport(){
 
     if(!dialog.exec())
         return;
+    qGA->sendEvent("menu", "click", "imageExport");
 
     QPixmap pixmap;
     QString fileName = dialog.selectedFiles().first();
@@ -274,7 +280,9 @@ void MainWindow::imageExport(){
 
 void MainWindow::quit(){
     //just quit :)
+    qGA->sendEvent("mindmapview", "quit", "quit");
     QApplication::instance()->quit();
+
 }
 
 void MainWindow::setFileMenuToolbar() {
@@ -333,6 +341,7 @@ void MainWindow::on_scaleCombo_currentIndexChanged(const QString &arg1)
     bool ok;
     int ratio = arg1.toInt(&ok,10);
     mapScreen->adjustScale(ratio);
+    qGA->sendEvent("scale", "adjust", "select", ratio);
 }
 
 
@@ -341,6 +350,7 @@ void MainWindow::scaleCombo_setCurrentScale()
     QString curScale = QString::number(mapScreen->getCurrentScale());
     QStringList intScale = curScale.split('.');
     scaleCombo->setEditText(intScale[0]);
+    qGA->sendEvent("scale", "adjust", "input", intScale[0].toInt());
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e)

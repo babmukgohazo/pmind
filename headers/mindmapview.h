@@ -16,7 +16,7 @@ public:
     QGraphicsScene* mindmapScene;
     MainWindow* mainWindow;
 
-    void adjustScale(int ratio){
+    void adjustScale(qreal ratio){
         qreal x,y;
         x = ratio/currentScale;
         y = ratio/currentScale;
@@ -40,21 +40,25 @@ signals:
 public slots:
 
     void zoomIn(){
-        scale(1.25,1.25);
-        currentScale *=1.25;
+        qreal scale_ = currentScale;
+        scale_ *= 11.0/10;
+        if(scale_>300)
+            scale_ = 300;
+        adjustScale(scale_);
         emit zoomSignal();
     }
     void zoomOut(){
-        scale(0.8,0.8);
-        currentScale *=0.8;
+        qreal scale_ = currentScale;
+        scale_ *= 10.0/11;
+        if(scale_<50)
+            scale_ = 50;
+        adjustScale(scale_);
         emit zoomSignal();
     }
 
     void focusIn();
     void editClick(){editClicked = true;}
     void labelClick(){labelClicked = true;}
-
-signals:
 
 private:
     double currentScale;

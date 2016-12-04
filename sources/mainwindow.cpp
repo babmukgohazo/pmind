@@ -106,7 +106,7 @@ void MainWindow::reload(){
     getQqueue(str,mdQueue);
     map = new NodeWidget(mdQueue, this);
     map->labelPointer()->setStyleSheet("border-width: 3px; border-style : solid; border-color: #aed339;");
-    map->labelPointer()->setNodeShape(root);
+    map->labelPointer()->setNodeShape(nodeShape::root);
     map->labelPointer()->setDefaultColor(100);
     QFont *font = new QFont("Consolas");
     font->setPointSize(14);
@@ -146,7 +146,7 @@ void MainWindow::newFile(){
     qGA->sendEvent("menu", "click", "newFile");
     map = new NodeWidget;
     map->labelPointer()->setStyleSheet("border-width: 3px; border-style : solid; border-color: #aed339;");
-    map->labelPointer()->setNodeShape(root);
+    map->labelPointer()->setNodeShape(nodeShape::root);
     map->labelPointer()->setDefaultColor(100);
     QFont *font = new QFont("Consolas");
     font->setPointSize(14);
@@ -218,7 +218,7 @@ void MainWindow::openFile(){
         }
         map = XmlHandler::Xml2Mindmap(doc);
         map->labelPointer()->setStyleSheet("border-width: 3px; border-style : solid; border-color: #aed339;");
-        map->labelPointer()->setNodeShape(root);
+        map->labelPointer()->setNodeShape(nodeShape::root);
         containerLayout->addWidget(map);
         propertyDock->setNodeWidget(map);
         process = new Process;

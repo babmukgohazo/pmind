@@ -9,8 +9,7 @@
 
 class NodeWidget;
 class Command;
-enum nodeShape;
-
+enum nodeShape{nothing,rec,underline,roundRec,root};
 enum class CommandType{
     Text, Add, Delete, Move, Font, NodeStyle
 };

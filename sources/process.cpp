@@ -1,4 +1,5 @@
 #include "headers/mainwindow.h"
+#include "headers/nodewidget.h"
 
 Process::~Process(){
     while(!undoStack.isEmpty()){

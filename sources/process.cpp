@@ -48,6 +48,8 @@ void Process::undo(){
         redoStack.pop_front();
     }
     undoStack.pop_back();
+
+    NodeWidget::mainWindow->update();
 }
 
 void Process::redo(){
@@ -57,6 +59,8 @@ void Process::redo(){
     redoStack.last()->redo();
     undoStack.push_back(redoStack.last());
     redoStack.pop_back();
+
+    NodeWidget::mainWindow->update();
 }
 
 TextCommand::TextCommand(NodeWidget* textChangedNode) : Command(CommandType::Text){
@@ -88,7 +92,7 @@ void AddCommand::undo(){
 }
 
 void AddCommand::redo(){
-    parent_->insert(index, addedNode);
+    parent_->onlyInsert(index, addedNode);
     addedNode->show();
 }
 
@@ -99,7 +103,7 @@ DeleteCommand::DeleteCommand(NodeWidget* deletedNode) : Command(CommandType::Del
 }
 
 void DeleteCommand::undo(){
-    parent_->insert(index, deletedNode);
+    parent_->onlyInsert(index, deletedNode);
     deletedNode->show();
 }
 
@@ -115,19 +119,69 @@ MoveCommand::MoveCommand(NodeWidget *movedNode, NodeWidget *to) : Command(Comman
     from = movedNode->getParent();
     fromIndex = movedNode->getIndex();
     toIndex = to->getChild().count();
+    fromColor = movedNode->label().getDefaultColor();
 }
 
 void MoveCommand::undo(){
+    if(to==NodeWidget::mainWindow->getMap())
+        toColor = movedNode->label().getDefaultColor();
+
     movedNode->disconnectUpperNode();
     movedNode->close();
-    from->insert(fromIndex, movedNode);
+    if(from!=NodeWidget::mainWindow->getMap())
+        from->insert(fromIndex, movedNode);
+    else{
+        from->onlyInsert(fromIndex, movedNode);
+
+        QQueue<NodeWidget*> queue;
+        NodeWidget* temp;
+
+        queue.push_back(movedNode);
+        movedNode->label().setDefaultColor(fromColor);
+        QColor col(movedNode->label().getDefaultColorString());
+
+        while(!queue.empty()){
+            temp = queue.front();
+
+            temp->label().setDefaultColor(fromColor);
+            temp->getPen().setColor(col);
+
+            queue.pop_front();
+
+            for(int i = 0; i<temp->getChild().count();i++)
+                queue.push_back(temp->getChild()[i]);
+        }
+    }
     movedNode->show();
 }
 
 void MoveCommand::redo(){
     movedNode->disconnectUpperNode();
     movedNode->close();
-    to->insert(toIndex, movedNode);
+    if(to!=NodeWidget::mainWindow->getMap())
+        to->insert(toIndex, movedNode);
+    else{
+        to->onlyInsert(toIndex, movedNode);
+
+        QQueue<NodeWidget*> queue;
+        NodeWidget* temp;
+
+        queue.push_back(movedNode);
+        movedNode->label().setDefaultColor(toColor);
+        QColor col(movedNode->label().getDefaultColorString());
+
+        while(!queue.empty()){
+            temp = queue.front();
+
+            temp->label().setDefaultColor(toColor);
+            temp->getPen().setColor(col);
+
+            queue.pop_front();
+
+            for(int i = 0; i<temp->getChild().count();i++)
+                queue.push_back(temp->getChild()[i]);
+        }
+    }
     movedNode->show();
 }
 
@@ -145,4 +199,40 @@ void FontCommand::undo(){
 void FontCommand::redo(){
     fontChangedNode->label().setFont(font);
     fontChangedNode->getEdit().setFont(font);
+}
+
+NodeStyleCommand::NodeStyleCommand(NodeWidget *styleChangedNode, nodeShape shape) : Command(CommandType::NodeStyle){
+    this->styleChangedNode = styleChangedNode;
+    this->shape = shape;
+}
+
+void NodeStyleCommand::undo(){
+    QString textColor = styleChangedNode->label().getNodeTextColor();
+    switch(shape){
+    case rec:
+        if(styleChangedNode->label().getNodeShape()==rec)
+            styleChangedNode->label().setNodeShape(nothing);
+        else
+            styleChangedNode->label().setNodeShape(rec);
+        break;
+    case underline:
+        if(styleChangedNode->label().getNodeShape()==underline)
+            styleChangedNode->label().setNodeShape(nothing);
+        else
+            styleChangedNode->label().setNodeShape(underline);
+        break;
+    case roundRec:
+        if(styleChangedNode->label().getNodeShape()==roundRec)
+            styleChangedNode->label().setNodeShape(nothing);
+        else
+            styleChangedNode->label().setNodeShape(roundRec);
+        break;
+    }
+    QString shapeOfNode = styleChangedNode->label().getNodeShapeCSS();
+    QString borderColor = styleChangedNode->label().getDefaultColorCSS();
+    styleChangedNode->label().setStyleSheet(shapeOfNode+textColor+borderColor+"background-color : #6699ff;");
+}
+
+void NodeStyleCommand::redo(){
+    undo();
 }

@@ -5,12 +5,14 @@
 #include <QVector>
 #include <QString>
 #include <QFont>
+#include <QColor>
 
 class NodeWidget;
 class Command;
+enum nodeShape;
 
 enum class CommandType{
-    Text, Add, Delete, Move, Font
+    Text, Add, Delete, Move, Font, NodeStyle
 };
 
 class Process : public QObject{
@@ -92,6 +94,8 @@ private:
     NodeWidget* movedNode;
     int fromIndex;
     int toIndex;
+    int fromColor;
+    int toColor;
 };
 
 class FontCommand : public Command{
@@ -105,5 +109,17 @@ private:
     QFont lastFont;
     QFont font;
 };
+
+class NodeStyleCommand : public Command{
+public:
+    NodeStyleCommand(NodeWidget*, nodeShape);
+    virtual void undo();
+    virtual void redo();
+
+private:
+    NodeWidget* styleChangedNode;
+    nodeShape shape;
+};
+
 
 #endif // PROCESS_H

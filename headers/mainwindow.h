@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QGraphicsView>
 #include <QFile>
+#include <QMenu>
 #include <QFileDialog>
 #include <QTextStream>
 #include <QKeyEvent>
@@ -33,6 +34,7 @@ public:
     MindmapView* getMapScreen(){return mapScreen;}
     NodeWidget* getMap(){return map;}
     Process* getProcess(){return process;}
+    QWidget* getContainer(){return container;}
     PropertyTab* getPropertyDock(){return propertyDock;}
     TextView* getTextViewDock(){return textDock;}
 
@@ -54,6 +56,7 @@ public slots:
     void addProcess(NodeWidget*, CommandType);
     void addProcess(NodeWidget*, NodeWidget*, CommandType);
     void addProcess(NodeWidget*, QFont);
+    void addProcess(NodeWidget*, nodeShape);
 
 private slots:
     void on_scaleCombo_currentIndexChanged(const QString& arg1);
@@ -89,6 +92,8 @@ private:
     QTextEdit* edit;
     QPushButton* redrawButton;
     QVBoxLayout* rightLayout;
+    QWidget* container;
+    QHBoxLayout* containerLayout;
 
     // FileMenu Toolbar actions
     QMenu *menuFile;

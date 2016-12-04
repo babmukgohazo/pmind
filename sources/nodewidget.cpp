@@ -3,6 +3,8 @@ int NodeWidget::counter = 0;
 
 void NodeLabel::mousePressEvent(QMouseEvent *e){
     prePos = e->pos();
+    if(e->button()==Qt::LeftButton)
+        emit labelClicked();
 }
 
 void NodeLabel::mouseReleaseEvent(QMouseEvent *e){
@@ -11,9 +13,19 @@ void NodeLabel::mouseReleaseEvent(QMouseEvent *e){
             emit doubleClicked();
         }
         else{
-            this->focusIn();
+            focusIn();
         }
-        emit labelClicked();
+    }
+    else if(e->button()==Qt::RightButton){
+        if(!focus)
+            focusIn();
+    }
+}
+
+void NodeLabel::mouseDoubleClickEvent(QMouseEvent *e){
+    if(e->button()==Qt::LeftButton){
+        focusIn();
+        emit doubleClicked();
     }
 }
 
@@ -113,18 +125,24 @@ void NodeLabel::focusIn(){
         temp->label().focusOut();
     this->setFocus();
     focus = true;
+    if(static_cast<NodeWidget*>(parent())->isImageMode())
+        setNodeShape(rec);
     QString shapeTmp =this->getNodeShapeCSS();//모양을 얻어온다
     QString colorTmp =this->getNodeTextColor();//글자 색을 얻어온다
     QString borderTmp = this->getDefaultColorCSS();//노드의 default 색깔 값을 얻어온다.
     this->setStyleSheet(shapeTmp+colorTmp+borderTmp+"background-color : #6699ff;"); //바탕화면 파란색
     emit focused();
     emit redraw();
+    if(static_cast<NodeWidget*>(parent())->isImageMode())
+        emit inImageMode();
 }
 
 void NodeLabel::focusOut(){
 //<<<<<<< HEAD
     if(focus){
         focus = false;
+        if(static_cast<NodeWidget*>(parent())->isImageMode())
+            setNodeShape(nothing);
         QString shapeTmp =this->getNodeShapeCSS();
         QString colorTmp =this->getNodeTextColor();
         QString borderTmp = this->getDefaultColorCSS();//노드의 default 색깔 값을 얻어온다.
@@ -224,43 +242,49 @@ void NodeTextEdit::mousePressEvent(QMouseEvent *e){
 }
 
 void NodeLabel::mouseMoveEvent(QMouseEvent *event){
-    if(QLineF(prePos, event->pos()).length() > 10){
+    if(static_cast<NodeWidget*>(parent())==NodeWidget::mainWindow->getMap())
+        return;
+
+    if(QLineF(prePos, event->pos()).length() > 5){
         QDrag *drag = new QDrag(this);
         QMimeData *mime = new QMimeData;
         drag->setMimeData(mime);
         mime->setColorData(qVariantFromValue((void*)parent()));
 
         MindmapView* mapScreen = NodeWidget::mainWindow->getMapScreen();
-        NodeWidget* map = NodeWidget::mainWindow->getMap();
-        QWidget* parent_ = static_cast<QWidget*>(parent());
-        int mx,my;
+        QWidget* con = NodeWidget::mainWindow->getContainer();
+        NodeWidget* parent_ = static_cast<NodeWidget*>(parent());
+        int cx,cy;
         int x,y;
-        mx = map->rect().width();
-        my = map->rect().height();
+        cx = con->rect().width();
+        cy = con->rect().height();
         x = parent_->rect().width();
         y = parent_->rect().height();
 
         qreal scale;
         scale = mapScreen->getCurrentScale()/100;
-        mx *= scale;
-        my *= scale;
+        cx *= scale;
+        cy *= scale;
         x *= scale;
         y *= scale;
 
-        QImage image(QSize(mx,my),QImage::Format_ARGB32);
+        QImage image(QSize(cx,cy),QImage::Format_ARGB32);
         image.fill(Qt::transparent);
         QPainter painter(&image);
         painter.setRenderHint(QPainter::Antialiasing);
         QRect rect;
         QPoint origin = parent_->mapToGlobal(QPoint(0,0));
-        origin = map->mapFromGlobal(origin);
+        origin = con->mapFromGlobal(origin);
         origin *= scale;
         rect.setRect(origin.x(),origin.y(),x,y);
         mapScreen->getScene()->render(&painter);
         QImage cutImage = image.copy(rect);
 
         drag->setPixmap(QPixmap::fromImage(cutImage));
-        drag->setHotSpot((static_cast<QWidget*>(parent()))->mapFromGlobal(mapToGlobal(event->pos()))*scale);
+        if(parent_->isImageMode())
+            drag->setHotSpot((static_cast<QWidget*>(parent()))->mapFromGlobal(mapToGlobal(QPoint(0,0))));
+        else
+            drag->setHotSpot((static_cast<QWidget*>(parent()))->mapFromGlobal(mapToGlobal(event->pos()))*scale);
         drag->exec();
         focusOut();
         setCursor(Qt::OpenHandCursor);
@@ -292,6 +316,8 @@ void NodeLabel::dropEvent(QDropEvent *event){
         void* temp = qvariant_cast<void*>(event->mimeData()->colorData());
         NodeWidget* temp2 = (NodeWidget*)temp;
         if(temp1==temp2)
+            return;
+        if(temp1==temp2->getParent())
             return;
         if(!(temp1->isChildOf(temp2))){
             emit commanded(temp2,temp1,CommandType::Move);
@@ -411,6 +437,8 @@ void NodeWidget::init(){
     layout.setContentsMargins(0,0,0,0);
     childLayout.setMargin(0);
 
+    selfWidget.setContextMenuPolicy(Qt::CustomContextMenu);
+    QObject::connect(&selfWidget, SIGNAL(customContextMenuRequested(const QPoint &)),this,SLOT(showCustomMenu(const QPoint&)));
 
     pen.setWidth(2);
 
@@ -441,6 +469,9 @@ void NodeWidget::init(){
     QObject::connect(&selfWidget,SIGNAL(labelClicked()),NodeWidget::mainWindow->getMapScreen(),SLOT(labelClick()));
     QObject::connect(&selfWidget,SIGNAL(italic()),PropertyDock,SLOT(on_buttonItalic_clicked()));
     QObject::connect(&selfWidget,SIGNAL(bold()),PropertyDock,SLOT(on_buttonBold_clicked()));
+    QObject::connect(&selfWidget,SIGNAL(inImageMode()),PropertyDock,SLOT(propertyUnEnabled()));
+    QObject::connect(&selfWidget,SIGNAL(doubleClicked()),PropertyDock,SLOT(propertyUnEnabled()));
+    QObject::connect(&selfWidget,SIGNAL(keyPressed()),PropertyDock,SLOT(propertyUnEnabled()));
 }
 
 NodeWidget::~NodeWidget(){
@@ -495,21 +526,34 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
         child[i]->index++;
     subNode->parent_ = this;
     subNode->index = index;
-    if(subNode->parent_==getRoot()) // NodeWidget::mainWindow->getMap()
+
+    QQueue<NodeWidget*> queue;
+    NodeWidget* temp;
+    queue.push_back(subNode);
+
+
+    if(this==getRoot()) // NodeWidget::mainWindow->getMap()
     {
-        subNode->selfWidget.setDefaultColor(counter%6);
-        counter++;
+        int defCol = NodeWidget::counter%6;
+        subNode->selfWidget.setDefaultColor(defCol);
+        NodeWidget::counter++;
 
         QColor* col = new QColor(subNode->selfWidget.getDefaultColorString());
-        subNode->pen.setColor(*col);
+
+        while(!queue.empty()){
+            temp = queue.front();
+
+            temp->selfWidget.setDefaultColor(defCol);
+            temp->pen.setColor(*col);
+
+            queue.pop_front();
+
+            for(int i = 0; i<temp->child.count();i++)
+                queue.push_back(temp->child[i]);
+        }
     }
-    else if(subNode->parent_!=nullptr)//맵이면 안됨
+    else//맵이면 안됨
     {
-        QQueue<NodeWidget*> queue;
-        NodeWidget* temp;
-
-        queue.push_back(this);
-
         while(!queue.empty()){
             temp = queue.front();
 
@@ -526,6 +570,16 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
     }
     QFont *font = new QFont("배달의민족 주아");
     subNode->selfWidget.setFont(*font);
+    emit generated();
+}
+
+void NodeWidget::onlyInsert(int index, NodeWidget *subNode){
+    child.insert(index, subNode);
+    childLayout.insertWidget(index, subNode);
+    for(int i=index+1;i<child.count();i++)
+        child[i]->index++;
+    subNode->parent_ = this;
+    subNode->index = index;
     emit generated();
 }
 
@@ -555,16 +609,18 @@ NodeWidget* NodeWidget::searchFocusInNode(NodeWidget* root){
 }
 
 void NodeWidget::labelToTextEdit(){
-    editMode = true;
-    edit.setReadOnly(false);
-    edit.setText(edit.getSavedText());
-    textEditSizeRenew();
-    edit.selectAll();
-    selfWidget.close();
-    delete layout.takeAt(0);
-    layout.insertWidget(0,&edit);
-    edit.show();
-    edit.setFocus();
+    if(!imageMode){
+        editMode = true;
+        edit.setReadOnly(false);
+        edit.setText(edit.getSavedText());
+        textEditSizeRenew();
+        edit.selectAll();
+        selfWidget.close();
+        delete layout.takeAt(0);
+        layout.insertWidget(0,&edit);
+        edit.show();
+        edit.setFocus();
+    }
 }
 
 void NodeWidget::textEditToLabel(){
@@ -645,7 +701,7 @@ void NodeWidget::textEditSizeRenew(){
             edit.setFixedSize(max + space, y);
         }
     }
-    this->update();
+    NodeWidget::mainWindow->update();
 }
 
 void NodeWidget::labelSizeRenew(){
@@ -725,7 +781,7 @@ void NodeWidget::disconnectUpperNode(){
         parent_=nullptr;
     }
     emit generated();
-    getRoot()->update();
+    NodeWidget::mainWindow->update();
 }
 
 NodeWidget* NodeWidget::getNearestChild(){
@@ -787,6 +843,36 @@ void NodeWidget::focusMoveByArrow(int key){
         }
         break;
     }
+}
+
+void NodeWidget::showCustomMenu(const QPoint &pos){
+    QMenu contextMenu(tr("Context menu"));
+
+    QAction action1("Insert image");
+    QObject::connect(&action1, SIGNAL(triggered()), this, SLOT(insertImage()));
+
+    contextMenu.addAction(&action1);
+
+    contextMenu.exec(selfWidget.mapToGlobal(pos));
+}
+
+void NodeWidget::insertImage(){
+    QFileDialog dialog(NodeWidget::mainWindow,
+                       tr("Image export"),
+                       QDir::homePath(),
+                       tr("All (*.*);;PNG (*.png);;JPEG (*.jpeg);;BMP (*.bmp)"));
+    dialog.setAcceptMode(QFileDialog::AcceptOpen);
+    dialog.setDefaultSuffix("png");
+    if (!dialog.exec())
+        return;
+
+    QString fileName = dialog.selectedFiles().first();
+    QImage image;
+    image.load(fileName);
+    selfWidget.setPixmap(QPixmap::fromImage(image));
+
+    imageMode = true;
+
 }
 
 void NodeWidget::paintEvent(QPaintEvent *e){

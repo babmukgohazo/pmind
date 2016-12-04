@@ -40,6 +40,7 @@ public:
     enum nodeShape{nothing,rec,underline,roundRec,root};
     void mousePressEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
+    void mouseDoubleClickEvent(QMouseEvent *e);
     void keyPressEvent(QKeyEvent *e);
     void focusOutEvent(QFocusEvent *e);
     void mouseMoveEvent(QMouseEvent *e);
@@ -60,7 +61,6 @@ public:
         QString colorTmp =getNodeTextColor();//글자 색을 얻어온다
         QString borderTmp =getDefaultColorCSS();//노드의 default 색깔 값을 얻어온다.
         setStyleSheet(shapeTmp+colorTmp+borderTmp); //바탕화면 파란색
-
     }
     int getDefaultColor(){return defaultColor;}
     QString getDefaultColorCSS();
@@ -84,6 +84,7 @@ signals:
     void labelClicked();
     void italic();
     void bold();
+    void inImageMode();
 
 public slots:
     void focusIn();
@@ -145,27 +146,27 @@ public:
 
     void add(NodeWidget *subNode);
     void insert(int index, NodeWidget *subNode);
+    void onlyInsert(int index, NodeWidget *subNode);
     void paintEvent(QPaintEvent *e);
     NodeTextEdit& getEdit(){return edit;}
     NodeLabel& label(){return selfWidget;}
     NodeLabel* labelPointer(){return &selfWidget;}
     int getIndex(){return index;}
     bool isEditMode(){return editMode;}
+    bool isImageMode(){return imageMode;}
     NodeWidget* getNearestChild();
 
     NodeWidget* takeNode();
     bool isChildOf(NodeWidget* ptr);
-
     void setEditFont(const QFont &);
 
     static NodeWidget* searchFocusInNode(NodeWidget* root);
-
     static void setMainWindow(MainWindow* m){mainWindow = m;}
+    static MainWindow* mainWindow;
 
     QPen& getPen();
     void setPen(QPen& pen);
 
-    static MainWindow* mainWindow;
     static void setCounter(int c = 0){ counter = c;}
 
 public slots:
@@ -179,6 +180,8 @@ public slots:
     void disconnectUpperNode();
     void focusMoveByArrow(int key);
     void closeTextEdit();
+    void showCustomMenu(const QPoint &pos);
+    void insertImage();
 
 signals:
     void commanded(NodeWidget*, CommandType);
@@ -201,6 +204,7 @@ private:
     static int counter;
     bool editMode = false;
     bool clicked = false;
+    bool imageMode = false;
     int index = 0;
 
     PropertyTab* PropertyDock;

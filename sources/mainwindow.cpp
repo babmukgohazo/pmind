@@ -23,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent) :
     rightLayout = new QVBoxLayout();
     map = nullptr;
     process = new Process;
+    container = new QWidget;
+    containerLayout = new QHBoxLayout;
 
     scaleComboLayout = new QHBoxLayout;
     scaleCombo = ui->scaleCombo;
@@ -55,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent) :
     propertyDock->setMapScreen(mapScreen);
 
     QObject::connect(propertyDock,SIGNAL(fontChanged(NodeWidget*,QFont)),this,SLOT(addProcess(NodeWidget*,QFont)));
+    QObject::connect(propertyDock,SIGNAL(nodeStyleChanged(NodeWidget*,nodeShape)),this,SLOT(addProcess(NodeWidget*,nodeShape)));
 
     mapScreen->setStyleSheet("MindmapView {border: 1px solid gray; background: white;}");
     this->centralWidget()->setLayout(layout);
@@ -62,9 +65,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mapScreen->mainWindow = this;
 
     QObject::connect(redrawButton, SIGNAL(clicked()),this,SLOT(reload()));
-
     QObject::connect(mapScreen, SIGNAL(zoomSignal()),this,SLOT(scaleCombo_setCurrentScale()));
-
     NodeWidget::setMainWindow(this);
 
     qGA = new QGoogleAnalytics(this);
@@ -73,6 +74,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     statusBar()->addWidget(scaleCombo);
     statusBar()->addWidget(percentLabel);
+
+    containerLayout->setMargin(100);
+    container->setLayout(containerLayout);
+    mapScreen->mindmapScene->addWidget(container);
+    container->setStyleSheet("background-color: rgba(255, 255, 255, 10);");
 }
 
 MainWindow::~MainWindow()
@@ -106,7 +112,7 @@ void MainWindow::reload(){
     font->setPointSize(14);
     map->labelPointer()->setFont(*font);
 
-    mapScreen->mindmapScene->addWidget(map);
+    containerLayout->addWidget(map);
     renewTextEdit();
     QObject::connect(mapScreen,SIGNAL(viewClicked()),map,SLOT(update()));
     propertyDock->setNodeWidget(map);
@@ -146,7 +152,7 @@ void MainWindow::newFile(){
     font->setPointSize(14);
     map->labelPointer()->setFont(*font);
 
-    mapScreen->mindmapScene->addWidget(map);
+    containerLayout->addWidget(map);
     renewTextEdit();
     propertyDock->setNodeWidget(map);
     changeWindowTitle();
@@ -213,7 +219,7 @@ void MainWindow::openFile(){
         map = XmlHandler::Xml2Mindmap(doc);
         map->labelPointer()->setStyleSheet("border-width: 3px; border-style : solid; border-color: #aed339;");
         map->labelPointer()->setNodeShape(root);
-        mapScreen->mindmapScene->addWidget(map);
+        containerLayout->addWidget(map);
         propertyDock->setNodeWidget(map);
         process = new Process;
         renewTextEdit();
@@ -290,8 +296,14 @@ void MainWindow::imageExport(){
     qGA->sendEvent("menu", "click", "imageExport");
 
     int mx,my;
-    mx = map->rect().width();
-    my = map->rect().height();
+    mx = container->rect().width();
+    my = container->rect().height();
+
+    NodeWidget* focusedNode = NodeWidget::searchFocusInNode(map);
+    if(focusedNode!=nullptr){
+        focusedNode->label().focusOut();
+        focusedNode->textEditToLabel();
+    }
 
     QImage image(QSize(mx*5,my*5),QImage::Format_RGB32);
     QPainter painter(&image);
@@ -301,11 +313,11 @@ void MainWindow::imageExport(){
     QString fileName = dialog.selectedFiles().first();
     QFile file(fileName);
     file.open(QIODevice::WriteOnly);
-    QImage background(image.size()+QSize(40,40),QImage::Format_RGB32);
+    QImage background(image.size(),QImage::Format_RGB32);
     background.fill(Qt::white);
     QPainter backgroundPainter(&background);
     backgroundPainter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
-    backgroundPainter.drawImage(20,20,image);
+    backgroundPainter.drawImage(0,0,image);
     background.save(fileName);
 }
 
@@ -375,6 +387,10 @@ void MainWindow::addProcess(NodeWidget *movedNode, NodeWidget *to, CommandType t
 
 void MainWindow::addProcess(NodeWidget *fontChangedNode, QFont lastFont){
     process->push(new FontCommand(fontChangedNode, lastFont));
+}
+
+void MainWindow::addProcess(NodeWidget *styleChangedNode, nodeShape shape){
+    process->push(new NodeStyleCommand(styleChangedNode, shape));
 }
 
 void MainWindow::on_scaleCombo_currentIndexChanged(const QString &arg1)

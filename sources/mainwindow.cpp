@@ -143,8 +143,8 @@ void MainWindow::newFile(){
 }
 
 void MainWindow::openFile(){
-    if(contentChanged){//내용이 바뀌었다면
-        QMessageBox msgBox(this); //메시지 박스를 띄워서 물어보고
+    if(contentChanged){
+        QMessageBox msgBox(this);
         msgBox.setWindowTitle(tr("pMindMap"));
         msgBox.setText(tr("file is changed"));
         msgBox.setInformativeText(tr("save?"));
@@ -210,9 +210,11 @@ void MainWindow::openFile(){
 
         //copy to text edit
         edit->setText("");
+        QTextCodec *codec = QTextCodec::codecForName("EUC-KR");
+
         while (!file.atEnd()) {
             QByteArray line = file.readLine();
-            edit->setText(edit->toPlainText().append(line));
+            edit->setText(edit->toPlainText().append(codec->toUnicode(line)));
         }
         file.close();
         reload();

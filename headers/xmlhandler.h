@@ -26,7 +26,7 @@ public:
         createNodeElement(doc,mapElement, map);
         root.appendChild(mapElement);
 
-        int indent = 0;
+        int indent = 4;
         return doc.toString(indent);
     }
 //    static NodeWidget* Xml2Mindmap(QDomDocument doc){
@@ -43,7 +43,11 @@ public:
             headptr = new NodeWidget("ERROR: not valid file");
         }
         else{
-            headptr = new NodeWidget(head.attribute("content"));
+            QTextCodec *codec = QTextCodec::codecForName("EUC-KR");
+            //headptr = new NodeWidget(head.attribute("content"));
+            char* str = (char*)head.attribute("content").data();
+            headptr = new NodeWidget(codec->toUnicode(QByteArray(str)));
+            //headptr = new NodeWidget(codec->toUnicode("가나다"));
             headptr->label().setNodeShape(head.attribute("nodestyle").toInt());
             QFont font;
             font.fromString(head.attribute("font"));
@@ -105,8 +109,8 @@ private:
     static QDomElement createNodeElement(QDomDocument& doc, QDomElement& mapElement, NodeWidget* node){
         QDomElement e = doc.createElement("node");
         //node->label().text().toUtf8();
-        e.setAttribute("content", QString(node->label().text().toUtf8()));
-        //e.setAttribute("content", node->label().text());
+        //e.setAttribute("content", QString(node->label().text()));
+        e.setAttribute("content", QString(node->label().text().toLatin1()));
         e.setAttribute("nodestyle", node->label().getNodeShape());
         e.setAttribute("font", node->label().font().toString());
         e.setAttribute("defaultcolor", node->label().getDefaultColor());

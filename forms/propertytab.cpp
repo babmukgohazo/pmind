@@ -34,8 +34,7 @@ void PropertyTab::keyPressEvent(QKeyEvent *e){
 
 void PropertyTab::on_fontBox_currentFontChanged(const QFont &f)//글꼴
 {
-
-   NodeWidget* root= NodeWidget::searchFocusInNode(map->getRoot());
+   NodeWidget* root= NodeWidget::searchFocusInNode(map);
    if(root==nullptr)
        return;
    focusedNode = root->labelPointer();//focused 된 라벨의 주소를 받아왔다 치자
@@ -46,13 +45,13 @@ void PropertyTab::on_fontBox_currentFontChanged(const QFont &f)//글꼴
    font.setPointSize(fontOfNode.pointSize());
    focusedNode->setFont(font);
    root->setEditFont(font);
-   emit fontChanged(root,font);
+   emit fontChanged(root,fontOfNode);
    showAllProperty();
 }
 
 void PropertyTab::on_buttonBold_clicked()//굵기
 {
-     NodeWidget* root= NodeWidget::searchFocusInNode(map->getRoot());
+     NodeWidget* root= NodeWidget::searchFocusInNode(map);
      if(root==nullptr)
          return;
      focusedNode = root->labelPointer(); //focused 된 라벨의 주소를 받아왔다 치자
@@ -71,7 +70,7 @@ void PropertyTab::on_buttonBold_clicked()//굵기
 
 void PropertyTab::on_buttonItalic_clicked()//기울임
 {
-    NodeWidget* root= NodeWidget::searchFocusInNode(map->getRoot());
+    NodeWidget* root= NodeWidget::searchFocusInNode(map);
     if(root==nullptr)
         return;
     focusedNode = root->labelPointer(); //focused 된 라벨의 주소를 받아왔다 치자
@@ -90,7 +89,7 @@ void PropertyTab::on_buttonItalic_clicked()//기울임
 
 void PropertyTab::on_contentSizeBox_valueChanged(int arg1)//글씨크기
 {
-    NodeWidget* root= NodeWidget::searchFocusInNode(map->getRoot());
+    NodeWidget* root= NodeWidget::searchFocusInNode(map);
     if(root==nullptr)
         return;
     focusedNode = root->labelPointer();
@@ -108,8 +107,10 @@ void PropertyTab::on_contentSizeBox_valueChanged(int arg1)//글씨크기
 
 void PropertyTab::on_rectangleButton_clicked()//노드 모양 네모
 {
-    NodeWidget* root= NodeWidget::searchFocusInNode(map->getRoot());
+    NodeWidget* root= NodeWidget::searchFocusInNode(map);
     if(root==nullptr)
+        return;
+    if(root==map)
         return;
     focusedNode = root->labelPointer();
     QString textColor = focusedNode->getNodeTextColor();
@@ -122,12 +123,15 @@ void PropertyTab::on_rectangleButton_clicked()//노드 모양 네모
     QString borderColor = focusedNode->getDefaultColorCSS();
     focusedNode->setStyleSheet(shapeOfNode+textColor+borderColor+"background-color : #6699ff;");
     showAllProperty();
+    emit nodeStyleChanged(root, rec);
 }
 
 void PropertyTab::on_roundRecButton_clicked()//노드 모양 둥근 네모
 {
-    NodeWidget* root= NodeWidget::searchFocusInNode(map->getRoot());
+    NodeWidget* root= NodeWidget::searchFocusInNode(map);
     if(root==nullptr)
+        return;
+    if(root==map)
         return;
     focusedNode = root->labelPointer();
     QString textColor = focusedNode->getNodeTextColor();
@@ -140,13 +144,16 @@ void PropertyTab::on_roundRecButton_clicked()//노드 모양 둥근 네모
     QString borderColor = focusedNode->getDefaultColorCSS();
     focusedNode->setStyleSheet(shapeOfNode+textColor+borderColor+"background-color : #6699ff;");
     showAllProperty();
+    emit nodeStyleChanged(root, roundRec);
 }
 
 
 void PropertyTab::on_underlineButton_clicked()//노드 모양 밑줄
 {
-    NodeWidget* root= NodeWidget::searchFocusInNode(map->getRoot());
+    NodeWidget* root= NodeWidget::searchFocusInNode(map);
     if(root==nullptr)
+        return;
+    if(root==map)
         return;
     focusedNode = root->labelPointer();
     QString textColor = focusedNode->getNodeTextColor();
@@ -159,6 +166,7 @@ void PropertyTab::on_underlineButton_clicked()//노드 모양 밑줄
     QString borderColor = focusedNode->getDefaultColorCSS();
     focusedNode->setStyleSheet(shapeOfNode+textColor+borderColor+"background-color : #6699ff;");
     showAllProperty();
+    emit nodeStyleChanged(root, underline);
 }
 
 void PropertyTab::on_buttonColor_clicked(){//글자색 입력받는 슬롯
@@ -168,7 +176,7 @@ void PropertyTab::on_buttonColor_clicked(){//글자색 입력받는 슬롯
 }
 
 void PropertyTab::changeTextOfColor(){//글자 색 바꾸는 슬롯
-    NodeWidget* root= NodeWidget::searchFocusInNode(map->getRoot());
+    NodeWidget* root= NodeWidget::searchFocusInNode(map);
     if(root==nullptr)
         return;
     focusedNode = root->labelPointer();
@@ -184,7 +192,7 @@ void PropertyTab::changeTextOfColor(){//글자 색 바꾸는 슬롯
 }
 
 void PropertyTab::showAllProperty(){//node의 속성 dockWidget에 보여주기
-    NodeWidget* root= NodeWidget::searchFocusInNode(map->getRoot());
+    NodeWidget* root= NodeWidget::searchFocusInNode(map);
     if(root==nullptr)
         return;
     focusedNode = root->labelPointer();

@@ -200,3 +200,39 @@ void FontCommand::redo(){
     fontChangedNode->label().setFont(font);
     fontChangedNode->getEdit().setFont(font);
 }
+
+NodeStyleCommand::NodeStyleCommand(NodeWidget *styleChangedNode, nodeShape shape) : Command(CommandType::NodeStyle){
+    this->styleChangedNode = styleChangedNode;
+    this->shape = shape;
+}
+
+void NodeStyleCommand::undo(){
+    QString textColor = styleChangedNode->label().getNodeTextColor();
+    switch(shape){
+    case rec:
+        if(styleChangedNode->label().getNodeShape()==rec)
+            styleChangedNode->label().setNodeShape(nothing);
+        else
+            styleChangedNode->label().setNodeShape(rec);
+        break;
+    case underline:
+        if(styleChangedNode->label().getNodeShape()==underline)
+            styleChangedNode->label().setNodeShape(nothing);
+        else
+            styleChangedNode->label().setNodeShape(underline);
+        break;
+    case roundRec:
+        if(styleChangedNode->label().getNodeShape()==roundRec)
+            styleChangedNode->label().setNodeShape(nothing);
+        else
+            styleChangedNode->label().setNodeShape(roundRec);
+        break;
+    }
+    QString shapeOfNode = styleChangedNode->label().getNodeShapeCSS();
+    QString borderColor = styleChangedNode->label().getDefaultColorCSS();
+    styleChangedNode->label().setStyleSheet(shapeOfNode+textColor+borderColor+"background-color : #6699ff;");
+}
+
+void NodeStyleCommand::redo(){
+    undo();
+}

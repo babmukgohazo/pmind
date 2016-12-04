@@ -9,9 +9,10 @@
 
 class NodeWidget;
 class Command;
+enum nodeShape;
 
 enum class CommandType{
-    Text, Add, Delete, Move, Font
+    Text, Add, Delete, Move, Font, NodeStyle
 };
 
 class Process : public QObject{
@@ -108,5 +109,17 @@ private:
     QFont lastFont;
     QFont font;
 };
+
+class NodeStyleCommand : public Command{
+public:
+    NodeStyleCommand(NodeWidget*, nodeShape);
+    virtual void undo();
+    virtual void redo();
+
+private:
+    NodeWidget* styleChangedNode;
+    nodeShape shape;
+};
+
 
 #endif // PROCESS_H

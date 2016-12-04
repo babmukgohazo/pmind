@@ -56,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent) :
     propertyDock->setMapScreen(mapScreen);
 
     QObject::connect(propertyDock,SIGNAL(fontChanged(NodeWidget*,QFont)),this,SLOT(addProcess(NodeWidget*,QFont)));
+    QObject::connect(propertyDock,SIGNAL(nodeStyleChanged(NodeWidget*,nodeShape)),this,SLOT(addProcess(NodeWidget*,nodeShape)));
 
     mapScreen->setStyleSheet("MindmapView {border: 1px solid gray; background: white;}");
     this->centralWidget()->setLayout(layout);
@@ -288,12 +289,14 @@ void MainWindow::imageExport(){
     qGA->sendEvent("menu", "click", "imageExport");
 
     int mx,my;
-    mx = map->rect().width();
-    my = map->rect().height();
+    mx = container->rect().width();
+    my = container->rect().height();
 
     NodeWidget* focusedNode = NodeWidget::searchFocusInNode(map);
-    focusedNode->label().focusOut();
-    focusedNode->textEditToLabel();
+    if(focusedNode!=nullptr){
+        focusedNode->label().focusOut();
+        focusedNode->textEditToLabel();
+    }
 
     QImage image(QSize(mx*5,my*5),QImage::Format_RGB32);
     QPainter painter(&image);
@@ -367,6 +370,10 @@ void MainWindow::addProcess(NodeWidget *movedNode, NodeWidget *to, CommandType t
 
 void MainWindow::addProcess(NodeWidget *fontChangedNode, QFont lastFont){
     process->push(new FontCommand(fontChangedNode, lastFont));
+}
+
+void MainWindow::addProcess(NodeWidget *styleChangedNode, nodeShape shape){
+    process->push(new NodeStyleCommand(styleChangedNode, shape));
 }
 
 void MainWindow::on_scaleCombo_currentIndexChanged(const QString &arg1)

@@ -56,7 +56,8 @@ public slots:
     void propertyUnEnabled();
 
 signals:
-    void fontChanged(NodeWidget*,QFont);
+    void fontChanged(NodeWidget*, QFont);
+    void nodeStyleChanged(NodeWidget*, nodeShape);
 
 private:
     Ui::PropertyTab *ui;

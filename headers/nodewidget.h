@@ -40,6 +40,7 @@ public:
     enum nodeShape{nothing,rec,underline,roundRec,root};
     void mousePressEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
+    void mouseDoubleClickEvent(QMouseEvent *e);
     void keyPressEvent(QKeyEvent *e);
     void focusOutEvent(QFocusEvent *e);
     void mouseMoveEvent(QMouseEvent *e);

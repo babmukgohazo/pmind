@@ -3,6 +3,8 @@ int NodeWidget::counter = 0;
 
 void NodeLabel::mousePressEvent(QMouseEvent *e){
     prePos = e->pos();
+    if(e->button()==Qt::LeftButton)
+        emit labelClicked();
 }
 
 void NodeLabel::mouseReleaseEvent(QMouseEvent *e){
@@ -11,9 +13,15 @@ void NodeLabel::mouseReleaseEvent(QMouseEvent *e){
             emit doubleClicked();
         }
         else{
-            this->focusIn();
+            focusIn();
         }
-        emit labelClicked();
+    }
+}
+
+void NodeLabel::mouseDoubleClickEvent(QMouseEvent *e){
+    if(e->button()==Qt::LeftButton){
+        focusIn();
+        emit doubleClicked();
     }
 }
 

@@ -1,6 +1,7 @@
 #include "headers/mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QMessageBox>
+#include <QFont>
 #include "headers/xmlhandler.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -100,6 +101,11 @@ void MainWindow::reload(){
     map = new NodeWidget(mdQueue, this);
     map->labelPointer()->setStyleSheet("border-width: 3px; border-style : solid; border-color: #aed339;");
     map->labelPointer()->setNodeShape(root);
+    map->labelPointer()->setDefaultColor(100);
+    QFont *font = new QFont("Consolas");
+    font->setPointSize(14);
+    map->labelPointer()->setFont(*font);
+
     mapScreen->mindmapScene->addWidget(map);
     renewTextEdit();
     QObject::connect(mapScreen,SIGNAL(viewClicked()),map,SLOT(update()));
@@ -135,6 +141,11 @@ void MainWindow::newFile(){
     map = new NodeWidget;
     map->labelPointer()->setStyleSheet("border-width: 3px; border-style : solid; border-color: #aed339;");
     map->labelPointer()->setNodeShape(root);
+     map->labelPointer()->setDefaultColor(100);
+    QFont *font = new QFont("Consolas");
+    font->setPointSize(14);
+    map->labelPointer()->setFont(*font);
+
     mapScreen->mindmapScene->addWidget(map);
     renewTextEdit();
     propertyDock->setNodeWidget(map);

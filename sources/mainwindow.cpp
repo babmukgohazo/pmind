@@ -316,7 +316,7 @@ void MainWindow::imageExport(){
     QFile file(fileName);
     file.open(QIODevice::WriteOnly);
     QImage background(image.size(),QImage::Format_RGB32);
-    background.fill(Qt::white);
+    background.fill(QColor("#f8f8f8"));
     QPainter backgroundPainter(&background);
     backgroundPainter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
     backgroundPainter.drawImage(0,0,image);

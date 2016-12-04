@@ -411,6 +411,9 @@ void NodeWidget::init(){
     layout.setContentsMargins(0,0,0,0);
     childLayout.setMargin(0);
 
+    QFont *font = new QFont("Arial");
+    font->setPointSize(14);
+    selfWidget.setFont(*font);
 
     pen.setWidth(2);
 
@@ -483,8 +486,14 @@ void NodeWidget::add(NodeWidget *subNodeWidget){
 
     QColor* col = new QColor(subNodeWidget->selfWidget.getDefaultColorString());
     subNodeWidget->pen.setColor(*col);
-    QFont *font = new QFont("배달의민족 주아");
-    subNodeWidget->selfWidget.setFont(*font);
+    //qDebug() << selfWidget.font();
+    //qDebug() << selfWidget.fontInfo();
+    //qDebug() << selfWidget.fontMetrics();
+    QFont *childFont = new QFont(subNodeWidget->selfWidget.font());
+    QFont *parentFont = new QFont(selfWidget.font());
+    childFont->setFamily(parentFont->family());
+    subNodeWidget->selfWidget.setFont(*childFont);
+    // setFamily 사용해서 글꼴만 수정, fontInfo에서 글꼴 정보 가져오기
     emit generated();
 }
 
@@ -502,6 +511,11 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
 
         QColor* col = new QColor(subNode->selfWidget.getDefaultColorString());
         subNode->pen.setColor(*col);
+
+        QFont *childFont = new QFont(subNode->selfWidget.font());
+        QFont *parentFont = new QFont(selfWidget.font());
+        childFont->setFamily(parentFont->family());
+        subNode->selfWidget.setFont(*childFont);
     }
     else if(subNode->parent_!=nullptr)//맵이면 안됨
     {
@@ -514,8 +528,14 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
             temp = queue.front();
 
             temp->selfWidget.setDefaultColor(this->getDefaultColor());
+
             QColor* col = new QColor(temp->selfWidget.getDefaultColorString());
             temp->pen.setColor(*col);
+
+            QFont *childFont = new QFont(temp->selfWidget.font());
+            QFont *parentFont = new QFont(selfWidget.font());
+            childFont->setFamily(parentFont->family());
+            temp->selfWidget.setFont(*childFont);
 
             queue.pop_front();
 
@@ -524,8 +544,8 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
         }
 
     }
-    QFont *font = new QFont("배달의민족 주아");
-    subNode->selfWidget.setFont(*font);
+    //QFont *font = new QFont("배달의민족 주아");
+    //subNode->selfWidget.setFont(*font);
     emit generated();
 }
 

@@ -33,6 +33,7 @@ public:
     MindmapView* getMapScreen(){return mapScreen;}
     NodeWidget* getMap(){return map;}
     Process* getProcess(){return process;}
+    QWidget* getContainer(){return container;}
     PropertyTab* getPropertyDock(){return propertyDock;}
     TextView* getTextViewDock(){return textDock;}
 
@@ -89,6 +90,8 @@ private:
     QTextEdit* edit;
     QPushButton* redrawButton;
     QVBoxLayout* rightLayout;
+    QWidget* container;
+    QHBoxLayout* containerLayout;
 
     // FileMenu Toolbar actions
     QMenu *menuFile;

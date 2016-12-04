@@ -60,7 +60,6 @@ public:
         QString colorTmp =getNodeTextColor();//글자 색을 얻어온다
         QString borderTmp =getDefaultColorCSS();//노드의 default 색깔 값을 얻어온다.
         setStyleSheet(shapeTmp+colorTmp+borderTmp); //바탕화면 파란색
-
     }
     int getDefaultColor(){return defaultColor;}
     QString getDefaultColorCSS();
@@ -145,6 +144,7 @@ public:
 
     void add(NodeWidget *subNode);
     void insert(int index, NodeWidget *subNode);
+    void onlyInsert(int index, NodeWidget *subNode);
     void paintEvent(QPaintEvent *e);
     NodeTextEdit& getEdit(){return edit;}
     NodeLabel& label(){return selfWidget;}
@@ -155,17 +155,15 @@ public:
 
     NodeWidget* takeNode();
     bool isChildOf(NodeWidget* ptr);
-
     void setEditFont(const QFont &);
 
     static NodeWidget* searchFocusInNode(NodeWidget* root);
-
     static void setMainWindow(MainWindow* m){mainWindow = m;}
+    static MainWindow* mainWindow;
 
     QPen& getPen();
     void setPen(QPen& pen);
 
-    static MainWindow* mainWindow;
 
 public slots:
     void labelToTextEdit();

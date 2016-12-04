@@ -22,6 +22,8 @@ MainWindow::MainWindow(QWidget *parent) :
     rightLayout = new QVBoxLayout();
     map = nullptr;
     process = new Process;
+    container = new QWidget;
+    containerLayout = new QHBoxLayout;
 
     scaleComboLayout = new QHBoxLayout;
     scaleCombo = ui->scaleCombo;
@@ -61,9 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mapScreen->mainWindow = this;
 
     QObject::connect(redrawButton, SIGNAL(clicked()),this,SLOT(reload()));
-
     QObject::connect(mapScreen, SIGNAL(zoomSignal()),this,SLOT(scaleCombo_setCurrentScale()));
-
     NodeWidget::setMainWindow(this);
 
     qGA = new QGoogleAnalytics(this);
@@ -72,6 +72,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     statusBar()->addWidget(scaleCombo);
     statusBar()->addWidget(percentLabel);
+
+    containerLayout->setMargin(100);
+    container->setLayout(containerLayout);
+    mapScreen->mindmapScene->addWidget(container);
+    container->setStyleSheet("background-color: rgba(255, 255, 255, 10);");
 }
 
 MainWindow::~MainWindow()
@@ -100,7 +105,8 @@ void MainWindow::reload(){
     map = new NodeWidget(mdQueue, this);
     map->labelPointer()->setStyleSheet("border-width: 3px; border-style : solid; border-color: #aed339;");
     map->labelPointer()->setNodeShape(root);
-    mapScreen->mindmapScene->addWidget(map);
+//    mapScreen->mindmapScene->addWidget(map);
+    containerLayout->addWidget(map);
     renewTextEdit();
     QObject::connect(mapScreen,SIGNAL(viewClicked()),map,SLOT(update()));
     propertyDock->setNodeWidget(map);
@@ -135,7 +141,13 @@ void MainWindow::newFile(){
     map = new NodeWidget;
     map->labelPointer()->setStyleSheet("border-width: 3px; border-style : solid; border-color: #aed339;");
     map->labelPointer()->setNodeShape(root);
-    mapScreen->mindmapScene->addWidget(map);
+    /*
+    delete mapScreen->mindmapScene;
+    mapScreen->mindmapScene = new QGraphicsScene;
+    mapScreen->setScene(mapScreen->mindmapScene);*/
+
+//    mapScreen->mindmapScene->addWidget(map);
+    containerLayout->addWidget(map);
     renewTextEdit();
     propertyDock->setNodeWidget(map);
     changeWindowTitle();
@@ -200,7 +212,8 @@ void MainWindow::openFile(){
             map->close();
         }
         map = XmlHandler::Xml2Mindmap(doc);
-        mapScreen->mindmapScene->addWidget(map);
+//        mapScreen->mindmapScene->addWidget(map);
+        containerLayout->addWidget(map);
         propertyDock->setNodeWidget(map);
         process = new Process;
         renewTextEdit();
@@ -278,6 +291,10 @@ void MainWindow::imageExport(){
     mx = map->rect().width();
     my = map->rect().height();
 
+    NodeWidget* focusedNode = NodeWidget::searchFocusInNode(map);
+    focusedNode->label().focusOut();
+    focusedNode->textEditToLabel();
+
     QImage image(QSize(mx*5,my*5),QImage::Format_RGB32);
     QPainter painter(&image);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -286,11 +303,11 @@ void MainWindow::imageExport(){
     QString fileName = dialog.selectedFiles().first();
     QFile file(fileName);
     file.open(QIODevice::WriteOnly);
-    QImage background(image.size()+QSize(40,40),QImage::Format_RGB32);
+    QImage background(image.size(),QImage::Format_RGB32);
     background.fill(Qt::white);
     QPainter backgroundPainter(&background);
     backgroundPainter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
-    backgroundPainter.drawImage(20,20,image);
+    backgroundPainter.drawImage(0,0,image);
     background.save(fileName);
 }
 

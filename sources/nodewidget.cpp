@@ -224,36 +224,39 @@ void NodeTextEdit::mousePressEvent(QMouseEvent *e){
 }
 
 void NodeLabel::mouseMoveEvent(QMouseEvent *event){
-    if(QLineF(prePos, event->pos()).length() > 10){
+    if(static_cast<NodeWidget*>(parent())==NodeWidget::mainWindow->getMap())
+        return;
+
+    if(QLineF(prePos, event->pos()).length() > 5){
         QDrag *drag = new QDrag(this);
         QMimeData *mime = new QMimeData;
         drag->setMimeData(mime);
         mime->setColorData(qVariantFromValue((void*)parent()));
 
         MindmapView* mapScreen = NodeWidget::mainWindow->getMapScreen();
-        NodeWidget* map = NodeWidget::mainWindow->getMap();
+        QWidget* con = NodeWidget::mainWindow->getContainer();
         QWidget* parent_ = static_cast<QWidget*>(parent());
-        int mx,my;
+        int cx,cy;
         int x,y;
-        mx = map->rect().width();
-        my = map->rect().height();
+        cx = con->rect().width();
+        cy = con->rect().height();
         x = parent_->rect().width();
         y = parent_->rect().height();
 
         qreal scale;
         scale = mapScreen->getCurrentScale()/100;
-        mx *= scale;
-        my *= scale;
+        cx *= scale;
+        cy *= scale;
         x *= scale;
         y *= scale;
 
-        QImage image(QSize(mx,my),QImage::Format_ARGB32);
+        QImage image(QSize(cx,cy),QImage::Format_ARGB32);
         image.fill(Qt::transparent);
         QPainter painter(&image);
         painter.setRenderHint(QPainter::Antialiasing);
         QRect rect;
         QPoint origin = parent_->mapToGlobal(QPoint(0,0));
-        origin = map->mapFromGlobal(origin);
+        origin = con->mapFromGlobal(origin);
         origin *= scale;
         rect.setRect(origin.x(),origin.y(),x,y);
         mapScreen->getScene()->render(&painter);
@@ -292,6 +295,8 @@ void NodeLabel::dropEvent(QDropEvent *event){
         void* temp = qvariant_cast<void*>(event->mimeData()->colorData());
         NodeWidget* temp2 = (NodeWidget*)temp;
         if(temp1==temp2)
+            return;
+        if(temp1==temp2->getParent())
             return;
         if(!(temp1->isChildOf(temp2))){
             emit commanded(temp2,temp1,CommandType::Move);
@@ -494,21 +499,34 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
         child[i]->index++;
     subNode->parent_ = this;
     subNode->index = index;
-    if(subNode->parent_==getRoot()) // NodeWidget::mainWindow->getMap()
+
+    QQueue<NodeWidget*> queue;
+    NodeWidget* temp;
+    queue.push_back(subNode);
+
+
+    if(this==getRoot()) // NodeWidget::mainWindow->getMap()
     {
-        subNode->selfWidget.setDefaultColor(counter%6);
-        counter++;
+        int defCol = NodeWidget::counter%6;
+        subNode->selfWidget.setDefaultColor(defCol);
+        NodeWidget::counter++;
 
         QColor* col = new QColor(subNode->selfWidget.getDefaultColorString());
-        subNode->pen.setColor(*col);
+
+        while(!queue.empty()){
+            temp = queue.front();
+
+            temp->selfWidget.setDefaultColor(defCol);
+            temp->pen.setColor(*col);
+
+            queue.pop_front();
+
+            for(int i = 0; i<temp->child.count();i++)
+                queue.push_back(temp->child[i]);
+        }
     }
-    else if(subNode->parent_!=nullptr)//맵이면 안됨
+    else//맵이면 안됨
     {
-        QQueue<NodeWidget*> queue;
-        NodeWidget* temp;
-
-        queue.push_back(this);
-
         while(!queue.empty()){
             temp = queue.front();
 
@@ -524,6 +542,16 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
 
     }
 
+    emit generated();
+}
+
+void NodeWidget::onlyInsert(int index, NodeWidget *subNode){
+    child.insert(index, subNode);
+    childLayout.insertWidget(index, subNode);
+    for(int i=index+1;i<child.count();i++)
+        child[i]->index++;
+    subNode->parent_ = this;
+    subNode->index = index;
     emit generated();
 }
 
@@ -643,7 +671,7 @@ void NodeWidget::textEditSizeRenew(){
             edit.setFixedSize(max + space, y);
         }
     }
-    this->update();
+    NodeWidget::mainWindow->update();
 }
 
 void NodeWidget::labelSizeRenew(){
@@ -723,7 +751,7 @@ void NodeWidget::disconnectUpperNode(){
         parent_=nullptr;
     }
     emit generated();
-    getRoot()->update();
+    NodeWidget::mainWindow->update();
 }
 
 NodeWidget* NodeWidget::getNearestChild(){

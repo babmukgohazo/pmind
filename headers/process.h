@@ -5,6 +5,7 @@
 #include <QVector>
 #include <QString>
 #include <QFont>
+#include <QColor>
 
 class NodeWidget;
 class Command;
@@ -92,6 +93,8 @@ private:
     NodeWidget* movedNode;
     int fromIndex;
     int toIndex;
+    int fromColor;
+    int toColor;
 };
 
 class FontCommand : public Command{

@@ -867,12 +867,33 @@ void NodeWidget::insertImage(){
         return;
 
     QString fileName = dialog.selectedFiles().first();
-    QImage image;
     image.load(fileName);
-    selfWidget.setPixmap(QPixmap::fromImage(image));
+    imageResize();
 
     imageMode = true;
 
+}
+
+void NodeWidget::imageResize(){
+    QImage scaledImage;
+    int x;
+    int y;
+    x = image.size().width();
+    y = image.size().height();
+    double xFrac = x/400;
+    double yFrac = y/300;
+    if(xFrac>1 | yFrac>1){
+        if(xFrac>yFrac){
+            x /= xFrac;
+            y /= xFrac;
+        }
+        else{
+            x /= yFrac;
+            y /= yFrac;
+        }
+    }
+    scaledImage=image.scaled(QSize(x,y),Qt::KeepAspectRatio,Qt::SmoothTransformation);
+    selfWidget.setPixmap(QPixmap::fromImage(scaledImage));
 }
 
 void NodeWidget::paintEvent(QPaintEvent *e){

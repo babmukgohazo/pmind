@@ -85,6 +85,7 @@ signals:
     void italic();
     void bold();
     void inImageMode();
+    void menuCall(const QPoint&);
 
 public slots:
     void focusIn();
@@ -182,6 +183,7 @@ public slots:
     void closeTextEdit();
     void showCustomMenu(const QPoint &pos);
     void insertImage();
+    void imageResize();
 
 signals:
     void commanded(NodeWidget*, CommandType);
@@ -206,6 +208,7 @@ private:
     bool clicked = false;
     bool imageMode = false;
     int index = 0;
+    QImage image;
 
     PropertyTab* PropertyDock;
     TextView* textViewDock;

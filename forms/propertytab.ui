@@ -12,27 +12,33 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>280</width>
-    <height>310</height>
+    <width>322</width>
+    <height>341</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
   <property name="minimumSize">
    <size>
-    <width>280</width>
-    <height>310</height>
+    <width>322</width>
+    <height>341</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>322</width>
-    <height>524287</height>
+    <height>341</height>
    </size>
+  </property>
+  <property name="font">
+   <font>
+    <weight>75</weight>
+    <bold>true</bold>
+   </font>
   </property>
   <property name="styleSheet">
    <string notr="true">QPushButton { 
@@ -62,7 +68,7 @@ QPushButton:hover {
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <property name="sizePolicy">
-    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
@@ -96,6 +102,12 @@ QPushButton:hover {
           <height>15</height>
          </size>
         </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
          <string>Text Style</string>
         </property>
@@ -108,6 +120,12 @@ QPushButton:hover {
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
         </property>
        </widget>
       </item>
@@ -170,6 +188,12 @@ QPushButton:hover {
             <height>16777215</height>
            </size>
           </property>
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>Size</string>
           </property>
@@ -211,6 +235,12 @@ QPushButton:hover {
           <width>16777215</width>
           <height>20</height>
          </size>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
         </property>
         <property name="text">
          <string>Node Style</string>
@@ -273,15 +303,24 @@ QPushButton:hover {
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
        <widget class="QLabel" name="label_4">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
          <string>Edge Style</string>
         </property>
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,1,1">
         <item>
          <widget class="QComboBox" name="lineWidthComboBox">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>0</horstretch>
@@ -304,17 +343,20 @@ QPushButton:hover {
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="lineColorButton">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
-          <property name="text">
-           <string/>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
           </property>
-         </widget>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>103</width>
+            <height>19</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </item>
@@ -334,7 +376,6 @@ QPushButton:hover {
      </spacer>
     </item>
    </layout>
-   <zorder></zorder>
    <zorder></zorder>
    <zorder>line</zorder>
    <zorder>line_2</zorder>

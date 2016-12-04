@@ -211,6 +211,8 @@ void MainWindow::openFile(){
             map->close();
         }
         map = XmlHandler::Xml2Mindmap(doc);
+        map->labelPointer()->setStyleSheet("border-width: 3px; border-style : solid; border-color: #aed339;");
+        map->labelPointer()->setNodeShape(root);
         mapScreen->mindmapScene->addWidget(map);
         propertyDock->setNodeWidget(map);
         process = new Process;
@@ -316,14 +318,24 @@ void MainWindow::quit(){
 
 void MainWindow::setFileMenuToolbar() {
     actionNew = new QAction("New");
-    actionLoad = new QAction("Load");
+    actionNew->setShortcut(QKeySequence(QKeySequence::New));
+    actionOpen = new QAction("Open");
+    actionOpen->setShortcut(QKeySequence(QKeySequence::Open));
     actionSave = new QAction("Save");
+    actionSave->setShortcut(QKeySequence(QKeySequence::Save));
     actionSaveAs = new QAction("Save as");
+    QList<QKeySequence> saveAsList;
+    saveAsList << QKeySequence(tr("Ctrl+Shift+S")) << QKeySequence(QKeySequence::SaveAs);
+    actionSaveAs->setShortcuts(saveAsList);
     actionExport = new QAction("Image export");
+    actionExport->setShortcut(QKeySequence(tr("Ctrl+E")));
     actionQuit = new QAction("Quit");
+    QList<QKeySequence> quitList;
+    quitList << QKeySequence(tr("Ctrl+Q")) << QKeySequence(QKeySequence::Quit);
+    actionQuit->setShortcuts(quitList);
     menuFile = new QMenu("Menu");
     menuFile->addAction(actionNew);
-    menuFile->addAction(actionLoad);
+    menuFile->addAction(actionOpen);
     menuFile->addAction(actionSave);
     menuFile->addAction(actionSaveAs);
     menuFile->addAction(actionExport);
@@ -332,7 +344,7 @@ void MainWindow::setFileMenuToolbar() {
     this->menuBar()->addMenu(menuFile);
 
     connect(actionNew, SIGNAL(triggered()), this, SLOT(newFile()));
-    connect(actionLoad, SIGNAL(triggered()), this, SLOT(openFile()));
+    connect(actionOpen, SIGNAL(triggered()), this, SLOT(openFile()));
     connect(actionSave, SIGNAL(triggered()), this, SLOT(saveFile()));
     connect(actionSaveAs, SIGNAL(triggered()), this, SLOT(saveFileAs()));
     connect(actionExport,SIGNAL(triggered()),this,SLOT(imageExport()));
@@ -410,7 +422,7 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
         else if(e->modifiers().testFlag(Qt::ShiftModifier))
             saveFileAs();
        break;
-    case Qt::Key_L:
+    case Qt::Key_O:
         if(e->modifiers().testFlag(Qt::ControlModifier))
             openFile();
         break;

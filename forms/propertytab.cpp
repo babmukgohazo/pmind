@@ -251,7 +251,7 @@ void PropertyTab::setButtonImg(){
     ui->rectangleButton->setIcon(rectangleButton);
     ui->roundRecButton->setIcon(roundRecButton);
     ui->underlineButton->setIcon(underlineButton);
-    ui->lineColorButton->setIcon(colorButton);
+    //ui->lineColorButton->setIcon(colorButton);
     ui->dottedLineButton->setIcon(dottedLineButton);
 }
 

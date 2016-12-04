@@ -200,6 +200,8 @@ void MainWindow::openFile(){
             map->close();
         }
         map = XmlHandler::Xml2Mindmap(doc);
+        map->labelPointer()->setStyleSheet("border-width: 3px; border-style : solid; border-color: #aed339;");
+        map->labelPointer()->setNodeShape(root);
         mapScreen->mindmapScene->addWidget(map);
         propertyDock->setNodeWidget(map);
         process = new Process;

@@ -166,6 +166,7 @@ public:
     void setPen(QPen& pen);
 
     static MainWindow* mainWindow;
+    static void setCounter(int c = 0){ counter = c;}
 
 public slots:
     void labelToTextEdit();

@@ -41,3 +41,7 @@ FORMS    += \
 
 RESOURCES += \
     resources/image.qrc
+
+
+#DEFINES += QT_NO_CAST_FROM_ASCII \
+#    QT_NO_CAST_TO_ASCII

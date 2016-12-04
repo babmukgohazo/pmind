@@ -151,6 +151,7 @@ public:
     NodeTextEdit& getEdit(){return edit;}
     NodeLabel& label(){return selfWidget;}
     NodeLabel* labelPointer(){return &selfWidget;}
+    QImage getImage(){return image;}
     int getIndex(){return index;}
     bool isEditMode(){return editMode;}
     bool isImageMode(){return imageMode;}
@@ -196,6 +197,7 @@ private:
     QFont font;
     QFontMetrics* fm;
     NodeLabel selfWidget;
+    NodeLabel imageLabel;
     NodeTextEdit edit;
     QWidget childWidget;
     QHBoxLayout layout;

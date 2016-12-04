@@ -6,12 +6,13 @@
 #include <QString>
 #include <QFont>
 #include <QColor>
+#include <QImage>
 
 class NodeWidget;
 class Command;
 enum nodeShape{nothing,rec,underline,roundRec,root};
 enum class CommandType{
-    Text, Add, Delete, Move, Font, NodeStyle
+    Text, Add, Delete, Move, Font, NodeStyle, Image
 };
 
 class Process : public QObject{
@@ -120,5 +121,16 @@ private:
     nodeShape shape;
 };
 
+class ImageCommand : public Command{
+public:
+    ImageCommand(NodeWidget*);
+    virtual void undo();
+    virtual void redo();
+
+private:
+    NodeWidget* imageInsertedNode;
+    QImage image;
+    QString text;
+};
 
 #endif // PROCESS_H

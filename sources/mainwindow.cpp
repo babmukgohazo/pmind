@@ -374,6 +374,9 @@ void MainWindow::addProcess(NodeWidget* node, CommandType type){
     case CommandType::Text:
         process->push(new TextCommand(node));
         break;
+    case CommandType::Image:
+        process->push(new ImageCommand(node));
+        break;
     }
 }
 

@@ -423,8 +423,6 @@ void NodeWidget::init(){
     PropertyDock=mainWindow->getPropertyDock();
     textViewDock=mainWindow->getTextViewDock();
     edit.setContextMenuPolicy(Qt::NoContextMenu);
-    fm = new QFontMetrics(edit.currentFont());
-    font = edit.currentFont();
     selfWidget.setContainer(this);
     this->setStyleSheet("background-color: transparent");
     //selfWidget.setStyleSheet("background-color: transparent ; border-bottom: 1px solid black;");
@@ -445,13 +443,16 @@ void NodeWidget::init(){
 //=======
     QFont *font = new QFont("Arial");
     font->setPointSize(14);
+    this->font = *font;
+    fm = new QFontMetrics(*font);
     selfWidget.setFont(*font);
+    edit.setFont(*font);
+    textEditSizeRenew();
 //>>>>>>> feature/sprint3_fontFix
 
     pen.setWidth(2);
 
     QObject::connect(&edit,SIGNAL(enterPressed()),NodeWidget::mainWindow,SLOT(renewTextEdit()));
-
     QObject::connect(&edit,SIGNAL(enterPressed()),this,SLOT(textEditToLabel()));
     QObject::connect(&edit,SIGNAL(enterPressed()),&selfWidget,SLOT(focusIn()));
     QObject::connect(&edit,SIGNAL(focusOut()),this,SLOT(textEditToLabel()));
@@ -892,6 +893,7 @@ void NodeWidget::insertImage(){
     imageResize();
 
     imageMode = true;
+    emit commanded(this,CommandType::Image);
 
 }
 

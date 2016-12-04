@@ -16,7 +16,6 @@ MindmapView::MindmapView(){
 void MindmapView::mousePressEvent(QMouseEvent *e){
     update();
     QGraphicsView::mousePressEvent(e);
-    qDebug()<<labelClicked<<editClicked;
     focusIn();
 }
 

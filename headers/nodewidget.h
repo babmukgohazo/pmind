@@ -152,6 +152,7 @@ public:
     NodeLabel* labelPointer(){return &selfWidget;}
     int getIndex(){return index;}
     bool isEditMode(){return editMode;}
+    bool isImageMode(){return imageMode;}
     NodeWidget* getNearestChild();
 
     NodeWidget* takeNode();
@@ -177,6 +178,8 @@ public slots:
     void disconnectUpperNode();
     void focusMoveByArrow(int key);
     void closeTextEdit();
+    void showCustomMenu(const QPoint &pos);
+    void insertImage();
 
 signals:
     void commanded(NodeWidget*, CommandType);
@@ -199,6 +202,7 @@ private:
     static int counter;
     bool editMode = false;
     bool clicked = false;
+    bool imageMode = false;
     int index = 0;
 
     PropertyTab* PropertyDock;

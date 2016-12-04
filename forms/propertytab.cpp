@@ -37,6 +37,8 @@ void PropertyTab::on_fontBox_currentFontChanged(const QFont &f)//글꼴
    NodeWidget* root= NodeWidget::searchFocusInNode(map);
    if(root==nullptr)
        return;
+   if(root->isImageMode())
+       return;
    focusedNode = root->labelPointer();//focused 된 라벨의 주소를 받아왔다 치자
    QFont font = ui->fontBox->currentFont();
    QFont fontOfNode = focusedNode->font();
@@ -53,6 +55,8 @@ void PropertyTab::on_buttonBold_clicked()//굵기
 {
      NodeWidget* root= NodeWidget::searchFocusInNode(map);
      if(root==nullptr)
+         return;
+     if(root->isImageMode())
          return;
      focusedNode = root->labelPointer(); //focused 된 라벨의 주소를 받아왔다 치자
      QFont font = focusedNode->font();
@@ -73,6 +77,8 @@ void PropertyTab::on_buttonItalic_clicked()//기울임
     NodeWidget* root= NodeWidget::searchFocusInNode(map);
     if(root==nullptr)
         return;
+    if(root->isImageMode())
+        return;
     focusedNode = root->labelPointer(); //focused 된 라벨의 주소를 받아왔다 치자
     QFont font = focusedNode->font();
     QFont lastFont = font;
@@ -91,6 +97,8 @@ void PropertyTab::on_contentSizeBox_valueChanged(int arg1)//글씨크기
 {
     NodeWidget* root= NodeWidget::searchFocusInNode(map);
     if(root==nullptr)
+        return;
+    if(root->isImageMode())
         return;
     focusedNode = root->labelPointer();
     QFont font = focusedNode->font();
@@ -112,6 +120,8 @@ void PropertyTab::on_rectangleButton_clicked()//노드 모양 네모
         return;
     if(root==map)
         return;
+    if(root->isImageMode())
+        return;
     focusedNode = root->labelPointer();
     QString textColor = focusedNode->getNodeTextColor();
     if(focusedNode->getNodeShape()==rec){//만약에 애초에 네모였음
@@ -132,6 +142,8 @@ void PropertyTab::on_roundRecButton_clicked()//노드 모양 둥근 네모
     if(root==nullptr)
         return;
     if(root==map)
+        return;
+    if(root->isImageMode())
         return;
     focusedNode = root->labelPointer();
     QString textColor = focusedNode->getNodeTextColor();
@@ -155,6 +167,8 @@ void PropertyTab::on_underlineButton_clicked()//노드 모양 밑줄
         return;
     if(root==map)
         return;
+    if(root->isImageMode())
+        return;
     focusedNode = root->labelPointer();
     QString textColor = focusedNode->getNodeTextColor();
     if(focusedNode->getNodeShape()==underline){
@@ -170,6 +184,9 @@ void PropertyTab::on_underlineButton_clicked()//노드 모양 밑줄
 }
 
 void PropertyTab::on_buttonColor_clicked(){//글자색 입력받는 슬롯
+    NodeWidget* root= NodeWidget::searchFocusInNode(map);
+    if(root->isImageMode())
+        return;
     colorDial = new QColorDialog();
     colorDial->show();
     QObject::connect(colorDial,SIGNAL(colorSelected(QColor)),this,SLOT(changeTextOfColor()));

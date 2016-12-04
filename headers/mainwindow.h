@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QGraphicsView>
 #include <QFile>
+#include <QMenu>
 #include <QFileDialog>
 #include <QTextStream>
 #include <QKeyEvent>

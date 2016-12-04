@@ -16,6 +16,10 @@ void NodeLabel::mouseReleaseEvent(QMouseEvent *e){
             focusIn();
         }
     }
+    else if(e->button()==Qt::RightButton){
+        if(!focus)
+            focusIn();
+    }
 }
 
 void NodeLabel::mouseDoubleClickEvent(QMouseEvent *e){
@@ -121,6 +125,8 @@ void NodeLabel::focusIn(){
         temp->label().focusOut();
     this->setFocus();
     focus = true;
+    if(static_cast<NodeWidget*>(parent())->isImageMode())
+        setNodeShape(rec);
     QString shapeTmp =this->getNodeShapeCSS();//모양을 얻어온다
     QString colorTmp =this->getNodeTextColor();//글자 색을 얻어온다
     QString borderTmp = this->getDefaultColorCSS();//노드의 default 색깔 값을 얻어온다.
@@ -133,6 +139,8 @@ void NodeLabel::focusOut(){
 //<<<<<<< HEAD
     if(focus){
         focus = false;
+        if(static_cast<NodeWidget*>(parent())->isImageMode())
+            setNodeShape(nothing);
         QString shapeTmp =this->getNodeShapeCSS();
         QString colorTmp =this->getNodeTextColor();
         QString borderTmp = this->getDefaultColorCSS();//노드의 default 색깔 값을 얻어온다.
@@ -243,7 +251,7 @@ void NodeLabel::mouseMoveEvent(QMouseEvent *event){
 
         MindmapView* mapScreen = NodeWidget::mainWindow->getMapScreen();
         QWidget* con = NodeWidget::mainWindow->getContainer();
-        QWidget* parent_ = static_cast<QWidget*>(parent());
+        NodeWidget* parent_ = static_cast<NodeWidget*>(parent());
         int cx,cy;
         int x,y;
         cx = con->rect().width();
@@ -271,7 +279,10 @@ void NodeLabel::mouseMoveEvent(QMouseEvent *event){
         QImage cutImage = image.copy(rect);
 
         drag->setPixmap(QPixmap::fromImage(cutImage));
-        drag->setHotSpot((static_cast<QWidget*>(parent()))->mapFromGlobal(mapToGlobal(event->pos()))*scale);
+        if(parent_->isImageMode())
+            drag->setHotSpot((static_cast<QWidget*>(parent()))->mapFromGlobal(mapToGlobal(QPoint(0,0))));
+        else
+            drag->setHotSpot((static_cast<QWidget*>(parent()))->mapFromGlobal(mapToGlobal(event->pos()))*scale);
         drag->exec();
         focusOut();
         setCursor(Qt::OpenHandCursor);
@@ -424,6 +435,8 @@ void NodeWidget::init(){
     layout.setContentsMargins(0,0,0,0);
     childLayout.setMargin(0);
 
+    selfWidget.setContextMenuPolicy(Qt::CustomContextMenu);
+    QObject::connect(&selfWidget, SIGNAL(customContextMenuRequested(const QPoint &)),this,SLOT(showCustomMenu(const QPoint&)));
 
     pen.setWidth(2);
 
@@ -589,16 +602,18 @@ NodeWidget* NodeWidget::searchFocusInNode(NodeWidget* root){
 }
 
 void NodeWidget::labelToTextEdit(){
-    editMode = true;
-    edit.setReadOnly(false);
-    edit.setText(edit.getSavedText());
-    textEditSizeRenew();
-    edit.selectAll();
-    selfWidget.close();
-    delete layout.takeAt(0);
-    layout.insertWidget(0,&edit);
-    edit.show();
-    edit.setFocus();
+    if(!imageMode){
+        editMode = true;
+        edit.setReadOnly(false);
+        edit.setText(edit.getSavedText());
+        textEditSizeRenew();
+        edit.selectAll();
+        selfWidget.close();
+        delete layout.takeAt(0);
+        layout.insertWidget(0,&edit);
+        edit.show();
+        edit.setFocus();
+    }
 }
 
 void NodeWidget::textEditToLabel(){
@@ -821,6 +836,36 @@ void NodeWidget::focusMoveByArrow(int key){
         }
         break;
     }
+}
+
+void NodeWidget::showCustomMenu(const QPoint &pos){
+    QMenu contextMenu(tr("Context menu"));
+
+    QAction action1("Insert image");
+    QObject::connect(&action1, SIGNAL(triggered()), this, SLOT(insertImage()));
+
+    contextMenu.addAction(&action1);
+
+    contextMenu.exec(selfWidget.mapToGlobal(pos));
+}
+
+void NodeWidget::insertImage(){
+    QFileDialog dialog(NodeWidget::mainWindow,
+                       tr("Image export"),
+                       QDir::homePath(),
+                       tr("All (*.*);;PNG (*.png);;JPEG (*.jpeg);;BMP (*.bmp)"));
+    dialog.setAcceptMode(QFileDialog::AcceptOpen);
+    dialog.setDefaultSuffix("png");
+    if (!dialog.exec())
+        return;
+
+    QString fileName = dialog.selectedFiles().first();
+    QImage image;
+    image.load(fileName);
+    selfWidget.setPixmap(QPixmap::fromImage(image));
+
+    imageMode = true;
+
 }
 
 void NodeWidget::paintEvent(QPaintEvent *e){

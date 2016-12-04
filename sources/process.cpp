@@ -237,3 +237,18 @@ void NodeStyleCommand::undo(){
 void NodeStyleCommand::redo(){
     undo();
 }
+
+ImageCommand::ImageCommand(NodeWidget *imageInsertedNode) : Command(CommandType::Image){
+    this->imageInsertedNode = imageInsertedNode;
+    image = imageInsertedNode->getImage();
+    text = imageInsertedNode->getEdit().getSavedText();
+}
+
+void ImageCommand::undo(){
+    imageInsertedNode->label().clear();
+    imageInsertedNode->label().setText(text);
+}
+
+void ImageCommand::redo(){
+    imageInsertedNode->imageResize();
+}

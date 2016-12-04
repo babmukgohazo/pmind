@@ -93,7 +93,7 @@ private:
     // FileMenu Toolbar actions
     QMenu *menuFile;
     QAction *actionNew;
-    QAction *actionLoad;
+    QAction *actionOpen;
     QAction *actionSave;
     QAction *actionSaveAs;
     QAction *actionExport;

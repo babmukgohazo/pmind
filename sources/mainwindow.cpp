@@ -108,8 +108,8 @@ void MainWindow::reload(){
     map->labelPointer()->setStyleSheet("border-width: 3px; border-style : solid; border-color: #aed339;");
     map->labelPointer()->setNodeShape(nodeShape::root);
     map->labelPointer()->setDefaultColor(100);
-    QFont *font = new QFont("Consolas");
-    font->setPointSize(14);
+    QFont *font = new QFont("Arial");
+    font->setPointSize(18);
     map->labelPointer()->setFont(*font);
 
     containerLayout->addWidget(map);
@@ -148,8 +148,8 @@ void MainWindow::newFile(){
     map->labelPointer()->setStyleSheet("border-width: 3px; border-style : solid; border-color: #aed339;");
     map->labelPointer()->setNodeShape(nodeShape::root);
     map->labelPointer()->setDefaultColor(100);
-    QFont *font = new QFont("Consolas");
-    font->setPointSize(14);
+    QFont *font = new QFont("Arial");
+    font->setPointSize(18);
     map->labelPointer()->setFont(*font);
 
     containerLayout->addWidget(map);

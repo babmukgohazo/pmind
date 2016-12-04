@@ -128,7 +128,7 @@ void NodeLabel::focusOut(){
         QString shapeTmp =this->getNodeShapeCSS();
         QString colorTmp =this->getNodeTextColor();
         QString borderTmp = this->getDefaultColorCSS();//노드의 default 색깔 값을 얻어온다.
-        this->setStyleSheet(shapeTmp+colorTmp+borderTmp+"background-color : #ffffff;"); //바탕화면 하얀색으로 돌리기
+        this->setStyleSheet(shapeTmp+colorTmp+borderTmp+"background-color : transparent;"); //바탕화면 하얀색으로 돌리기
         emit noFocused();
         emit redraw();
     }
@@ -163,8 +163,8 @@ QString NodeLabel::getDefaultColorCSS(){
     case mint:
         defaultColorCSS="border-color: #37aea1;";
         break;
-    default:
-        defaultColorCSS="";
+    case 100:
+        defaultColorCSS="border-color: #aed339;";
     }
     return defaultColorCSS;
 }
@@ -190,8 +190,8 @@ QString NodeLabel::getDefaultColorString()
     case mint:
         defaultColorString="#37aea1";
         break;
-    default:
-        defaultColorString="";
+    case 100:
+        defaultColorString="#aed339";
     }
     return defaultColorString;
 }
@@ -401,8 +401,8 @@ void NodeWidget::init(){
     this->setStyleSheet("background-color: transparent");
     //selfWidget.setStyleSheet("background-color: transparent ; border-bottom: 1px solid black;");
     //selfWidget.setStyleSheet("border: 2px solid gray;");
-    selfWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-    childWidget.setSizePolicy(QSizePolicy::QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
+    selfWidget.setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    childWidget.setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     layout.addWidget(&selfWidget);
     layout.addWidget(&childWidget);
     layout.setSpacing(30);
@@ -483,7 +483,8 @@ void NodeWidget::add(NodeWidget *subNodeWidget){
 
     QColor* col = new QColor(subNodeWidget->selfWidget.getDefaultColorString());
     subNodeWidget->pen.setColor(*col);
-
+    QFont *font = new QFont("배달의민족 주아");
+    subNodeWidget->selfWidget.setFont(*font);
     emit generated();
 }
 
@@ -523,7 +524,8 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
         }
 
     }
-
+    QFont *font = new QFont("배달의민족 주아");
+    subNode->selfWidget.setFont(*font);
     emit generated();
 }
 

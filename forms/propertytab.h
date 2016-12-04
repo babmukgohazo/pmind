@@ -58,6 +58,9 @@ public slots:
 signals:
     void fontChanged(NodeWidget*,QFont);
 
+private slots:
+    void on_fontBox_activated(const QString &arg1);
+
 private:
     Ui::PropertyTab *ui;
     NodeWidget * map;

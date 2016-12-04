@@ -262,3 +262,20 @@ void PropertyTab::propertyEnabled(){
 void PropertyTab::propertyUnEnabled(){
     this->setEnabled(false);
 }
+
+void PropertyTab::on_fontBox_activated(const QString &arg1)
+{
+    NodeWidget* root= NodeWidget::searchFocusInNode(map->getRoot());
+    if(root==nullptr)
+        return;
+    focusedNode = root->labelPointer();//focused 된 라벨의 주소를 받아왔다 치자
+    QFont font = ui->fontBox->currentFont();
+    QFont fontOfNode = focusedNode->font();
+    if(fontOfNode.bold()) font.setBold(true);
+    if(fontOfNode.italic()) font.setItalic(true);
+    font.setPointSize(fontOfNode.pointSize());
+    focusedNode->setFont(font);
+    root->setEditFont(font);
+    emit fontChanged(root,font);
+    showAllProperty();
+}

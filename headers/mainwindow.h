@@ -30,6 +30,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void createDockWindows();
     void showStartscreen();
     MindmapView* getMapScreen(){return mapScreen;}
     NodeWidget* getMap(){return map;}
@@ -113,6 +114,7 @@ private:
     QLabel* percentLabel;
 
     QGoogleAnalytics* qGA;
+    QMenu *viewMenu;
 };
 
 #endif // MAINWINDOW_H

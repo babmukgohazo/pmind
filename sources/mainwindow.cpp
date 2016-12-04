@@ -141,7 +141,7 @@ void MainWindow::newFile(){
     map = new NodeWidget;
     map->labelPointer()->setStyleSheet("border-width: 3px; border-style : solid; border-color: #aed339;");
     map->labelPointer()->setNodeShape(root);
-     map->labelPointer()->setDefaultColor(100);
+    map->labelPointer()->setDefaultColor(100);
     QFont *font = new QFont("Consolas");
     font->setPointSize(14);
     map->labelPointer()->setFont(*font);

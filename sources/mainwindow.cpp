@@ -59,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(propertyDock,SIGNAL(fontChanged(NodeWidget*,QFont)),this,SLOT(addProcess(NodeWidget*,QFont)));
     QObject::connect(propertyDock,SIGNAL(nodeStyleChanged(NodeWidget*,nodeShape)),this,SLOT(addProcess(NodeWidget*,nodeShape)));
 
-    mapScreen->setStyleSheet("MindmapView {border: 1px solid gray; background: white;}");
+    mapScreen->setStyleSheet("MindmapView {border: 1px solid gray; background: #f8f8f8;}");
     this->centralWidget()->setLayout(layout);
 
     mapScreen->mainWindow = this;
@@ -79,6 +79,8 @@ MainWindow::MainWindow(QWidget *parent) :
     container->setLayout(containerLayout);
     mapScreen->mindmapScene->addWidget(container);
     container->setStyleSheet("background-color: rgba(255, 255, 255, 10);");
+
+    createDockWindows();
 }
 
 MainWindow::~MainWindow()
@@ -346,6 +348,7 @@ void MainWindow::setFileMenuToolbar() {
     quitList << QKeySequence(tr("Ctrl+Q")) << QKeySequence(QKeySequence::Quit);
     actionQuit->setShortcuts(quitList);
     menuFile = new QMenu("Menu");
+    viewMenu = new QMenu("View");
     menuFile->addAction(actionNew);
     menuFile->addAction(actionOpen);
     menuFile->addAction(actionSave);
@@ -354,6 +357,7 @@ void MainWindow::setFileMenuToolbar() {
     menuFile->addSeparator();
     menuFile->addAction(actionQuit);
     this->menuBar()->addMenu(menuFile);
+    this->menuBar()->addMenu(viewMenu);
 
     connect(actionNew, SIGNAL(triggered()), this, SLOT(newFile()));
     connect(actionOpen, SIGNAL(triggered()), this, SLOT(openFile()));
@@ -456,4 +460,10 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
     default:
         break;
     }
+}
+
+void MainWindow::createDockWindows()
+{
+    viewMenu->addAction(propertyDock->toggleViewAction());
+    viewMenu->addAction(textDock->toggleViewAction());
 }

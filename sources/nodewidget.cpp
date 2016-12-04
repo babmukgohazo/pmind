@@ -1,4 +1,6 @@
 #include "headers/mainwindow.h"
+#include "headers/nodewidget.h"
+
 int NodeWidget::counter = 0;
 
 void NodeLabel::mousePressEvent(QMouseEvent *e){

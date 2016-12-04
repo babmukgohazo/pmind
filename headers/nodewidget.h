@@ -27,7 +27,6 @@
 
 class MainWindow;
 class NodeWidget;
-enum nodeShape{nothing,rec,underline,roundRec,root};
 enum defaultColor{blue,red,green,orange,yellow,mint};
 
 class NodeLabel : public QLabel{

@@ -898,7 +898,6 @@ void NodeWidget::insertImage(){
 }
 
 void NodeWidget::imageResize(){
-    QImage scaledImage;
     int x;
     int y;
     x = image.size().width();
@@ -915,6 +914,7 @@ void NodeWidget::imageResize(){
             y /= yFrac;
         }
     }
+    QImage scaledImage(QSize(x,y),QImage::Format_RGB32);
     scaledImage=image.scaled(QSize(x,y),Qt::KeepAspectRatio,Qt::SmoothTransformation);
     selfWidget.setPixmap(QPixmap::fromImage(scaledImage));
 }

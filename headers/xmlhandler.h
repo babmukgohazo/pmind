@@ -43,11 +43,12 @@ public:
             headptr = new NodeWidget("ERROR: not valid file");
         }
         else{
-            QTextCodec *codec = QTextCodec::codecForName("EUC-KR");
+            //QTextCodec *codec = QTextCodec::codecForName("EUC-KR");
             //headptr = new NodeWidget(head.attribute("content"));
-            char* str = (char*)head.attribute("content").data();
-            headptr = new NodeWidget(codec->toUnicode(QByteArray(str)));
+            //char* str = (char*)head.attribute("content").data();
+            //headptr = new NodeWidget(codec->toUnicode(QByteArray(str)));
             //headptr = new NodeWidget(codec->toUnicode("가나다"));
+            headptr = new NodeWidget(head.attribute("content"));
             headptr->label().setNodeShape(head.attribute("nodestyle").toInt());
             QFont font;
             font.fromString(head.attribute("font"));
@@ -66,7 +67,8 @@ public:
                 if(temp == currentDepth+1){
 
                     //NodeWidget* newNode = new NodeWidget(e.attribute("content").toUtf8());
-                    NodeWidget* newNode = new NodeWidget(QString::fromUtf8(e.attribute("content").toUtf8()));
+                    //NodeWidget* newNode = new NodeWidget(QString::fromUtf8(e.attribute("content").toUtf8()));
+                    NodeWidget* newNode = new NodeWidget(e.attribute("content"));
                     newNode->label().setNodeShape(e.attribute("nodestyle").toInt());
                     QFont font;
                     font.fromString( e.attribute("font"));

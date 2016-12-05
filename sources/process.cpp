@@ -1,7 +1,7 @@
 #include "headers/mainwindow.h"
 #include "headers/nodewidget.h"
 
-Process::~Process(){
+Process::~Process(){//qt에서 QObject에 대해 따로 메모리를 관리해주어 필요가 없다.
     while(!undoStack.isEmpty()){
         if(undoStack.front()->tpye() == CommandType::Delete)
             delete undoStack.front()->node();
@@ -20,14 +20,14 @@ Process::~Process(){
 void Process::push(Command* command){
     undoStack.push_back(command);
 
-    if(undoStack.count() > STACKSIZE){
+    if(undoStack.count() > STACKSIZE){//stack의 크기가 정해져 그 이상 들어오면 앞에서 부터 빼낸다
         if(undoStack.front()->tpye() == CommandType::Delete)
             delete undoStack.front()->node();
         delete undoStack.front();
         undoStack.pop_front();
     }
 
-    while(!redoStack.isEmpty()){
+    while(!redoStack.isEmpty()){//새로운 command가 생기면, 기존 redoStack은 초기화되어야 한다.
         if(redoStack.front()->tpye() == CommandType::Add)
             delete redoStack.front()->node();
         delete redoStack.front();
@@ -39,16 +39,16 @@ void Process::undo(){
     if(undoStack.count() == 0)
         return;
 
-    undoStack.last()->undo();
-    redoStack.push_back(undoStack.last());
+    undoStack.last()->undo();//top의 command의 undo를 실행하고
+    redoStack.push_back(undoStack.last());//이 command를 redoStack에 push한다.
 
-    if(redoStack.count() > STACKSIZE){
+    if(redoStack.count() > STACKSIZE){//사실상 발생할 일이 없지만 만약을 대비해 추가했다.
         if(redoStack.front()->tpye() == CommandType::Add)
             delete redoStack.front()->node();
         delete redoStack.front();
         redoStack.pop_front();
     }
-    undoStack.pop_back();
+    undoStack.pop_back();//그리고 pop한다.
 
     NodeWidget::mainWindow->update();
 }
@@ -57,9 +57,9 @@ void Process::redo(){
     if(redoStack.count() == 0)
         return;
 
-    redoStack.last()->redo();
-    undoStack.push_back(redoStack.last());
-    redoStack.pop_back();
+    redoStack.last()->redo();//top의 command의 redo를 실행하고
+    undoStack.push_back(redoStack.last());//이 command를 undoStack에 push한다.
+    redoStack.pop_back();//그리고 pop한다.
 
     NodeWidget::mainWindow->update();
 }
@@ -129,7 +129,7 @@ void MoveCommand::undo(){
 
     movedNode->disconnectUpperNode();
     movedNode->close();
-    if(from!=NodeWidget::mainWindow->getMap())
+    if(from!=NodeWidget::mainWindow->getMap())//색상을 바꾸면서 넣는다.
         from->insert(fromIndex, movedNode);
     else{
         from->onlyInsert(fromIndex, movedNode);
@@ -141,7 +141,7 @@ void MoveCommand::undo(){
         movedNode->label().setDefaultColor(fromColor);
         QColor col(movedNode->label().getDefaultColorString());
 
-        while(!queue.empty()){
+        while(!queue.empty()){//Bfs로 모든 child에 접근하여 color를 설정해준다.
             temp = queue.front();
 
             temp->label().setDefaultColor(fromColor);
@@ -159,7 +159,7 @@ void MoveCommand::undo(){
 void MoveCommand::redo(){
     movedNode->disconnectUpperNode();
     movedNode->close();
-    if(to!=NodeWidget::mainWindow->getMap())
+    if(to!=NodeWidget::mainWindow->getMap())//색상을 바꾸면서 넣는다.
         to->insert(toIndex, movedNode);
     else{
         to->onlyInsert(toIndex, movedNode);
@@ -171,7 +171,7 @@ void MoveCommand::redo(){
         movedNode->label().setDefaultColor(toColor);
         QColor col(movedNode->label().getDefaultColorString());
 
-        while(!queue.empty()){
+        while(!queue.empty()){//Bfs로 모든 child에 접근하여 color를 설정해준다.
             temp = queue.front();
 
             temp->label().setDefaultColor(toColor);
@@ -245,7 +245,7 @@ ImageCommand::ImageCommand(NodeWidget *imageInsertedNode) : Command(CommandType:
 }
 
 void ImageCommand::undo(){
-    imageInsertedNode->label().clear();
+    imageInsertedNode->label().clear();//image를 없앤다
     imageInsertedNode->label().setText(text);
 }
 

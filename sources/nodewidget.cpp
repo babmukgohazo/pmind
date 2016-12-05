@@ -542,32 +542,47 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
     subNode->parent_ = this;
     subNode->index = index;
 
-//    QQueue<NodeWidget*> queue;
-//    NodeWidget* temp;
-//    queue.push_back(subNode);
-
+    QQueue<NodeWidget*> queue;
+    NodeWidget* temp;
 
     if(this==getRoot()) // NodeWidget::mainWindow->getMap()
     {
         subNode->selfWidget.setDefaultColor(counter%6);
         counter++;
 
+        queue.push_back(subNode);
+
         QColor* col = new QColor(subNode->selfWidget.getDefaultColorString());
 //<<<<<<< HEAD
 //=======
+        /*
         subNode->pen.setColor(*col);
 
         QFont *childFont = new QFont(subNode->selfWidget.font());
         QFont *parentFont = new QFont(selfWidget.font());
         childFont->setFamily(parentFont->family());
-        subNode->selfWidget.setFont(*childFont);
+        subNode->selfWidget.setFont(*childFont);*/
+
+        while(!queue.empty()){
+            temp = queue.front();
+
+            temp->selfWidget.setDefaultColor((counter-1)%6);
+            temp->pen.setColor(*col);
+
+            QFont *childFont = new QFont(temp->selfWidget.font());
+            QFont *parentFont = new QFont(selfWidget.font());
+            childFont->setFamily(parentFont->family());
+            temp->selfWidget.setFont(*childFont);
+
+            queue.pop_front();
+
+            for(int i = 0; i<temp->child.count();i++)
+                queue.push_back(temp->child[i]);
+        }
     }
 
     else if(subNode->parent_!=nullptr)//맵이면 안됨
     {
-        QQueue<NodeWidget*> queue;
-        NodeWidget* temp;
-
         queue.push_back(this);
 
         while(!queue.empty()){

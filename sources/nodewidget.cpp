@@ -6,15 +6,15 @@ int NodeWidget::counter = 0;
 void NodeLabel::mousePressEvent(QMouseEvent *e){
     prePos = e->pos();
     if(e->button()==Qt::LeftButton)
-        emit labelClicked();
+        emit labelClicked();//mindmapView에게 node가 click되었음을 알림. view에서 focus를 관리하기 때문.
 }
 
 void NodeLabel::mouseReleaseEvent(QMouseEvent *e){
     if(e->button()==Qt::LeftButton){
-        if(focus){
+        if(focus){//focus된 상태였으면 textEdit로 전환.
             emit doubleClicked();
         }
-        else{
+        else{//focus아닌 상태였으면 focus.
             focusIn();
         }
     }
@@ -33,11 +33,11 @@ void NodeLabel::mouseDoubleClickEvent(QMouseEvent *e){
 
 void NodeLabel::keyPressEvent(QKeyEvent *e){
     if(e->modifiers().testFlag(Qt::ControlModifier)|e->modifiers().testFlag(Qt::ShiftModifier)){
-        if(e->key()==Qt::Key_I){
+        if(e->key()==Qt::Key_I){//italic font shortcut
             if(e->modifiers().testFlag(Qt::ControlModifier))
                 emit italic();
         }
-        else if(e->key()==Qt::Key_B){
+        else if(e->key()==Qt::Key_B){//bold font shortcut
             if(e->modifiers().testFlag(Qt::ControlModifier))
                 emit bold();
         }
@@ -48,28 +48,28 @@ void NodeLabel::keyPressEvent(QKeyEvent *e){
     if(!focus)
         return;
     switch(e->key()){
-    case Qt::Key_Tab:
+    case Qt::Key_Tab://make child
         emit tabPressed();
         break;
-    case Qt::Key_Enter:
+    case Qt::Key_Enter://make sibling
         emit enterPressed();
         break;
-    case Qt::Key_Return:
+    case Qt::Key_Return://make sibling
         emit enterPressed();
         break;
-    case Qt::Key_Delete:
+    case Qt::Key_Delete://remove node from map
         emit deletePressed();
         break;
-    case Qt::Key_Left:
+    case Qt::Key_Left://make focus move to parent node
         emit arrowPressed(Qt::Key_Left);
         break;
-    case Qt::Key_Right:
+    case Qt::Key_Right://make focus move to nearest child node
         emit arrowPressed(Qt::Key_Right);
         break;
-    case Qt::Key_Up:
+    case Qt::Key_Up://make focus move to upper sibling node
         emit arrowPressed(Qt::Key_Up);
         break;
-    case Qt::Key_Down:
+    case Qt::Key_Down://make focus move to lower sibling node
         emit arrowPressed(Qt::Key_Down);
         break;
     case Qt::Key_I:
@@ -107,7 +107,7 @@ void NodeLabel::keyPressEvent(QKeyEvent *e){
     case Qt::Key_6:
     case Qt::Key_7:
     case Qt::Key_8:
-    case Qt::Key_9:
+    case Qt::Key_9://if character or number keys press, label is replaced with textEdit
         emit keyPressed();
         break;
     default:
@@ -117,50 +117,40 @@ void NodeLabel::keyPressEvent(QKeyEvent *e){
 }
 
 void NodeLabel::focusOutEvent(QFocusEvent *e){
-   // focusOut();
+   // inactivation
 }
 
 void NodeLabel::focusIn(){
     NodeWidget* temp;
     temp = NodeWidget::searchFocusInNode(container_->getRoot());
     if(temp != nullptr)
-        temp->label().focusOut();
+        temp->label().focusOut();//focus되었던 node에서 focus를 가져온다.
     this->setFocus();
     focus = true;
-    if(static_cast<NodeWidget*>(parent())->isImageMode())
+    if(static_cast<NodeWidget*>(parent())->isImageMode())//image를 가지고 있으면 focus되었을 때 rec형의 테두리가 생긴다.
         setNodeShape(rec);
     QString shapeTmp =this->getNodeShapeCSS();//모양을 얻어온다
     QString colorTmp =this->getNodeTextColor();//글자 색을 얻어온다
     QString borderTmp = this->getDefaultColorCSS();//노드의 default 색깔 값을 얻어온다.
     this->setStyleSheet(shapeTmp+colorTmp+borderTmp+"background-color : #6699ff;"); //바탕화면 파란색
-    emit focused();
-    emit redraw();
+    emit focused();//focus되었다고 propertyDock에 알린다.
+    emit redraw();//화면 update
     if(static_cast<NodeWidget*>(parent())->isImageMode())
-        emit inImageMode();
+        emit inImageMode();//image mode에서는 dock이 비활성화 되어야 하므로, image mode인지 propertyDock에 알린다.
 }
 
 void NodeLabel::focusOut(){
-//<<<<<<< HEAD
     if(focus){
         focus = false;
         if(static_cast<NodeWidget*>(parent())->isImageMode())
-            setNodeShape(nothing);
+            setNodeShape(nothing);//node의 모양을 원래 형태로 바꾼다.
         QString shapeTmp =this->getNodeShapeCSS();
         QString colorTmp =this->getNodeTextColor();
         QString borderTmp = this->getDefaultColorCSS();//노드의 default 색깔 값을 얻어온다.
         this->setStyleSheet(shapeTmp+colorTmp+borderTmp+"background-color : transparent;"); //바탕화면 하얀색으로 돌리기
-        emit noFocused();
-        emit redraw();
+        emit noFocused();//propertyDock inactivation
+        emit redraw();//update
     }
-//=======
-//    focus = false;
-//    QString shapeTmp =this->getNodeShapeCSS();
-//    QString colorTmp =this->getNodeTextColor();
-//    QString borderTmp = this->getDefaultColorCSS();//노드의 default 색깔 값을 얻어온다.
-//    this->setStyleSheet(shapeTmp+colorTmp+borderTmp+"background-color : #ffffff;"); //바탕화면 하얀색으로 돌리기
-//    emit noFocused();
-//    emit redraw();
-//>>>>>>> feature/sprint3_nodeColor_Gyuyong
 }
 
 QString NodeLabel::getDefaultColorCSS(){
@@ -218,15 +208,15 @@ QString NodeLabel::getDefaultColorString()
 
 void NodeTextEdit::keyPressEvent(QKeyEvent *e){
     if(e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return){
-        if(e->modifiers().testFlag(Qt::ShiftModifier)){
+        if(e->modifiers().testFlag(Qt::ShiftModifier)){//shift+enter해야 줄이 바뀐다.
             QTextEdit::keyPressEvent(e);
         }
         else{
-            emit enterPressed();
+            emit enterPressed();//그냥 enter가 입력되면 textEdit을 종료하고 label로 바뀐다.
         }
     }
-    else if(e->key() == Qt::Key_Tab);
-    else if(e->key() == Qt::Key_Escape){
+    else if(e->key() == Qt::Key_Tab);//tab남용시 windows system에서 자동으로 focus하는 event가 발생한다. 이를 회피하기 위해 비활성화.
+    else if(e->key() == Qt::Key_Escape){//textEdit호출된 시점의 text로 복귀하면서 label로 전환.
         emit escPressed();
     }
     else{
@@ -234,20 +224,20 @@ void NodeTextEdit::keyPressEvent(QKeyEvent *e){
     }
 }
 
-void NodeTextEdit::focusOutEvent(QFocusEvent *e){
+void NodeTextEdit::focusOutEvent(QFocusEvent *e){//textEdit에서 label로 전환, dock의 text update
     emit focusOut();
 }
 
-void NodeTextEdit::mousePressEvent(QMouseEvent *e){
+void NodeTextEdit::mousePressEvent(QMouseEvent *e){//focus를 관리하는 mindmapView로 focus가 아직 edit에 있는지 확인시켜준다.
     emit editClicked();
     QTextEdit::mousePressEvent(e);
 }
 
-void NodeLabel::mouseMoveEvent(QMouseEvent *event){
-    if(static_cast<NodeWidget*>(parent())==NodeWidget::mainWindow->getMap())
+void NodeLabel::mouseMoveEvent(QMouseEvent *event){//drag
+    if(static_cast<NodeWidget*>(parent())==NodeWidget::mainWindow->getMap())//root node인 경우 drag 불가.
         return;
 
-    if(QLineF(prePos, event->pos()).length() > 5){
+    if(QLineF(prePos, event->pos()).length() > 5){//특정거리 이상 움직여야 drag가 시작된다.
         QDrag *drag = new QDrag(this);
         QMimeData *mime = new QMimeData;
         drag->setMimeData(mime);
@@ -270,8 +260,8 @@ void NodeLabel::mouseMoveEvent(QMouseEvent *event){
         x *= scale;
         y *= scale;
 
-        QImage image(QSize(cx,cy),QImage::Format_ARGB32);
-        image.fill(Qt::transparent);
+        QImage image(QSize(cx,cy),QImage::Format_ARGB32);//drag시 따라올 image이다.
+        image.fill(Qt::transparent);//투명한 배경을 만든다.
         QPainter painter(&image);
         painter.setRenderHint(QPainter::Antialiasing);
         QRect rect;
@@ -279,16 +269,16 @@ void NodeLabel::mouseMoveEvent(QMouseEvent *event){
         origin = con->mapFromGlobal(origin);
         origin *= scale;
         rect.setRect(origin.x(),origin.y(),x,y);
-        mapScreen->getScene()->render(&painter);
-        QImage cutImage = image.copy(rect);
+        mapScreen->getScene()->render(&painter);//mindmapView의 scene으로부터 image를 rendering한다.
+        QImage cutImage = image.copy(rect);//필요한 부분만 자른다.
 
-        drag->setPixmap(QPixmap::fromImage(cutImage));
-        if(parent_->isImageMode())
+        drag->setPixmap(QPixmap::fromImage(cutImage));//pixmap을 설정한다.
+        if(parent_->isImageMode())//cursor의 위치를 설정한다. imageMode면 image의 왼쪽위를 잡는다.
             drag->setHotSpot((static_cast<QWidget*>(parent()))->mapFromGlobal(mapToGlobal(QPoint(0,0))));
         else
             drag->setHotSpot((static_cast<QWidget*>(parent()))->mapFromGlobal(mapToGlobal(event->pos()))*scale);
         drag->exec();
-        focusOut();
+        focusOut();//drag상태에서는 focus된 node가 없다.
         setCursor(Qt::OpenHandCursor);
     }
 }
@@ -345,10 +335,10 @@ QString NodeLabel::getNodeShapeCSS(){
     }
 }
 
-QString NodeTextEdit::labelText(){
+QString NodeTextEdit::labelText(){//textEdit와 label이 text를 배치하는 방법이 다르기 때문에 변환해준다.
     QString temp = "";
-    for(int i=0;i<textVector_.count()-1;i++){
-        temp += textVector_[i] + "\n";
+    for(int i=0;i<textVector_.count()-1;i++){//textVector는 label에 배치될 각 줄을 순서대로 가지고 있다.
+        temp += textVector_[i] + "\n";//'\n'으로 줄을 이어주면 된다.
     }
     temp += textVector_.last();
     return temp;
@@ -357,9 +347,9 @@ QString NodeTextEdit::labelText(){
 MainWindow* NodeWidget::mainWindow = nullptr;
 
 NodeWidget::NodeWidget(QString name){
-    init();
-    selfWidget.setText(name);
-    edit.saveText(name);
+    init();//초기화
+    selfWidget.setText(name);//default text setting
+    edit.saveText(name);//default text setting
 }
 
 NodeWidget::NodeWidget(QQueue<MdString> list, MainWindow* mainWindow){
@@ -418,17 +408,17 @@ int NodeWidget::getDefaultColor(){
 }
 
 void NodeWidget::init(){
-    edit.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    edit.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);//textEdit에서 scrollbar가 자동으로 생기지 않게 설정.
     edit.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     PropertyDock=mainWindow->getPropertyDock();
     textViewDock=mainWindow->getTextViewDock();
-    edit.setContextMenuPolicy(Qt::NoContextMenu);
+    edit.setContextMenuPolicy(Qt::NoContextMenu);//textEdit의 default context menu를 사용하지 못하게 설정.
     selfWidget.setContainer(this);
     this->setStyleSheet("background-color: transparent");
     //selfWidget.setStyleSheet("background-color: transparent ; border-bottom: 1px solid black;");
     //selfWidget.setStyleSheet("border: 2px solid gray;");
-    selfWidget.setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    childWidget.setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    selfWidget.setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);//layout크기에 맞춰 크기 조절. layout 안에 하나의 widget만 들어있을 경우, layout이 최소크기를 잘 잡아줌.
+    childWidget.setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);//y축은 layout에 맞춰 크기를 조절, x축은 layout 크기와 관계없이 내용물의 size에 맞춰 조절.
     layout.addWidget(&selfWidget);
     layout.addWidget(&childWidget);
     layout.setSpacing(30);
@@ -437,22 +427,20 @@ void NodeWidget::init(){
     layout.setContentsMargins(0,0,0,0);
     childLayout.setMargin(0);
 
-//<<<<<<< HEAD
-    selfWidget.setContextMenuPolicy(Qt::CustomContextMenu);
-    QObject::connect(&selfWidget, SIGNAL(customContextMenuRequested(const QPoint &)),this,SLOT(showCustomMenu(const QPoint&)));
-//=======
-    QFont *font = new QFont("Arial");
+    selfWidget.setContextMenuPolicy(Qt::CustomContextMenu);//insert image action을 만들기 위해서 customContextMenu를 만듦.
+    QObject::connect(&selfWidget, SIGNAL(customContextMenuRequested(const QPoint &)),this,SLOT(showCustomMenu(const QPoint&)));//우클릭시 메뉴 호출
+
+    QFont *font = new QFont("Arial");//default font
     font->setPointSize(14);
     this->font = *font;
-    fm = new QFontMetrics(*font);
+    fm = new QFontMetrics(*font);//textEdit의 size조절을 위해 사용. text가 배치되었을 때의 크기를 측정 가능.
     selfWidget.setFont(*font);
     edit.setFont(*font);
     textEditSizeRenew();
-//>>>>>>> feature/sprint3_fontFix
 
     pen.setWidth(2);
 
-    QObject::connect(&edit,SIGNAL(enterPressed()),NodeWidget::mainWindow,SLOT(renewTextEdit()));
+    QObject::connect(&edit,SIGNAL(enterPressed()),NodeWidget::mainWindow,SLOT(renewTextEdit()));//각 signal, slot항목 참조.
     QObject::connect(&edit,SIGNAL(enterPressed()),this,SLOT(textEditToLabel()));
     QObject::connect(&edit,SIGNAL(enterPressed()),&selfWidget,SLOT(focusIn()));
     QObject::connect(&edit,SIGNAL(focusOut()),this,SLOT(textEditToLabel()));
@@ -490,22 +478,7 @@ NodeWidget::~NodeWidget(){
         delete child[i];
     }
 }
-/*
-void NodeWidget::setChildDefaultColor(QVector<NodeWidget*> child, int color){
-    qDebug() << this;
 
-    for(int i=0;i<child.count();i++)
-    {
-        if(child[i]->child.empty())
-            child[i]->selfWidget.setDefaultColor(color);
-        else
-        {
-            setChildDefaultColor(child[i]->child,color);
-            child[i]->selfWidget.setDefaultColor(color);
-        }
-    }
-}
-*/
 void NodeWidget::add(NodeWidget *subNodeWidget){
     child.push_back(subNodeWidget);
     childLayout.addWidget(subNodeWidget);
@@ -523,9 +496,6 @@ void NodeWidget::add(NodeWidget *subNodeWidget){
 
     QColor* col = new QColor(subNodeWidget->selfWidget.getDefaultColorString());
     subNodeWidget->pen.setColor(*col);
-    //qDebug() << selfWidget.font();
-    //qDebug() << selfWidget.fontInfo();
-    //qDebug() << selfWidget.fontMetrics();
     QFont *childFont = new QFont(subNodeWidget->selfWidget.font());
     QFont *parentFont = new QFont(selfWidget.font());
     childFont->setFamily(parentFont->family());
@@ -553,15 +523,6 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
         queue.push_back(subNode);
 
         QColor* col = new QColor(subNode->selfWidget.getDefaultColorString());
-//<<<<<<< HEAD
-//=======
-        /*
-        subNode->pen.setColor(*col);
-
-        QFont *childFont = new QFont(subNode->selfWidget.font());
-        QFont *parentFont = new QFont(selfWidget.font());
-        childFont->setFamily(parentFont->family());
-        subNode->selfWidget.setFont(*childFont);*/
 
         while(!queue.empty()){
             temp = queue.front();
@@ -605,8 +566,6 @@ void NodeWidget::insert(int index, NodeWidget *subNode){
         }
 
     }
-    //QFont *font = new QFont("배달의민족 주아");
-    //subNode->selfWidget.setFont(*font);
     emit generated();
 }
 
@@ -620,7 +579,7 @@ void NodeWidget::onlyInsert(int index, NodeWidget *subNode){
     emit generated();
 }
 
-NodeWidget* NodeWidget::searchFocusInNode(NodeWidget* root){
+NodeWidget* NodeWidget::searchFocusInNode(NodeWidget* root){//bfs로 구현.
     QQueue<NodeWidget*> queue;
     NodeWidget* temp;
     int i;
@@ -629,10 +588,10 @@ NodeWidget* NodeWidget::searchFocusInNode(NodeWidget* root){
         return nullptr;
     queue.push_back(root);
 
-    while(!queue.empty()){
-        temp = queue.front();
+    while(!queue.empty()){//queue가 빌 때 까지 search
+        temp = queue.front();//queue에 모두 담음
         queue.pop_front();
-        if(temp->editMode){
+        if(temp->editMode){//temp가 focus되어있으면 반환하고 돌아감
             return temp;
         }
         else{
@@ -651,33 +610,33 @@ void NodeWidget::labelToTextEdit(){
         edit.setReadOnly(false);
         edit.setText(edit.getSavedText());
         textEditSizeRenew();
-        edit.selectAll();
-        selfWidget.close();
-        delete layout.takeAt(0);
-        layout.insertWidget(0,&edit);
-        edit.show();
+        edit.selectAll();//모든 text가 drag된 상태로 edit가 열린다
+        selfWidget.close();//label 비활성화
+        delete layout.takeAt(0);//label을 layout에서 제거한 후
+        layout.insertWidget(0,&edit);//edit를 layout에 추가한다
+        edit.show();//edit 활성화
         edit.setFocus();
     }
 }
 
 void NodeWidget::textEditToLabel(){
     if(editMode){
-        if(edit.getSavedText()!=edit.toPlainText()){
-            emit commanded(this, CommandType::Text);
-            edit.saveText(edit.toPlainText());
+        if(edit.getSavedText()!=edit.toPlainText()){//text가 바뀌었을 경우
+            emit commanded(this, CommandType::Text);//undo stack에 command를 추가한다.
+            edit.saveText(edit.toPlainText());//바뀐 text를 저장한다
         }
 
         editMode = false;
-        selfWidget.show();
+        selfWidget.show();//label활성화
         labelSizeRenew();
-        delete layout.takeAt(0);
-        layout.insertWidget(0,&selfWidget);
-        edit.close();
+        delete layout.takeAt(0);//edit를 layout에서 제거한 후
+        layout.insertWidget(0,&selfWidget);//label을 layout에 추가한다
+        edit.close();//edit 비활성화
     }
 }
 
 void NodeWidget::closeTextEdit(){
-    if(editMode){
+    if(editMode){//text 변경사항을 적용하지 않고 label로 전환한다
         editMode = false;
         selfWidget.show();
         delete layout.takeAt(0);
@@ -686,50 +645,49 @@ void NodeWidget::closeTextEdit(){
     }
 }
 
-void NodeWidget::textEditSizeRenew(){
+void NodeWidget::textEditSizeRenew(){//300fixel전까지는 text width에 맞게 커지다가 300을 넘으면 크기가 고정된다.
     if(editMode){
         QString text = edit.toPlainText();
-        int x = fm->width(text);
-        int n = x/300 + 1;
-        int space = 11;
+        int x = fm->width(text);//text의 width를 받는다
+        int space = 11;//첫 글자와 끝 글자가 textEdit와 떨어져 있어야 하는 pixel 수이다
         int max;
         bool widthLimit;
 
         if(font.italic())
-            space = 14;
+            space = 14;//italic체일 경우에는 space가 좀 더 크다
 
-        QStringList enterSplit = text.split('\n');
+        QStringList enterSplit = text.split('\n');//몇 줄인지 확인한다
         QVector<QString> splitVector = enterSplit.toVector();
 
-        if(splitVector.count()<=1){
-            if(x>300)
+        if(splitVector.count()<=1){//한 줄
+            if(x>300)//만약 text의 width가 300을 넘으면 크기를 제한한다
                 widthLimit = true;
-            else
+            else//아니면 제한하지 않는다.
                 widthLimit = false;
             max = x;
         }
-        else{
+        else{//두 줄 이상
             int temp;
 
             max = fm->width(splitVector[0]);
-            for(int i=1; i<splitVector.count();i++){
+            for(int i=1; i<splitVector.count();i++){//가장 width가 큰 줄을 찾는다
                 temp = fm->width(splitVector[i]);
                 if(max < temp)
                     max = temp;
             }
 
-            if(max>300)
+            if(max>300)//최대 width가 300을 넘으면 크기를 제한한다
                 widthLimit = true;
-            else
+            else//아니면 제한하지 않는다
                 widthLimit = false;
         }
 
-        if(widthLimit){
+        if(widthLimit){//크기가 제한되어 있을 경우 size설정
             int y = edit.document()->size().height();
             edit.setFixedSize(300 + space,y);
         }
-        else{
-            edit.setFixedWidth(max + space);
+        else{//크기가 제한되지 않을 경우 size설정
+            edit.setFixedWidth(max + space);//최대 width에 맞춰 size를 설정
             int y = edit.document()->size().height();
             if(max<=30)
                 max=30;
@@ -751,17 +709,17 @@ void NodeWidget::labelSizeRenew(){
         edit.textVector().clear();
         text = edit.getSavedText();
         charCount = text.count();
-        for(int i=0;i<charCount;i++){
-            temp += text[i];
-            if(text[i] == '\n'){
+        for(int i=0;i<charCount;i++){//char 하나씩 순차적으로 넣으면서 label의 text를 만든다. 정확히는 label의 text를 만들기 위한 textVector를 만드는데 목적이 있다
+            temp += text[i];//char 하나를 넣는다
+            if(text[i] == '\n'){//다음줄로 넘어가면 textVector의 원소를 하나 더 만들어야 한다.
                 edit.textVector().append("");
                 for(int i=0;i<temp.count()-1;i++)
                     edit.textVector()[edit.textVector().count()-1]+=temp[i];
                 temp = "";
                 continue;
             }
-            if(fm->width(temp) > 300){
-                spaceSplit = temp.split(' ');
+            if(fm->width(temp) > 300){//만약 문자를 넣고 났더니 한 줄의 width가 300픽셀을 넘을 경우 다음줄로 넘어가야 한다. 즉 textVector의 원소를 하나 더 만들어야 한다.
+                spaceSplit = temp.split(' ');//다음줄로 넘어갈 때 space가 문장 안에 있었다면, 마지막 space 이후의 sub text는 모두 다음줄로 넘어가게 된다. 때문에 따로 처리한다.
                 if(spaceSplit.count() == 1){
                     edit.textVector().append("");
                     for(int i=0;i<temp.count()-1;i++)
@@ -779,7 +737,7 @@ void NodeWidget::labelSizeRenew(){
         }
         edit.textVector().append(temp);
     }
-    selfWidget.setText(edit.labelText());
+    selfWidget.setText(edit.labelText());//textVector를 만들었으므로 labelText를 생성할 수 있다.
     editMode = false;
 }
 
@@ -830,7 +788,7 @@ NodeWidget* NodeWidget::getNearestChild(){
     int minLength;
     int length;
     diff = nearestChild->label().mapToGlobal(QPoint(0,0)) - origin;
-    minLength = diff.manhattanLength();
+    minLength = diff.manhattanLength();//택시거리로 비교한다
 
     for(int i=1;i<child.count();i++){
         diff = child[i]->label().mapToGlobal(QPoint(0,0)) - origin;
@@ -908,7 +866,7 @@ void NodeWidget::insertImage(){
     imageResize();
 
     imageMode = true;
-    emit commanded(this,CommandType::Image);
+    emit commanded(this,CommandType::Image);//이미지가 설정된 것도 undo할 수 있게 command를 undo stack에 넣는다.
 
 }
 
@@ -917,7 +875,7 @@ void NodeWidget::imageResize(){
     int y;
     x = image.size().width();
     y = image.size().height();
-    double xFrac = x/400;
+    double xFrac = x/400;//image가 400*300을 넘어가면 비율을 유지하면서 최대한 크게 이미지의 size를 설정한다.
     double yFrac = y/300;
     if(xFrac>1 | yFrac>1){
         if(xFrac>yFrac){
@@ -940,16 +898,14 @@ void NodeWidget::paintEvent(QPaintEvent *e){
 
     QPoint pos1, pos2;
 
-    //painter.drawLine();
-    //painter.drawLine(selfWidget.mapToParent(selfWidget.rect().bottomLeft()),selfWidget.mapToParent(selfWidget.rect().bottomRight()));
-    if(editMode){
+    if(editMode){//edit일 때와 아닐 때 edge를 그리기 시작하는 점이 다르므로 구분한다.
         for(int i = 0; i<child.count(); i++){
             painter.setPen(child[i]->getPen());
 
             QPoint temp;
-            temp = edit.mapToGlobal(edit.rect().bottomRight());
+            temp = edit.mapToGlobal(edit.rect().bottomRight());//this의 오른쪽 아래부터
             pos1 = this->mapFromGlobal(temp);
-            temp = child[i]->selfWidget.mapToGlobal(child[i]->selfWidget.rect().bottomLeft());
+            temp = child[i]->selfWidget.mapToGlobal(child[i]->selfWidget.rect().bottomLeft());//child의 왼쪽 아래까지 그린다.
             pos2 = this->mapFromGlobal(temp);
 
             QPainterPath path;

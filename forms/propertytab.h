@@ -62,6 +62,12 @@ signals:
 private slots:
     void on_fontBox_activated(const QString &arg1);
 
+    void on_dashLineButton_clicked();
+
+    void on_dotLineButton_clicked();
+
+    void on_lineWidthCombo_currentIndexChanged(int index);
+
 private:
     Ui::PropertyTab *ui;
     NodeWidget * map;

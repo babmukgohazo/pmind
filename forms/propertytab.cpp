@@ -235,6 +235,12 @@ void PropertyTab::showAllProperty(){//node의 속성 dockWidget에 보여주기
     default :
         break;
     }
+
+    ui->lineWidthCombo->setCurrentIndex(root->getPen().width()-1);
+    if(root->getPen().style() == Qt::DashLine)
+        ui->dashLineButton->setStyleSheet("background-color : #0033cc;");
+    if(root->getPen().style() == Qt::DotLine)
+        ui->dotLineButton->setStyleSheet("background-color : #0033cc;");
 }
 void PropertyTab::setDockWedigetDefault(){//dockWidget속성 초기화
     QFont notBoldFont;
@@ -246,6 +252,8 @@ void PropertyTab::setDockWedigetDefault(){//dockWidget속성 초기화
     ui->rectangleButton->setStyleSheet("background-color : QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #79bbff, stop: 1 #378de5);");
     ui->roundRecButton->setStyleSheet("background-color : QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #79bbff, stop: 1 #378de5);");
     ui->underlineButton->setStyleSheet("background-color : QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #79bbff, stop: 1 #378de5);");
+    ui->dashLineButton->setStyleSheet("background-color : QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #79bbff, stop: 1 #378de5);");
+    ui->dotLineButton->setStyleSheet("background-color : QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #79bbff, stop: 1 #378de5);");
 }
 
 void PropertyTab::setButtonImg(){
@@ -270,6 +278,9 @@ void PropertyTab::setButtonImg(){
     QPixmap dottedLineImg(":/buttonStyle/line/dottedLine_img.png");
     QIcon dottedLineButton(dottedLineImg);
 
+    QPixmap dashLineImg(":/buttonStyle/line/dashLine_img.png");
+    QIcon dashLineButton(dashLineImg);
+
     ui->buttonColor->setIcon(colorButton);
     ui->buttonBold->setIcon(boldButton);
     ui->buttonItalic->setIcon(italicButton);
@@ -277,7 +288,8 @@ void PropertyTab::setButtonImg(){
     ui->roundRecButton->setIcon(roundRecButton);
     ui->underlineButton->setIcon(underlineButton);
     //ui->lineColorButton->setIcon(colorButton);
-    ui->dottedLineButton->setIcon(dottedLineButton);
+    ui->dotLineButton->setIcon(dottedLineButton);
+    ui->dashLineButton->setIcon(dashLineButton);
 }
 
 void PropertyTab::propertyEnabled(){
@@ -302,5 +314,84 @@ void PropertyTab::on_fontBox_activated(const QString &arg1)
     focusedNode->setFont(font);
     root->setEditFont(font);
     emit fontChanged(root,font);
+    showAllProperty();
+}
+void PropertyTab::on_dashLineButton_clicked()
+{
+    NodeWidget* root= NodeWidget::searchFocusInNode(map);
+    if(root==nullptr)
+        return;
+    if(root==map)
+        return;
+
+    if(root->getPen().style() == Qt::DashLine){
+        QPen newPen(root->getPen());
+        newPen.setStyle(Qt::SolidLine);
+        root->setPen(newPen);
+    }
+    else{
+        QPen newPen(root->getPen());
+        newPen.setStyle(Qt::DashLine);
+        root->setPen(newPen);
+    }
+
+    showAllProperty();
+}
+
+void PropertyTab::on_dotLineButton_clicked()
+{
+    NodeWidget* root= NodeWidget::searchFocusInNode(map);
+    if(root==nullptr)
+        return;
+    if(root==map)
+        return;
+
+    if(root->getPen().style() == Qt::DotLine){
+        QPen newPen(root->getPen());
+        newPen.setStyle(Qt::SolidLine);
+        root->setPen(newPen);
+    }
+    else{
+        QPen newPen(root->getPen());
+        newPen.setStyle(Qt::DotLine);
+        root->setPen(newPen);
+    }
+
+    showAllProperty();
+}
+
+void PropertyTab::on_lineWidthCombo_currentIndexChanged(int index)
+{
+    NodeWidget* root= NodeWidget::searchFocusInNode(map);
+    if(root==nullptr)
+        return;
+    if(root==map)
+        return;
+
+    focusedNode = root->labelPointer();
+
+    QPen newPen(root->getPen());
+
+    switch(index){
+    case 0:
+        newPen.setWidth(1);
+        root->setPen(newPen);
+        break;
+    case 1:
+        newPen.setWidth(2);
+        root->setPen(newPen);
+        break;
+    case 2:
+        newPen.setWidth(3);
+        root->setPen(newPen);
+        break;
+    case 3:
+        newPen.setWidth(4);
+        root->setPen(newPen);
+        break;
+    default:
+        break;
+    }
+
     showAllProperty();
 }

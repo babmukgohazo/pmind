@@ -11,5 +11,6 @@
     </qresource>
     <qresource prefix="/buttonStyle/line">
         <file>dottedLine_img.png</file>
+        <file>dashLine_img.png</file>
     </qresource>
 </RCC>

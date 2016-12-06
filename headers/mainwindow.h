@@ -91,8 +91,6 @@ private:
     PropertyTab* propertyDock;
     TextView* textDock;
     QTextEdit* edit;
-    QPushButton* redrawButton;
-    QVBoxLayout* rightLayout;
     QWidget* container;
     QHBoxLayout* containerLayout;
 
@@ -107,9 +105,6 @@ private:
 
     Process* process;
 
-    QVBoxLayout* layout;
-    QHBoxLayout* programLayout;
-    QHBoxLayout* scaleComboLayout;
     QComboBox* scaleCombo;
     QLabel* percentLabel;
 

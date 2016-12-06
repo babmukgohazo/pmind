@@ -17,16 +17,11 @@ MainWindow::MainWindow(QWidget *parent) :
     textDock = new TextView;
     edit = textDock->getTextEdit();
     edit->setReadOnly(true);
-    redrawButton = new QPushButton("Redraw");
-    layout = new QVBoxLayout();
-    programLayout = new QHBoxLayout();
-    rightLayout = new QVBoxLayout();
     map = nullptr;
     process = new Process;
     container = new QWidget;
     containerLayout = new QHBoxLayout;
 
-    scaleComboLayout = new QHBoxLayout;
     scaleCombo = ui->scaleCombo;
     percentLabel = ui->percentLabel;
 
@@ -34,25 +29,11 @@ MainWindow::MainWindow(QWidget *parent) :
     scaleCombo->setInsertPolicy(QComboBox::NoInsert);
     scaleCombo->setFocusPolicy(Qt::ClickFocus);
 
-    //scaleComboLayout->addWidget(scaleCombo);
-    //scaleComboLayout->addWidget(percentLabel);
-    //scaleComboLayout->addStretch();
-
-    //rightLayout->addWidget(dockWidget);
     addDockWidget(Qt::RightDockWidgetArea,propertyDock);
     addDockWidget(Qt::RightDockWidgetArea,textDock);
     QMainWindow::tabifyDockWidget(propertyDock,textDock);
     propertyDock->raise();
 
-    //rightLayout->addWidget(redrawButton);
-
-
-
-    layout->addLayout(scaleComboLayout);
-    //layout->addLayout(programLayout);
-    layout->addWidget(mapScreen);
-    layout->setMargin(0);
-    layout->setSpacing(3);
 
     propertyDock->setMapScreen(mapScreen);
 
@@ -60,11 +41,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(propertyDock,SIGNAL(nodeStyleChanged(NodeWidget*,nodeShape)),this,SLOT(addProcess(NodeWidget*,nodeShape)));
 
     mapScreen->setStyleSheet("MindmapView {border: 1px solid gray; background: #f8f8f8;}");
-    this->centralWidget()->setLayout(layout);
+    setCentralWidget(mapScreen);
 
     mapScreen->mainWindow = this;
 
-    QObject::connect(redrawButton, SIGNAL(clicked()),this,SLOT(reload()));
     QObject::connect(mapScreen, SIGNAL(zoomSignal()),this,SLOT(scaleCombo_setCurrentScale()));
     NodeWidget::setMainWindow(this);
 
@@ -86,16 +66,11 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete redrawButton;
-    delete rightLayout;
-    delete edit;
     if (map!=nullptr){
         delete map;
         map = nullptr;
     }
     delete mapScreen;
-    delete layout;
-    //delete process;
 }
 
 //re-allocate & re-draw mindmap

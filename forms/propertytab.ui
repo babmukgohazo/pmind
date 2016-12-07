@@ -261,15 +261,6 @@ QPushButton:hover {
         </item>
         <item>
          <widget class="QPushButton" name="roundRecButton">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
           <property name="text">
            <string/>
           </property>
@@ -323,6 +314,9 @@ QPushButton:hover {
          <widget class="QComboBox" name="lineWidthCombo">
           <property name="currentText">
            <string>2px</string>
+          </property>
+          <property name="currentIndex">
+           <number>1</number>
           </property>
           <item>
            <property name="text">
